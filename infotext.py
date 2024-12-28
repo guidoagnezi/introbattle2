@@ -1,0 +1,117 @@
+import pygame
+pygame.init()
+
+fonte = pygame.font.Font("fonts/pixel.ttf", 24)
+
+class DamageText(pygame.sprite.Sprite):
+        
+        def __init__(self, x, y, damage, colour):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = fonte.render(damage, True, colour)
+            self.rect = self.image.get_rect()
+            self.rect.center = (x, y)
+            self.counter = 0
+        
+        def update(self):
+            #move damage text up
+            self.rect.y -= 1
+
+            #delete the text after a few seconds
+            self.counter += 1
+            if self.counter > 30:
+                self.kill()
+    
+txt_grupo = pygame.sprite.Group()
+
+class MedidorText(pygame.sprite.Sprite):
+        
+        def __init__(self, x, y, damage, colour):
+            pygame.sprite.Sprite.__init__(self)
+            self.image = fonte.render(damage, True, colour)
+            self.rect = self.image.get_rect()
+            self.rect.center = (x, y)
+            self.counter = 0
+        
+        def update(self):
+            #move damage text up
+            self.rect.y -= 1
+            #delete the text after a few seconds
+            self.counter += 1
+            if self.counter > 30:
+                self.kill()
+
+class Icone(pygame.sprite.Sprite):
+     
+    def __init__(self, x, y, tipo):
+        pygame.sprite.Sprite.__init__(self)
+        self.tipo = tipo
+        if self.tipo == 1:
+            self.image = pygame.image.load("imagem/medidor/rubi.png")
+        elif self.tipo == 2:
+            self.image = pygame.image.load("imagem/medidor/energia.png")
+        elif self.tipo == 3:
+            self.image = pygame.image.load("imagem/medidor/coracao.png")
+        elif self.tipo == 4:
+            self.image = pygame.image.load("imagem/medidor/soco.png")
+        elif self.tipo == 5:
+            self.image = pygame.image.load("imagem/medidor/fogo.png")
+        elif self.tipo == 6:
+            self.image = pygame.image.load("imagem/medidor/agua.png")
+        elif self.tipo == 7:
+            self.image = pygame.image.load("imagem/medidor/raio.png")
+        elif self.tipo == 8:
+            self.image = pygame.image.load("imagem/medidor/magica.png")
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.counter = 0
+        
+    def update(self):
+        #move damage text up
+        self.rect.y -= 1
+
+        #delete the text after a few seconds
+        self.counter += 1
+        if self.counter > 30:
+            self.kill()
+
+
+def DefineTextoMedidor(valor, event_rubi, event_energia, posicao, txt_grupo):
+    
+    if valor >= 0:
+        sinal = "+"
+        if event_energia:
+            cor = "yellow"
+        elif event_rubi:
+            cor = "crimson"
+    elif valor < 0:
+        sinal = "-"
+        cor = "gray27"
+        
+    valor = abs(valor)
+
+    if event_rubi:
+        texto = MedidorText(posicao[0], posicao[1], f"{sinal} {str(int(valor))}", cor)
+        icone = Icone(posicao[0] - 50, posicao[1], 1)
+    if event_energia:
+        texto = MedidorText(posicao[0], posicao[1], f"{sinal} {str(int(valor))}", cor)
+        icone = Icone(posicao[0] - 50, posicao[1], 2)
+
+    if valor != 0:
+        txt_grupo.add(texto)
+    txt_grupo.add(icone)
+
+
+def desenhaTexto(txt_grupo, janela):
+    txt_grupo.update()
+    txt_grupo.draw(janela)
+
+def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
+
+    offX = 90
+    offY = -10
+    texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)
+    icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
+
+    txt_grupo.add(texto)
+    txt_grupo.add(icone)
+
