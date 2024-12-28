@@ -2,6 +2,7 @@ import pygame
 import random
 from medidor import *
 from infotext import *
+from ataque import *
 from eventos import j
 
 pygame.init()
@@ -46,6 +47,7 @@ class Card():
                 if monstro.vivo:
                     monstro.vida -= 10
                     DefineTextoDano(10, monstro, j.txt_grupo, "lightslateblue", 7)
+                    DefineAnimacaoAtaque(monstro, 7)
                 print(monstro.vida)
 
         if self.nome == 'Louco':
@@ -82,12 +84,33 @@ class Card():
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
                     DefineTextoDano(int(monstro.vida / 2), monstro, j.txt_grupo, "darkred", 3)
-            
+                    DefineAnimacaoAtaque(monstro, 5)
+
             for monstro in equipeInim:
                 if monstro.vivo:
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
                     DefineTextoDano(int(monstro.vida / 2), monstro, j.txt_grupo, "darkred", 3)
+                    DefineAnimacaoAtaque(monstro, 5)
+        
+        if self.nome == 'Fisico':
+            while 1:
+                alvo = random.choice(equipe)
+                if alvo.vivo:
+                    break
+            alvo.MODatk = 1.3
+            alvo.CounterAtk = 0
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "red", 10)
+        
+        if self.nome == 'Resistencia':
+            while 1:
+                alvo = random.choice(equipe)
+                if alvo.vivo:
+                    break
+            alvo.MODdef = 1.3
+            alvo.CounterDef = 0
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "darkgreen", 11)
+            
                 
 
 descricao_img = pygame.image.load("imagem/background/descricao.png")
@@ -100,8 +123,8 @@ carta3= Card("Diabo", 20, "A vida de TODOS será metade")
 carta4 = Card("Energia", 0, "+20 energia")
 carta5 = Card("Troca", 0, "Troca os rubis e energia")
 carta6 = Card("Mensagem", 40, "Imprime uma mensagem")
-# carta7 = Card()
-# carta8 = Card()
+carta7 = Card("Fisico", 20, "+ATQ para um aliado aleatorio")
+carta8 = Card("Resistencia", 20, "+DEF para um aliado aleatorio")
 
 deck = []
 
@@ -112,8 +135,8 @@ deck.append(carta3)
 deck.append(carta4)
 deck.append(carta5)
 deck.append(carta6)
-# deck.append(carta7)
-# deck.append(carta8)
+deck.append(carta7)
+deck.append(carta8)
 
 mao = []
 

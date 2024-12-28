@@ -7,6 +7,7 @@ from medidor import *
 from button import *
 from infotext import *
 from eventos import *
+from ataque import *
 
 pygame.init()
 
@@ -121,7 +122,7 @@ def batalha():
                     j.event_comprouCarta = True
                 if event.key == pygame.K_r:
                     j.event_ganhouRubi = True
-                    med.valor = 1
+                    med.valor = 20
                 if event.key == pygame.K_e:
                     j.event_ganhouEnergia = True
                     med.valorE = 20
@@ -155,6 +156,7 @@ def batalha():
             if j.event_novoTurno and ativos > 0:
                 turno += 1
                 monsVez = equipeAtivos[turno % vivos]
+                monsVez.updateStatus()
                 print(turno)
                 if j.event_primeiroTurno:
                     j.event_primeiroTurno = False
@@ -195,6 +197,7 @@ def batalha():
                     if monsAlvo != False:
                         dano = atacar(monsVez, monsAlvo)
                         DefineTextoDano(dano, monsAlvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
+                        DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
                         acoesEquipe += 1
@@ -227,9 +230,9 @@ def batalha():
                         if contador >= 12:
                             print("Perdeu!")
                             pygame.quit()
-
                     dano = atacar(monsVez, alvo)
                     DefineTextoDano(dano, alvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
+                    DefineAnimacaoAtaque(alvo, monsVez.magia)
                     j.event_novoTurno = True
                     cd_acaoInimiga = 0
                     acoesEquipeInimiga += 1
@@ -279,6 +282,6 @@ def batalha():
             desenhaDescricao(janela, fonte)
             desenhaDescricaoMonstro(janela, fonte, fonte1, equipeAtivos, posMouse)
         desenhaTexto(j.txt_grupo, janela)
+        desenhaAtaque(j.ataque_grupo, janela)
         pygame.display.flip()
-        print(vivosInim)
 batalha()

@@ -61,6 +61,14 @@ class Icone(pygame.sprite.Sprite):
             self.image = pygame.image.load("imagem/medidor/raio.png")
         elif self.tipo == 8:
             self.image = pygame.image.load("imagem/medidor/magica.png")
+        elif self.tipo == 10:
+            self.image = pygame.image.load("imagem/medidor/atk_up.png")
+        elif self.tipo == 11:
+            self.image = pygame.image.load("imagem/medidor/def_up.png")
+        elif self.tipo == 12:
+            self.image = pygame.image.load("imagem/medidor/atk_down.png")
+        elif self.tipo == 13:
+            self.image = pygame.image.load("imagem/medidor/def_down.png")
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.counter = 0
@@ -115,3 +123,12 @@ def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
     txt_grupo.add(texto)
     txt_grupo.add(icone)
 
+def DefineTextoStatus(nome, posicao, txt_grupo, cor, tipo):
+
+    offX = 90
+    offY = -10
+    texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
+    icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
+
+    txt_grupo.add(texto)
+    txt_grupo.add(icone)

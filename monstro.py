@@ -1,6 +1,8 @@
 import pygame
 import random
 from medidor import *
+from ataque import *
+from infotext import *
 from eventos import *
 
 pygame.init()
@@ -15,6 +17,12 @@ class Monstro:
         self.custo = custo
         self.defesa = defesa
         self.ataque = ataque
+        self.defesaBase = defesa
+        self.ataqueBase = ataque
+        self.MODdef = 1
+        self.MODatk = 1
+        self.CounterAtk = 0
+        self.CounterDef = 0
         self.player = False
         self.ativo = False
         self.magia = magia
@@ -100,13 +108,31 @@ class Monstro:
     
     def getCusto(self):
         return self.custo
+    
+    def updateStatus(self):
+        if self.MODdef != 1:
+            self.CounterDef += 1
+        if self.MODatk != 1:
+            self.CounterAtk += 1
+
+        if self.CounterAtk >= 4:
+            self.MODatk = 1
+            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "gray", 10)
+        if self.CounterDef >= 4:
+            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "gray", 11)
+            self.MODdef = 1
+        
+        self.ataque = self.ataqueBase * self.MODatk
+        self.defesaBase = self.defesaBase * self.MODdef
+
+        print(f"Nome: {self.nome}, Ataque: {self.ataque}, Defesa: {self.defesa}")
 
 #JOGAVEIS --- /// 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
-ico = Monstro       ("ico"     , 100, 50, 90, 10, 5, 6)
-linguico = Monstro  ("linguico", 100, 50, 90, 10, 4, 3)
-amigo = Monstro     ("amigo"   , 100, 50, 90, 10, 8, 0)
+ico = Monstro       ("ico"     , 1000, 50, 10, 10, 5, 6)
+linguico = Monstro  ("linguico", 1000, 50, 10, 10, 4, 3)
+amigo = Monstro     ("amigo"   , 1000, 50, 10, 10, 8, 0)
 
 #INIMIGOS --- ///
 
@@ -115,8 +141,8 @@ inim2 = Monstro     ("filho",     100, 20, 20, 10, 6, 7)
 inim3 = Monstro     ("linguico",  100, 20, 20, 10, 4, 3)
 inim4 = Monstro     ("ico",       100, 20, 20, 10, 5, 6)
 inim5 = Monstro     ("gelo",      100, 20, 20, 10, 6, 4)
-inim6 = Monstro     ("horroroso", 100, 20, 20, 10, 4, 5)
-inim7 = Monstro     ("adiburai",  100, 20, 20, 10, 3, 4)
+inim6 = Monstro     ("horroroso", 100, 20, 20, 10, 3, 5)
+inim7 = Monstro     ("adiburai",  100, 20, 20, 10, 4, 4)
 
 equipe = []
 equipeAtivos = []
@@ -206,6 +232,7 @@ def contarVivos(grupo):
     for monstro in grupo:
         if monstro.vida <= 0:
             monstro.vivo = False
+            DefineAnimacaoAtaque(monstro, 9)
             grupo.remove(monstro)
         else:
             count += 1
@@ -218,6 +245,7 @@ def contarVivosInimigos(grupo):
     for monstro in grupo:
         if monstro.vida <= 0 and monstro.vivo:
             med.valor += monstro.custo
+            DefineAnimacaoAtaque(monstro, 9)
             print(f"Valor: {med.valor}")
             j.event_ganhouRubi = True
             monstro.vivo = False
