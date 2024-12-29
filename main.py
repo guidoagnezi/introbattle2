@@ -121,6 +121,7 @@ def menuTitulo():
                 batalha()
             if t_quit_button.checkForInput(posMouse):
                 pygame.quit()
+            clicou = False
 
         janela.blit(img_telaTiulo, (0,0))
         desenhaBotoes(janela, titulo_buttons)
