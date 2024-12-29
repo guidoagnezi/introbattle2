@@ -9,6 +9,7 @@ class Medidor():
         self.energia = energia
         self.energiaMax = 100
         self.custoComprar = 5
+        self.ganhoEnergia = 8
         self.valor = 0
         self.valorE = 0
 

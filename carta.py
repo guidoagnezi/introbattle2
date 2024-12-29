@@ -83,14 +83,14 @@ class Card():
                 if monstro.vivo and monstro.ativo:
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
-                    DefineTextoDano(int(monstro.vida / 2), monstro, j.txt_grupo, "darkred", 3)
+                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "darkred", 3)
                     DefineAnimacaoAtaque(monstro, 5)
 
             for monstro in equipeInim:
                 if monstro.vivo:
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
-                    DefineTextoDano(int(monstro.vida / 2), monstro, j.txt_grupo, "darkred", 3)
+                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "darkred", 3)
                     DefineAnimacaoAtaque(monstro, 5)
         
         if self.nome == 'Fisico':
@@ -99,8 +99,10 @@ class Card():
                 if alvo.vivo:
                     break
             alvo.MODatk = 1.3
+            alvo.updateStatus()
             alvo.CounterAtk = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "red", 10)
+            
         
         if self.nome == 'Resistencia':
             while 1:
@@ -108,6 +110,7 @@ class Card():
                 if alvo.vivo:
                     break
             alvo.MODdef = 1.3
+            alvo.updateStatus()
             alvo.CounterDef = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "darkgreen", 11)
             

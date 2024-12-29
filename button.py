@@ -30,6 +30,14 @@ skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button
 
 hud0_img = pygame.image.load("imagem/background/hud0.png")
 
+t_start_button = Button("start_button", 675, 360)
+t_start_button.image = pygame.transform.scale_by(t_start_button.image, 1.2)
+t_start_button.rect = t_start_button.image.get_rect(center=(t_start_button.x_pos, t_start_button.y_pos))
+
+t_quit_button = Button("sair_button", 675, 440)
+t_quit_button.image = pygame.transform.scale_by(t_quit_button.image, 1.2)
+t_quit_button.rect = t_quit_button.image.get_rect(center=(t_quit_button.x_pos,t_quit_button.y_pos))
+
 
 hud_buttons = []
 
@@ -37,12 +45,23 @@ hud_buttons.append(atk_button)
 hud_buttons.append(com_button)
 hud_buttons.append(skl_button)
 
-def desenharHud(janela):
-      
+titulo_buttons = []
+
+titulo_buttons.append(t_start_button)
+titulo_buttons.append(t_quit_button)
+
+def desenharHud(janela, grupo):
+
     janela.blit(hud0_img, (730, 530))
     
-    for button in hud_buttons:
+    for button in grupo:
           button.desenhaBotao(janela)
+
+def desenhaBotoes(janela, grupo):
+      
+      for button in grupo:
+            button.desenhaBotao(janela)
+
 
 def cliqueBotao(grupo, posicao):
       

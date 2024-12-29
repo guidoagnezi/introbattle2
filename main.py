@@ -25,6 +25,7 @@ pygame.display.set_caption("Chabude bude")
 #fontes
 fonte = pygame.font.Font("fonts/pixel.ttf", 18)
 fonte1 = pygame.font.Font("fonts/pixel.ttf", 20)
+fonte2 = pygame.font.Font("fonts/pixel1.ttf", 20)
 
 #imagens
 bg0_img = pygame.image.load("imagem/background/bg0.png")
@@ -50,12 +51,16 @@ cursor1_img = pygame.image.load("imagem/background/cursor_atk.png")
 cursor1_img = pygame.transform.scale_by(cursor1_img, 1.3)
 cursor2_img = pygame.image.load("imagem/background/cursor_info.png")
 cursor2_img = pygame.transform.scale_by(cursor2_img, 1.3)
+cursor3_img = pygame.image.load("imagem/background/cursor_skill.png")
+cursor3_img = pygame.transform.scale_by(cursor3_img, 1.3)
 
 def desenhaCursor(posicao):
     if j.event_info == True:
         janela.blit(cursor2_img, posicao)
     elif j.event_atacar == True:
         janela.blit(cursor1_img, posicao)
+    elif j.event_usarSkill:
+        janela.blit(cursor3_img, posicao)
     else:
         janela.blit(cursor0_img, posicao)
 
@@ -87,7 +92,40 @@ def atacar(atacante, alvo):
     dano = atacante.ataque * mod
     alvo.vida -= dano
     print(f"Vida do {alvo.nome} = {alvo.vida}")
+    alvo.machucado()
     return dano
+
+img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png")
+
+def menuTitulo():
+
+    clicou = False
+    while(1):
+
+        posMouse = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    clicou = True
+                elif event.button == 3:
+                    j.event_info = True
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 3:
+                    j.event_info = False
+
+        if clicou:
+            if t_start_button.checkForInput(posMouse):
+                batalha()
+            if t_quit_button.checkForInput(posMouse):
+                pygame.quit()
+
+        janela.blit(img_telaTiulo, (0,0))
+        desenhaBotoes(janela, titulo_buttons)
+        desenhaCursor(posMouse)
+        pygame.display.flip()
 
 def batalha():
 
@@ -187,19 +225,41 @@ def batalha():
                 
                 if atk_button.checkForInput(posMouse) and ativos != 0:
                     j.event_atacar = True
+                    j.event_usarSkill = False
+                    j.event_comprouCarta = False
+
                 elif com_button.checkForInput(posMouse):
                     j.event_comprouCarta = True
+                    j.event_atacar = False
+                    j.event_usarSkill = False
+
                 elif skl_button.checkForInput(posMouse):
-                    pass
+                    if med.energia >= monsVez.skill.custo:
+                        if monsVez.skill.status == False:
+                            j.event_usarSkill = True
+                        j.event_atacar = False
+                        j.event_comprouCarta = False
                 
                 if j.event_atacar:
                     monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
                     if monsAlvo != False:
                         dano = atacar(monsVez, monsAlvo)
+                        j.event_ganhouEnergia = True
+                        med.valorE = med.ganhoEnergia
                         DefineTextoDano(dano, monsAlvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
+                        acoesEquipe += 1
+                
+                if j.event_usarSkill:
+                    monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
+                    if monsAlvo != False:
+                        j.event_perdeuEnergia = True
+                        med.valorE = monsAlvo.skill.custo
+                        monsAlvo.ativarSkill(monsAlvo)
+                        j.event_novoTurno = True
+                        j.event_usarSkill = False
                         acoesEquipe += 1
 
                 clicou = False                             #reset
@@ -253,13 +313,13 @@ def batalha():
         
         if j.event_ganhouEnergia:
             med.rendaEnergia(med.valorE)
-            DefineTextoMedidor(med.valorE, False, True, (790, 475), j.txt_grupo)
+            DefineTextoMedidor(med.valorE, False, True, (940, 510), j.txt_grupo)
             med.valorE = 0
             j.event_ganhouEnergia = False
 
         if j.event_perdeuEnergia:
             med.prejuizoEnergia(med.valorE)
-            DefineTextoMedidor(-1 * med.valorE, False, True, (790, 475), j.txt_grupo)
+            DefineTextoMedidor(-1 * med.valorE, False, True, (940, 510), j.txt_grupo)
             med.valorE = 0
             j.event_perdeuEnergia = False
 
@@ -270,7 +330,7 @@ def batalha():
         desenharMonstros(janela, equipeInim)
         med.desenhaMedidores(janela, fonte)
         desenhaMao(mao, largura, altura, janela, fonte)
-        desenharHud(janela)
+        desenharHud(janela, hud_buttons)
         desenhaPrecoCompra(janela, fonte1)
         desenharMonsVez(janela, monsVez)
         if j.event_vezJogador:
@@ -281,7 +341,9 @@ def batalha():
         if j.event_info:
             desenhaDescricao(janela, fonte)
             desenhaDescricaoMonstro(janela, fonte, fonte1, equipeAtivos, posMouse)
+            desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)
         pygame.display.flip()
-batalha()
+
+menuTitulo()

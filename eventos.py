@@ -9,6 +9,7 @@ class Jogo():
         self.event_ganhouEnergia = False
         self.event_perdeuEnergia = False
         self.event_atacar = False
+        self.event_usarSkill = False
         self.event_info = False
         self.event_vezJogador = True
         self.event_novoTurno = True

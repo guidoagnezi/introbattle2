@@ -2,6 +2,7 @@ import pygame
 pygame.init()
 
 fonte = pygame.font.Font("fonts/pixel.ttf", 24)
+fonte1 = pygame.font.Font("fonts/pixel.ttf", 18)
 
 class DamageText(pygame.sprite.Sprite):
         
@@ -27,14 +28,20 @@ class MedidorText(pygame.sprite.Sprite):
         
         def __init__(self, x, y, damage, colour):
             pygame.sprite.Sprite.__init__(self)
-            self.image = fonte.render(damage, True, colour)
+            if colour != "black":
+                self.image = fonte.render(damage, True, colour)
+            else:
+                self.image = fonte1.render(damage, True, colour)
             self.rect = self.image.get_rect()
             self.rect.center = (x, y)
+            self.colour = colour
             self.counter = 0
         
         def update(self):
-            #move damage text up
-            self.rect.y -= 1
+            if self.colour == "black":
+                self.rect.x += 1
+            else:
+                self.rect.y -= 1
             #delete the text after a few seconds
             self.counter += 1
             if self.counter > 30:
@@ -69,6 +76,10 @@ class Icone(pygame.sprite.Sprite):
             self.image = pygame.image.load("imagem/medidor/atk_down.png")
         elif self.tipo == 13:
             self.image = pygame.image.load("imagem/medidor/def_down.png")
+        elif self.tipo == 14:
+            self.image = pygame.image.load("imagem/medidor/atk_normal.png")
+        elif self.tipo == 15:
+            self.image = pygame.image.load("imagem/medidor/def_normal.png")
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.counter = 0
@@ -87,13 +98,15 @@ def DefineTextoMedidor(valor, event_rubi, event_energia, posicao, txt_grupo):
     
     if valor >= 0:
         sinal = "+"
-        if event_energia:
-            cor = "yellow"
-        elif event_rubi:
+        if event_rubi:
             cor = "crimson"
     elif valor < 0:
         sinal = "-"
-        cor = "gray27"
+        if event_rubi:
+            cor = "gray27"
+    
+    if event_energia:
+        cor = "black"
         
     valor = abs(valor)
 
@@ -102,11 +115,12 @@ def DefineTextoMedidor(valor, event_rubi, event_energia, posicao, txt_grupo):
         icone = Icone(posicao[0] - 50, posicao[1], 1)
     if event_energia:
         texto = MedidorText(posicao[0], posicao[1], f"{sinal} {str(int(valor))}", cor)
-        icone = Icone(posicao[0] - 50, posicao[1], 2)
 
     if valor != 0:
         txt_grupo.add(texto)
-    txt_grupo.add(icone)
+    
+    if not event_energia:
+        txt_grupo.add(icone)
 
 
 def desenhaTexto(txt_grupo, janela):

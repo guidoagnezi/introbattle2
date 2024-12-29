@@ -35,6 +35,16 @@ class Ataque(pygame.sprite.Sprite):
                 self.kill()
         return self.count
 
+class Skill():
+    def __init__(self, nome, dano, custo, tipo, status):
+        self.nome = nome
+        self.dano = dano
+        self.custo = custo
+        self.tipo = tipo
+        self.status = status
+
+explosao = Skill("Explosao", 50, 15, 10, False)
+
 def DefineAnimacaoAtaque(posicao, tipo):
 
     if tipo == 3:
@@ -51,6 +61,8 @@ def DefineAnimacaoAtaque(posicao, tipo):
         nome = "neutro"
     if tipo == 9:
         nome = "kill"
+    if tipo == 10:
+        nome = "explosao"
     
     ataque = Ataque(posicao.rect.x, posicao.rect.y, nome)
     ataque1 = Ataque(posicao.rect.x, posicao.rect.y, nome)
