@@ -37,7 +37,7 @@ class Card():
             else:
                 return False
             
-    def ativarEfeito(self, equipeInim, equipe):
+    def ativarEfeito(self, equipeInim, equipe, equipeAtivos):
         if self.nome == 'Avareza':
             j.event_ganhouRubi = True
             med.valor = 10
@@ -95,7 +95,7 @@ class Card():
         
         if self.nome == 'Fisico':
             while 1:
-                alvo = random.choice(equipe)
+                alvo = random.choice(equipeAtivos)
                 if alvo.vivo:
                     break
             alvo.MODatk = 1.3
@@ -106,7 +106,7 @@ class Card():
         
         if self.nome == 'Resistencia':
             while 1:
-                alvo = random.choice(equipe)
+                alvo = random.choice(equipeAtivos)
                 if alvo.vivo:
                     break
             alvo.MODdef = 1.3
@@ -149,14 +149,14 @@ def adicionaCarta(deck, mao):
         numero = random.randint(0, len(deck) - 1)
         mao.append(deck.pop(numero))
 
-def cliqueCarta(mao, deck, posicao, equipeInim, equipe):
+def cliqueCarta(mao, deck, posicao, equipeInim, equipe, equipeAtivos):
      
     for cartas in mao:
         if cartas.checkForInput(posicao):
             if cartas.custo <= med.energia:
                 med.valorE = cartas.custo
                 j.event_perdeuEnergia = True
-                cartas.ativarEfeito(equipeInim, equipe)
+                cartas.ativarEfeito(equipeInim, equipe, equipeAtivos)
                 mao.remove(cartas)
                 deck.append(cartas)
             

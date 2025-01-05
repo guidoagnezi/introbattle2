@@ -15,6 +15,8 @@ class Jogo():
         self.event_novoTurno = True
         self.event_primeiroTurno = True
         self.event_matouInimigo = False
+        self.buttonPosOffset = 0
+        self.round = 1
         self.txt_grupo = pygame.sprite.Group()
         self.ataque_grupo = pygame.sprite.Group()
 

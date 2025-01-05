@@ -26,22 +26,28 @@ pygame.display.set_caption("Chabude bude")
 fonte = pygame.font.Font("fonts/pixel.ttf", 18)
 fonte1 = pygame.font.Font("fonts/pixel.ttf", 20)
 fonte2 = pygame.font.Font("fonts/pixel1.ttf", 20)
+fonte3 = pygame.font.Font("fonts/pixel.ttf", 24)
+fonte4 = pygame.font.Font("fonts/pixel.ttf", 35)
 
 #imagens
 bg0_img = pygame.image.load("imagem/background/bg0.png")
 action_img = pygame.image.load("imagem/background/action.png")
+actionE_img = pygame.image.load("imagem/background/action_enemy.png")
 
 #spritegroup
 j.txt_grupo = pygame.sprite.Group()
 
-def desenhaAcoes(vivos, acoes):
+def desenhaAcoes(vivos, acoes, vezPlayer):
     
     vezes = abs(acoes - vivos)
     x = 390
-    y = 40
+    y = 20
     for vez in range(vezes):
-        janela.blit(action_img, (x, y))
-        x += 60
+        if vezPlayer:
+            janela.blit(action_img, (x, y))
+        else:
+            janela.blit(actionE_img, (x, y))
+        x += 90
 
 #cursor
 pygame.mouse.set_visible(False)
@@ -64,23 +70,10 @@ def desenhaCursor(posicao):
     else:
         janela.blit(cursor0_img, posicao)
 
-#VARIAVEIS DE VERIFICACAO --- //
-clicou = False
-monsVerif = 0
-monsAlvo = 0
-monsVez = equipe[0]
-posMouse = pygame.mouse.get_pos()
-xProx = 640
-yProx = 320
-espYProx = 50
-espXProx = 220
-turno = 0
-acoesEquipe = 0
-acoesEquipeInimiga = 0
-cd_acaoInimiga = 0
-tempoEspera_acaoInimiga = 80
-
-gerarInimigos(9)
+def draw_aviso(janela, fonte):
+    texto = fonte.render("Você não selecionou 3 personagens", True, "yellow")
+    texto_rect = texto.get_rect(center=(1010, 565))
+    janela.blit(texto, texto_rect)
 
 def atacar(atacante, alvo):
 
@@ -110,15 +103,10 @@ def menuTitulo():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     clicou = True
-                elif event.button == 3:
-                    j.event_info = True
-            if event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 3:
-                    j.event_info = False
 
         if clicou:
             if t_start_button.checkForInput(posMouse):
-                batalha()
+                menuPrincipal()
             if t_quit_button.checkForInput(posMouse):
                 pygame.quit()
             clicou = False
@@ -128,23 +116,74 @@ def menuTitulo():
         desenhaCursor(posMouse)
         pygame.display.flip()
 
+img_descricaoBox = pygame.image.load("imagem/background/description_box.png")
+def menuPrincipal():
+
+    wheelUp = False
+    scrollou = False
+    clicou = False
+    mensagem = False
+    while(1):
+
+        posMouse = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    clicou = True
+                if event.button == 5:
+                    wheelUp = True
+                    scrollou = True
+                if event.button == 4:
+                    wheelUp = False
+                    scrollou = True
+                
+        if clicou:
+            mensagem = False
+            selecionarPersonagem(char_buttons, posMouse)
+
+            if main_go_button.checkForInput(posMouse) and len(equipe) == 3:
+                batalha()
+            elif main_go_button.checkForInput(posMouse):
+                mensagem = True
+            clicou = False
+            
+        if scrollou:
+            scrollBotoes(char_buttons, wheelUp)
+            scrollou = False
+
+        janela.fill("white")
+        janela.blit(img_descricaoBox, (680, 70))
+        desenhaBotoes(janela, char_buttons)
+        desenhaBotoes(janela, menu_buttons)
+        desenhaMonstrosMenuPrincipal(janela, selecao)
+        desenhaDescricaoMenu(janela, char_buttons, posMouse, fonte, fonte3, equipe)
+        if mensagem:
+            draw_aviso(janela, fonte)
+        desenhaCursor(posMouse)
+        pygame.display.flip()
+
 def batalha():
 
     #VARIAVEIS DE VERIFICACAO --- //
+
+    gerarInimigos(j.round)
     clicou = False
     monsVerif = 0
     monsAlvo = 0
     monsVez = equipe[0]
     posMouse = pygame.mouse.get_pos()
-    xProx = 640
-    yProx = 320
-    espYProx = 50
-    espXProx = 220
     turno = 0
     acoesEquipe = 0
     acoesEquipeInimiga = 0
     cd_acaoInimiga = 0
     tempoEspera_acaoInimiga = 80
+    j.event_primeiroTurno = True
+    j.event_vezJogador = True
+    j.ataque_grupo.empty()
+    j.txt_grupo.empty()
 
     while(1):
 
@@ -175,13 +214,14 @@ def batalha():
                     j.event_info = False
 
         #ATUALIZACOES --- //
-
         vivos = contarVivos(equipeAtivos)
         vivosInim = contarVivosInimigos(equipeInim)
         ativos = contarAtivos(equipeAtivos)
         ativosInimigos = contarAtivos(equipeInim)
         
-
+        if vivosInim == 0:
+            continuar()
+        
         if ativos != 0 and acoesEquipe > vivos - 1 and j.event_vezJogador:
             j.event_vezJogador = False
             acoesEquipeInimiga = 0
@@ -192,7 +232,8 @@ def batalha():
         
         if j.event_vezJogador:
 
-            if j.event_novoTurno and ativos > 0:
+            if j.event_novoTurno and ativos > 0 and vivos > 0:
+                print(f"Vivos: {vivos} Ativos: {ativos}")
                 turno += 1
                 monsVez = equipeAtivos[turno % vivos]
                 monsVez.updateStatus()
@@ -200,6 +241,8 @@ def batalha():
                 if j.event_primeiroTurno:
                     j.event_primeiroTurno = False
                 j.event_novoTurno = False
+            elif ativos == 0 and not j.event_primeiroTurno:
+                gameOver(j)
 
             if j.event_comprouCarta:
                 if med.rubis >= med.custoComprar and len(mao) < 4:
@@ -209,16 +252,24 @@ def batalha():
                 j.event_comprouCarta = False
             
             if clicou:
-                cliqueCarta(mao, deck, posMouse, equipeInim, equipe)                      #checagem ativacao de card
+                if ativos != 0:
+                    cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos)                      #checagem ativacao de card
 
                 monsVerif = cliqueMonstroLoja(equipe, posMouse) #checagem compra na loja
+
                 if ativos != 3 and monsVerif != False:
+                    print("FOI")
+                    if ativos == 0:
+                        xProx = 640
+                        yProx = 320
+                    if ativos == 1:
+                        xProx = 400
+                        yProx = 370
+                    if ativos == 2:
+                        xProx = 520
+                        yProx = 420
                     if monsVerif.ativar(xProx, yProx, med.rubis):
-                        if ativos == 1:
-                            xProx += espXProx * 0.8
-                        else:
-                            xProx -= espXProx * 1.3
-                        yProx += espYProx
+                        print("ATIVOU")
                         equipeAtivos.append(monsVerif)
                         med.valor = monsVerif.getCusto()
                         j.event_perdeuRubi = True
@@ -229,12 +280,12 @@ def batalha():
                     j.event_usarSkill = False
                     j.event_comprouCarta = False
 
-                elif com_button.checkForInput(posMouse):
+                elif com_button.checkForInput(posMouse) and ativos != 0:
                     j.event_comprouCarta = True
                     j.event_atacar = False
                     j.event_usarSkill = False
 
-                elif skl_button.checkForInput(posMouse):
+                elif skl_button.checkForInput(posMouse) and ativos != 0:
                     if med.energia >= monsVez.skill.custo:
                         if monsVez.skill.status == False:
                             j.event_usarSkill = True
@@ -290,7 +341,7 @@ def batalha():
                         contador += 1
                         if contador >= 12:
                             print("Perdeu!")
-                            pygame.quit()
+                            gameOver(j)
                     dano = atacar(monsVez, alvo)
                     DefineTextoDano(dano, alvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
                     DefineAnimacaoAtaque(alvo, monsVez.magia)
@@ -333,18 +384,163 @@ def batalha():
         desenhaMao(mao, largura, altura, janela, fonte)
         desenharHud(janela, hud_buttons)
         desenhaPrecoCompra(janela, fonte1)
-        desenharMonsVez(janela, monsVez)
+        if ativos != 0:
+            desenharMonsVez(janela, monsVez)
         if j.event_vezJogador:
-            desenhaAcoes(vivos, acoesEquipe)
+            desenhaAcoes(vivos, acoesEquipe, j.event_vezJogador)
         else:
-            desenhaAcoes(vivosInim, acoesEquipeInimiga)
+            desenhaAcoes(vivosInim, acoesEquipeInimiga, j.event_vezJogador)
         desenhaCursor(posMouse)
         if j.event_info:
             desenhaDescricao(janela, fonte)
-            desenhaDescricaoMonstro(janela, fonte, fonte1, equipeAtivos, posMouse)
-            desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
+            if not desenhaDescricaoLoja(janela, fonte, fonte1, equipe, posMouse):
+                desenhaDescricaoMonstro(janela, fonte, fonte1, equipeAtivos, posMouse)
+            
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)
         pygame.display.flip()
+
+img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png")
+
+
+def reset():
+    
+    med.energiaMax = 100
+    med.energia = 50
+    med.rubis = 40
+    med.custoComprar = 5
+    
+    for carta in mao:
+        mao.remove(carta)
+        deck.append(carta)
+
+    j.event_primeiroTurno = True
+    for monstros in selecao:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+        print(f"{monstros.nome} - Vida: {monstros.vida}")
+    
+    for monstros in colecaoInimigos:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+        print(f"{monstros.nome} - Vida: {monstros.vida}")
+    
+    equipeAtivos.clear()
+
+    j.round = 0
+
+def continuar():
+
+    j.ataque_grupo.empty()
+    j.txt_grupo.empty()
+    equipeAtivos.clear()
+
+    for monstros in colecaoInimigos:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+        print(f"{monstros.nome} - Vida: {monstros.vida}")
+
+    for monstros in selecao:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+        print(f"{monstros.nome} - Vida: {monstros.vida}")
+
+    j.round += 1
+    img_bg_gameover.set_alpha(20)
+    transparencia = 40
+    clicou = False
+    txtContinue = fonte4.render("Round completo! Continue lutando!!", True, "white")
+    txtContinue_rect = txtContinue.get_rect(center=(680, 300))
+    while(1):
+
+        posMouse = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    clicou = True
+
+        if clicou:
+            if continue_button.checkForInput(posMouse):
+                menuPrincipal()
+            if return_button.checkForInput(posMouse):
+                reset()
+                menuPrincipal()
+            clicou = False
+        
+        if transparencia % 40 == 0:
+            janela.blit(img_bg_gameover, (0, 0))
+        if transparencia >= 800:
+            desenhaBotoes(janela, continue_buttons)
+            janela.blit(txtContinue, txtContinue_rect)
+        desenhaCursor(posMouse)
+        pygame.display.flip()
+        
+        transparencia += 2
+
+
+def gameOver(jogo):
+
+    reset()
+    img_bg_gameover.set_alpha(20)
+    transparencia = 40
+    clicou = False
+    txtFim = fonte4.render("Todos os lutadores PERECERAM, aceite seu fim.", True, "white")
+    txtFim_rect = txtFim.get_rect(center=(680, 360))
+    while(1):
+
+        posMouse = pygame.mouse.get_pos()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    clicou = True
+
+        if clicou:
+            if gameover_reset.checkForInput(posMouse):
+                menuPrincipal()
+            clicou = False
+        
+        if transparencia % 40 == 0:
+            janela.blit(img_bg_gameover, (0, 0))
+        if transparencia >= 800:
+            desenhaBotoes(janela, gameover_buttons)
+            janela.blit(txtFim, txtFim_rect)
+        desenhaCursor(posMouse)
+        pygame.display.flip()
+        
+        transparencia += 2
 
 menuTitulo()
