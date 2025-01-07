@@ -24,7 +24,6 @@ class Monstro:
         self.CounterAtk = 0
         self.CounterDef = 0
         self.player = False
-        self.ativo = False
         self.magia = magia
         self.fraqueza = fraqueza
         self.x_pos = 0
@@ -119,15 +118,11 @@ class Monstro:
             else:
                 return False
     
-    def ativar(self, x, y, rubis):
-        if rubis >= self.custo and self.ativo == False:
-            self.ativo = True
-            self.x_pos = x
-            self.y_pos = y
-            self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-            rubis -= self.custo
-            return True
-        return False
+    def ativar(self, x, y):
+        self.x_pos = x
+        self.y_pos = y
+        self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+        return True
     
     def getCusto(self):
         return self.custo
@@ -229,7 +224,7 @@ def cliqueMonstroBatalha(equipe, posicao):
 def desenharMonstros(janela, equipe): #A posicao de batalha dos monstros é definida pela main, diferente da posicao dos inimigos
 
     for monstro in equipe:
-        if monstro.ativo and monstro.vivo:
+        if monstro.vivo:
             monstro.desenhaMonstro(janela)
             monstro.update_animation()
 
@@ -254,7 +249,6 @@ def contarAtivos(equipe):
 def gerarInimigos(round):
     
     equipeInim.clear()
-
     if round <= 9:
         if (round / 3) < 1:
             nInimigos = 1
@@ -272,19 +266,27 @@ def gerarInimigos(round):
     espXProx = 160
 
     for monstro in equipeInim:
-        monstro.ativar(xProx, yProx, 999)
+        monstro.ativar(xProx, yProx)
 
         yProx += espYProx
         xProx -= espXProx
 
+def DefinirPosicao(equipe):
+    
+    equipe[0].ativar(600, 330)
+    if len(equipe) > 1:
+        equipe[1].ativar(380, 380)
+    if len(equipe) == 3:
+        equipe[2].ativar(490, 430)
+        
+
 def contarVivos(grupo):
     count = 0
     for monstro in grupo:
-        if monstro.vida <= 0:
+        if monstro.vida <= 0 and monstro.vivo:
             monstro.vivo = False
             DefineAnimacaoAtaque(monstro, 9)
-            equipeAtivos.remove(monstro)
-        else:
+        elif monstro.vivo:
             count += 1
 
     return count
@@ -317,7 +319,7 @@ def inimigoEscolheAlvo(equipe):
 
     alvo = random.choice(equipe)
 
-    if alvo.vivo and alvo.ativo:
+    if alvo.vivo:
         return alvo
     else:
         return -1

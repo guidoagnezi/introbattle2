@@ -1,21 +1,30 @@
 import pygame
+import random
 pygame.init()
 
 fonte = pygame.font.Font("fonts/pixel.ttf", 24)
 fonte1 = pygame.font.Font("fonts/pixel.ttf", 18)
-
+fonte2 = pygame.font.Font("fonts/pixel.ttf", 24)
+direcao = [1, -1]
+velocidade = [-6, -8, -10]
 class DamageText(pygame.sprite.Sprite):
         
         def __init__(self, x, y, damage, colour):
             pygame.sprite.Sprite.__init__(self)
             self.image = fonte.render(damage, True, colour)
+            self.direction = random.choice(direcao)
+            self.vinicial = random.choice(velocidade)
             self.rect = self.image.get_rect()
+            self.vel_y = self.vinicial
+            self.vel_x = 5 * self.direction
             self.rect.center = (x, y)
             self.counter = 0
         
         def update(self):
             #move damage text up
-            self.rect.y -= 1
+            self.rect.y += self.vel_y
+            self.rect.x += self.vel_x
+            self.vel_y += 0.8
 
             #delete the text after a few seconds
             self.counter += 1
@@ -29,7 +38,7 @@ class MedidorText(pygame.sprite.Sprite):
         def __init__(self, x, y, damage, colour):
             pygame.sprite.Sprite.__init__(self)
             if colour != "black":
-                self.image = fonte.render(damage, True, colour)
+                self.image = fonte2.render(damage, True, colour)
             else:
                 self.image = fonte1.render(damage, True, colour)
             self.rect = self.image.get_rect()
@@ -80,13 +89,22 @@ class Icone(pygame.sprite.Sprite):
             self.image = pygame.image.load("imagem/medidor/atk_normal.png")
         elif self.tipo == 15:
             self.image = pygame.image.load("imagem/medidor/def_normal.png")
+        elif self.tipo == 16:
+            self.image = pygame.image.load("imagem/medidor/cura.png")
         self.rect = self.image.get_rect()
+        self.vel_y = -5
+        self.vel_x = 2
         self.rect.center = (x, y)
         self.counter = 0
         
     def update(self):
         #move damage text up
-        self.rect.y -= 1
+        if self.tipo != 1 and self.tipo < 10:
+            self.rect.y += self.vel_y
+            self.rect.x += self.vel_x
+            self.vel_y += 0.5
+        else:
+            self.rect.y -= 1
 
         #delete the text after a few seconds
         self.counter += 1
@@ -129,19 +147,20 @@ def desenhaTexto(txt_grupo, janela):
 
 def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
 
+    cor = "black"
     offX = 90
     offY = -10
     texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)
-    icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
+    # icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
 
     txt_grupo.add(texto)
-    txt_grupo.add(icone)
+    # txt_grupo.add(icone)
 
 def DefineTextoStatus(nome, posicao, txt_grupo, cor, tipo):
 
     offX = 90
     offY = -10
-    texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
+    texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
     icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
 
     txt_grupo.add(texto)

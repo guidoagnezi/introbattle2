@@ -17,9 +17,11 @@ class Medidor():
         
         barraLar = 605
         barraAlt = 25
-        janela.blit(self.rubiImagem, (250, 35))
-        rubiNumero = fonte.render(f"{self.rubis}", True, "gray")
-        janela.blit(rubiNumero, (295, 45))
+        rubyFrame = pygame.image.load("imagem/background/rubiFrame.png")
+        janela.blit(rubyFrame, (30, 12))
+        janela.blit(self.rubiImagem, (55, 35))
+        rubiNumero = fonte.render(f"{self.rubis}", True, "white")
+        janela.blit(rubiNumero, (100, 45))
         txtEnergia = fonte.render(f"Energia   {self.energiaMax}/{self.energia}", True, "black")
         ratio = self.energia / self.energiaMax
         pygame.draw.rect(janela, "gray", (730, 500, barraLar, barraAlt))

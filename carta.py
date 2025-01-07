@@ -4,9 +4,11 @@ from medidor import *
 from infotext import *
 from ataque import *
 from eventos import j
+from particulas import *
 
 pygame.init()
 
+particulaDef = ParticleStar()
 class Card():
     def __init__(self, nome, custo, descricao):
         self.image = pygame.image.load("imagem/card/cardframe.png")
@@ -80,7 +82,7 @@ class Card():
 
         if self.nome == 'Diabo':
             for monstro in equipe:
-                if monstro.vivo and monstro.ativo:
+                if monstro.vivo:
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
                     DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "darkred", 3)
@@ -95,7 +97,7 @@ class Card():
         
         if self.nome == 'Fisico':
             while 1:
-                alvo = random.choice(equipeAtivos)
+                alvo = random.choice(equipe)
                 if alvo.vivo:
                     break
             alvo.MODatk = 1.3
@@ -106,16 +108,28 @@ class Card():
         
         if self.nome == 'Resistencia':
             while 1:
-                alvo = random.choice(equipeAtivos)
+                alvo = random.choice(equipe)
                 if alvo.vivo:
                     break
             alvo.MODdef = 1.3
             alvo.updateStatus()
             alvo.CounterDef = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "darkgreen", 11)
-            
-                
 
+        if self.nome == 'Cafeina':
+            j.acoesEquipe += 1
+
+        if self.nome == 'Milagre':
+            while 1:
+                alvo = random.choice(equipe)
+                if alvo.vivo:
+                    break
+            cura = int(alvo.vida / 4)
+            alvo.vida += cura
+            if alvo.vida > alvo.vidamax:
+                alvo.vida = alvo.vidamax
+            DefineTextoStatus(f"{cura}", alvo, j.txt_grupo, "green", 16)
+                
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 descricao_img.set_alpha(200)
 
@@ -128,6 +142,8 @@ carta5 = Card("Troca", 0, "Troca os rubis e energia")
 carta6 = Card("Mensagem", 40, "Imprime uma mensagem")
 carta7 = Card("Fisico", 20, "+ATQ para um aliado aleatorio")
 carta8 = Card("Resistencia", 20, "+DEF para um aliado aleatorio")
+carta9 = Card("Cafeina", 25, "+1 acao")
+carta10 = Card("Milagre", 25, "1/4 de cura a um aliado aleatorio")
 
 deck = []
 
@@ -140,6 +156,8 @@ deck.append(carta5)
 deck.append(carta6)
 deck.append(carta7)
 deck.append(carta8)
+deck.append(carta9)
+deck.append(carta10)
 
 mao = []
 

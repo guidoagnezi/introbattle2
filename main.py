@@ -9,6 +9,7 @@ from infotext import *
 from eventos import *
 from ataque import *
 
+
 pygame.init()
 
 #tempo
@@ -30,7 +31,8 @@ fonte3 = pygame.font.Font("fonts/pixel.ttf", 24)
 fonte4 = pygame.font.Font("fonts/pixel.ttf", 35)
 
 #imagens
-bg0_img = pygame.image.load("imagem/background/bg0.png")
+i = random.randint(0, 1)
+bg0_img = pygame.image.load(f"imagem/background/bg{i}.png")
 action_img = pygame.image.load("imagem/background/action.png")
 actionE_img = pygame.image.load("imagem/background/action_enemy.png")
 
@@ -39,8 +41,8 @@ j.txt_grupo = pygame.sprite.Group()
 
 def desenhaAcoes(vivos, acoes, vezPlayer):
     
-    vezes = abs(acoes - vivos)
-    x = 390
+    vezes = acoes
+    x = 200
     y = 20
     for vez in range(vezes):
         if vezPlayer:
@@ -71,7 +73,7 @@ def desenhaCursor(posicao):
         janela.blit(cursor0_img, posicao)
 
 def draw_aviso(janela, fonte):
-    texto = fonte.render("Você não selecionou 3 personagens", True, "yellow")
+    texto = fonte.render("Nenhum personagem selecionado", True, "yellow")
     texto_rect = texto.get_rect(center=(1010, 565))
     janela.blit(texto, texto_rect)
 
@@ -144,7 +146,8 @@ def menuPrincipal():
             mensagem = False
             selecionarPersonagem(char_buttons, posMouse)
 
-            if main_go_button.checkForInput(posMouse) and len(equipe) == 3:
+            if main_go_button.checkForInput(posMouse) and len(equipe) != 0:
+                DefinirPosicao(equipe)
                 batalha()
             elif main_go_button.checkForInput(posMouse):
                 mensagem = True
@@ -176,14 +179,16 @@ def batalha():
     monsVez = equipe[0]
     posMouse = pygame.mouse.get_pos()
     turno = 0
-    acoesEquipe = 0
-    acoesEquipeInimiga = 0
+    j.acoesEquipeInimiga = 0
     cd_acaoInimiga = 0
     tempoEspera_acaoInimiga = 80
     j.event_primeiroTurno = True
     j.event_vezJogador = True
     j.ataque_grupo.empty()
     j.txt_grupo.empty()
+    tamEquipe = len(equipe)
+    tamEquipeInim = len(equipeInim)
+    j.acoesEquipe = tamEquipe
 
     while(1):
 
@@ -214,34 +219,35 @@ def batalha():
                     j.event_info = False
 
         #ATUALIZACOES --- //
-        vivos = contarVivos(equipeAtivos)
+        vivos = contarVivos(equipe)
         vivosInim = contarVivosInimigos(equipeInim)
-        ativos = contarAtivos(equipeAtivos)
-        ativosInimigos = contarAtivos(equipeInim)
         
         if vivosInim == 0:
             continuar()
         
-        if ativos != 0 and acoesEquipe > vivos - 1 and j.event_vezJogador:
+        if vivos != 0 and j.acoesEquipe <= 0 and j.event_vezJogador:
             j.event_vezJogador = False
-            acoesEquipeInimiga = 0
+            j.acoesEquipeInimiga = contarVivosInimigos(equipeInim)
+            print("VISH")
         
-        if ativosInimigos != 0 and acoesEquipeInimiga > vivosInim - 1 and not j.event_vezJogador:
+        if vivosInim != 0 and j.acoesEquipeInimiga <= 0 and not j.event_vezJogador:
             j.event_vezJogador = True
-            acoesEquipe = 0
+            j.acoesEquipe = contarVivos(equipe)
         
         if j.event_vezJogador:
 
-            if j.event_novoTurno and ativos > 0 and vivos > 0:
-                print(f"Vivos: {vivos} Ativos: {ativos}")
-                turno += 1
-                monsVez = equipeAtivos[turno % vivos]
+            if j.event_novoTurno and vivos > 0:
+                while 1:
+                    monsVez = equipe[turno % tamEquipe]
+                    if monsVez.vivo:
+                        break
+                    turno += 1
                 monsVez.updateStatus()
-                print(turno)
+                print(f"turno: {turno}")
                 if j.event_primeiroTurno:
                     j.event_primeiroTurno = False
                 j.event_novoTurno = False
-            elif ativos == 0 and not j.event_primeiroTurno:
+            elif vivos == 0 and not j.event_primeiroTurno:
                 gameOver(j)
 
             if j.event_comprouCarta:
@@ -252,45 +258,25 @@ def batalha():
                 j.event_comprouCarta = False
             
             if clicou:
-                if ativos != 0:
+                if vivos != 0:
                     cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos)                      #checagem ativacao de card
-
-                monsVerif = cliqueMonstroLoja(equipe, posMouse) #checagem compra na loja
-
-                if ativos != 3 and monsVerif != False:
-                    print("FOI")
-                    if ativos == 0:
-                        xProx = 640
-                        yProx = 320
-                    if ativos == 1:
-                        xProx = 400
-                        yProx = 370
-                    if ativos == 2:
-                        xProx = 520
-                        yProx = 420
-                    if monsVerif.ativar(xProx, yProx, med.rubis):
-                        print("ATIVOU")
-                        equipeAtivos.append(monsVerif)
-                        med.valor = monsVerif.getCusto()
-                        j.event_perdeuRubi = True
-                        j.event_novoTurno = True
                 
-                if atk_button.checkForInput(posMouse) and ativos != 0:
-                    j.event_atacar = True
-                    j.event_usarSkill = False
-                    j.event_comprouCarta = False
-
-                elif com_button.checkForInput(posMouse) and ativos != 0:
-                    j.event_comprouCarta = True
-                    j.event_atacar = False
-                    j.event_usarSkill = False
-
-                elif skl_button.checkForInput(posMouse) and ativos != 0:
-                    if med.energia >= monsVez.skill.custo:
-                        if monsVez.skill.status == False:
-                            j.event_usarSkill = True
-                        j.event_atacar = False
+                    if atk_button.checkForInput(posMouse):
+                        j.event_atacar = True
+                        j.event_usarSkill = False
                         j.event_comprouCarta = False
+
+                    elif com_button.checkForInput(posMouse):
+                        j.event_comprouCarta = True
+                        j.event_atacar = False
+                        j.event_usarSkill = False
+
+                    elif skl_button.checkForInput(posMouse):
+                        if med.energia >= monsVez.skill.custo:
+                            if monsVez.skill.status == False:
+                                j.event_usarSkill = True
+                            j.event_atacar = False
+                            j.event_comprouCarta = False
                 
                 if j.event_atacar:
                     monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
@@ -302,7 +288,8 @@ def batalha():
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
-                        acoesEquipe += 1
+                        j.acoesEquipe -= 1
+                        turno += 1
                 
                 if j.event_usarSkill:
                     monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
@@ -312,20 +299,20 @@ def batalha():
                         monsAlvo.ativarSkill(monsAlvo)
                         j.event_novoTurno = True
                         j.event_usarSkill = False
-                        acoesEquipe += 1
+                        j.acoesEquipe -= 1
+                        turno += 1
 
                 clicou = False                             #reset
         
         if not j.event_vezJogador:
 
-            if j.event_novoTurno and ativosInimigos > 0:
+            if j.event_novoTurno and vivosInim > 0:
                 turno += 1
                 while 1:
-                    monsVez = equipeInim[turno % ativosInimigos]
+                    monsVez = equipeInim[turno % tamEquipeInim]
                     if monsVez.vivo:
                         break
                     turno += 1
-                    acoesEquipeInimiga += 1
                 print(turno)
                 j.event_novoTurno = False
             
@@ -347,19 +334,19 @@ def batalha():
                     DefineAnimacaoAtaque(alvo, monsVez.magia)
                     j.event_novoTurno = True
                     cd_acaoInimiga = 0
-                    acoesEquipeInimiga += 1
+                    j.acoesEquipeInimiga -= 1
             else:
                 cd_acaoInimiga += 1
 
         if j.event_ganhouRubi:
             med.rendaRubi(med.valor)
-            DefineTextoMedidor(med.valor, True, False, (325, 165), j.txt_grupo)
+            DefineTextoMedidor(med.valor, True, False, (120, 165), j.txt_grupo)
             med.valor = 0
             j.event_ganhouRubi = False
             
         if j.event_perdeuRubi:
             med.prejuizoRubi(med.valor)
-            DefineTextoMedidor(-med.valor, True, False, (325, 165), j.txt_grupo)
+            DefineTextoMedidor(-med.valor, True, False, (120, 165), j.txt_grupo)
             med.valor = 0
             j.event_perdeuRubi = False
         
@@ -377,24 +364,22 @@ def batalha():
 
         #RENDERIZACAO --- //
         janela.blit(bg0_img, (0,0))
-        desenharLoja(janela, equipe, fonte, med.rubis)
         desenharMonstros(janela, equipe)
         desenharMonstros(janela, equipeInim)
         med.desenhaMedidores(janela, fonte)
         desenhaMao(mao, largura, altura, janela, fonte)
         desenharHud(janela, hud_buttons)
         desenhaPrecoCompra(janela, fonte1)
-        if ativos != 0:
+        if vivos != 0:
             desenharMonsVez(janela, monsVez)
         if j.event_vezJogador:
-            desenhaAcoes(vivos, acoesEquipe, j.event_vezJogador)
+            desenhaAcoes(vivos, j.acoesEquipe, j.event_vezJogador)
         else:
-            desenhaAcoes(vivosInim, acoesEquipeInimiga, j.event_vezJogador)
+            desenhaAcoes(vivosInim, j.acoesEquipeInimiga, j.event_vezJogador)
         desenhaCursor(posMouse)
         if j.event_info:
             desenhaDescricao(janela, fonte)
-            if not desenhaDescricaoLoja(janela, fonte, fonte1, equipe, posMouse):
-                desenhaDescricaoMonstro(janela, fonte, fonte1, equipeAtivos, posMouse)
+            desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
             
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)
