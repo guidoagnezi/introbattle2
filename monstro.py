@@ -1,5 +1,7 @@
 import pygame
 import random
+
+import pygame.macosx
 from medidor import *
 from ataque import *
 from infotext import *
@@ -9,7 +11,7 @@ pygame.init()
 
 class Monstro:
 
-    def __init__(self, nome, vida, defesa, ataque, skill, custo, magia, fraqueza): 
+    def __init__(self, nome, vida, defesa, ataque, skill, custo, magia, fraqueza, animationtam): 
         self.nome = nome
         self.vidamax = vida
         self.vida = vida
@@ -21,8 +23,11 @@ class Monstro:
         self.ataqueBase = ataque
         self.MODdef = 1
         self.MODatk = 1
+        self.MODatk2 = 1
         self.CounterAtk = 0
         self.CounterDef = 0
+        self.condicao = 0
+        self.CounterCon = 0
         self.player = False
         self.magia = magia
         self.fraqueza = fraqueza
@@ -36,13 +41,14 @@ class Monstro:
         self.imageLoja = pygame.image.load(f"imagem/lutador/{self.nome}/loja.png")
         self.animation_cooldown = 100
         self.update_time = pygame.time.get_ticks()
+        self.animationtam = animationtam
         self.animation_list = []
         self.index = 0
         self.count = 0
         self.action = 0
         self.freezeTime = 0
         temp_list = []
-        for i in range(6):
+        for i in range(self.animationtam):
             img = pygame.image.load(f"imagem/lutador/{self.nome}/{i}.png")
             temp_list.append(img)
         self.animation_list.append(temp_list)
@@ -74,7 +80,7 @@ class Monstro:
                 self.index += 1
             self.count += 1
             if self.action == 0:
-                if self.index >= 6:
+                if self.index >= self.animationtam:
                     self.index = 0
             elif self.action == 1:
                 if self.freezeTime > 8:
@@ -132,16 +138,31 @@ class Monstro:
             self.CounterDef += 1
         if self.MODatk != 1:
             self.CounterAtk += 1
+        if self.condicao != 0:
+            self.CounterCon += 1
 
         if self.CounterAtk >= 4:
             self.MODatk = 1
             self.CounterAtk = 0
-            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "gray", 14)
+            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "green", 14)
         if self.CounterDef >= 4:
-            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "gray", 15)
+            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "green", 15)
             self.MODdef = 1
             self.CounterDef = 0
+        if self.CounterCon >= 3:
+            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "green", 16)
+            self.condicao = 0
+            self.CounterCon = 0
         
+        if self.condicao == 1:
+            dano = self.vidamax / 6
+            DefineTextoDano(dano, self, j.txt_grupo, "crimson", 8)
+            DefineTextoStatus("     BLEED", self, j.txt_grupo, "crimson", 3)
+            self.vida -= dano
+
+        if self.condicao == 2:
+            DefineTextoStatus("     FREEZE", self, j.txt_grupo, "blue", 6)
+
         self.ataque = self.ataqueBase * self.MODatk
         self.defesa = self.defesaBase * self.MODdef
 
@@ -152,30 +173,86 @@ class Monstro:
             alvo.vida -= self.skill.dano
             alvo.machucado()
             DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "red", 5)
-            DefineAnimacaoAtaque(self, alvo.skill.tipo)
+            DefineAnimacaoAtaque(alvo, self.skill.tipo)
+
+        if self.skill.nome == 'Cura':
+            cura = int(alvo.vidamax / 3)
+            alvo.vida += cura
+            if alvo.vida > alvo.vidamax:
+                alvo.vida = alvo.vidamax
+            DefineTextoStatus(cura, alvo, j.txt_grupo, "green", 16)
+        
+        if self.skill.nome == 'Treinar':
+            self.MODatk2 = 2.5
+            DefineTextoStatus("     UUPP!!", self, j.txt_grupo, "red", 10)
+        
+        if self.skill.nome == 'Surra':
+            for alvo in equipeInim:
+                if alvo.vivo:
+                    alvo.vida -= self.skill.dano
+                    DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "black", 4)
+                    DefineAnimacaoAtaque(alvo, 4)
+                    alvo.machucado()
+        if self.skill.nome == 'Correr':
+            j.acoesEquipe += 2
+        
+        if self.skill.nome == 'Wekapipo':
+            for alvo in equipeInim:
+                if alvo.vivo:
+                    alvo.vida -= self.skill.dano
+                    DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "black", 4)
+                    DefineAnimacaoAtaque(alvo, 8)
+                    alvo.machucado()
+        
+        if self.skill.nome == 'Cortar':
+            if alvo.condicao == 0:
+                alvo.condicao = 1
+                alvo.CounterCon = 0
+                alvo.vida -= self.skill.dano
+                DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "red", 5)
+                DefineAnimacaoAtaque(alvo, self.skill.tipo)
+                # DefineTextoStatus("    BLEED", alvo, j.txt_grupo, "crimson", 3)
+                alvo.machucado()
+                alvo.updateStatus()
+            else:
+                DefineTextoStatus("      FALHOU", self, j.txt_grupo, "crimson", 3)
+        
+        if self.skill.nome == 'Congelar':
+            if alvo.condicao == 0:
+                alvo.condicao = 2
+                alvo.CounterCon = 0
+                alvo.vida -= self.skill.dano
+                DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "blue", 6)
+                DefineAnimacaoAtaque(alvo, self.skill.tipo)
+                # DefineTextoStatus("     FREEZE", alvo, j.txt_grupo, "blue", 6)
+                alvo.machucado()
+                alvo.updateStatus()
+            else:
+                DefineTextoStatus("       FALHOU", self, j.txt_grupo, "blue", 6)
+            
         
 
 #JOGAVEIS --- /// 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
-ico = Monstro       ("Ico"     , 20, 50, 30, explosao, 10, 5, 6)
-linguico = Monstro  ("Linguico", 20, 50, 30, explosao, 10, 4, 3)
-amigo = Monstro     ("Amigo"   , 20, 50, 30, explosao, 10, 8, 0)
-filho = Monstro     ("Filho",       100, 20, 20, explosao, 10, 5, 6)
-gelo = Monstro      ("Gelo",      100, 20, 20, explosao, 10, 6, 4)
-horroroso = Monstro ("Horroroso", 100, 20, 20, explosao, 10, 3, 5)
-adiburai = Monstro  ("Adiburai",  100, 20, 20, explosao, 10, 4, 4)
-demonio = Monstro   ("Demonio", 1000, 50, 10, explosao, 10, 5, 6)
+ico = Monstro       ("Ico"     , 20, 50, 30, explosao, 10, 5, 6, 6)
+linguico = Monstro  ("Linguico", 20, 50, 30, surra, 10, 4, 3, 6)
+amigo = Monstro     ("Amigo"   , 20, 50, 30, wekapipo, 10, 8, 0, 6)
+filho = Monstro     ("Filho",       100, 20, 20, cura, 20, 5, 6, 6)
+gelo = Monstro      ("Gelo",      1090, 20, 20, congelar, 20, 6, 4, 6)
+horroroso = Monstro ("Xamilo", 100, 20, 20, cortar, 20, 3, 5, 6)
+adiburai = Monstro  ("Adiburai",  100, 20, 20, treinar, 40, 4, 4, 6)
+demonio = Monstro   ("Odiburoi", 1000, 50, 10, corre, 40, 5, 6, 4)
 
 #INIMIGOS --- ///
 
-inim1 = Monstro     ("Amigo",     100, 20, 20, explosao, 10, 8, 0)
-inim2 = Monstro     ("Filho",     100, 20, 20, explosao, 10, 6, 7)
-inim3 = Monstro     ("Linguico",  100, 20, 20, explosao, 10, 4, 3)
-inim4 = Monstro     ("Ico",       100, 20, 20, explosao, 10, 5, 6)
-inim5 = Monstro     ("Gelo",      100, 20, 20, explosao, 10, 6, 4)
-inim6 = Monstro     ("Horroroso", 100, 20, 20, explosao, 10, 3, 5)
-inim7 = Monstro     ("Adiburai",  100, 20, 20, explosao, 10, 4, 4)
+inim1 = Monstro     ("Amigo",     1000, 20, 20, explosao, 10, 8, 0, 6)
+inim2 = Monstro     ("Filho",     1000, 20, 20, explosao, 10, 6, 7, 6)
+inim3 = Monstro     ("Linguico",  1000, 20, 20, explosao, 10, 4, 3, 6)
+inim4 = Monstro     ("Ico",       1000, 20, 20, explosao, 10, 5, 6, 6)
+inim5 = Monstro     ("Gelo",      1000, 20, 20, explosao, 10, 6, 4, 6)
+inim6 = Monstro     ("Xamilo", 1000, 20, 20, explosao, 10, 3, 5, 6)
+inim7 = Monstro     ("Adiburai",  1000, 20, 20, explosao, 10, 4, 4, 6)
 
 selecao = []
 
@@ -273,11 +350,11 @@ def gerarInimigos(round):
 
 def DefinirPosicao(equipe):
     
-    equipe[0].ativar(600, 330)
+    equipe[0].ativar(650, 330)
     if len(equipe) > 1:
         equipe[1].ativar(380, 380)
     if len(equipe) == 3:
-        equipe[2].ativar(490, 430)
+        equipe[2].ativar(515, 430)
         
 
 def contarVivos(grupo):
@@ -311,7 +388,7 @@ img_battlebox = pygame.image.load("imagem/background/battle_box.png")
 
 def desenharMonsVez(janela, monstro):
     
-    rect = monstro.image.get_rect(center=(monstro.x_pos + 20, monstro.y_pos - 90))
+    rect = img_battlebox.get_rect(center=(monstro.x_pos, monstro.y_pos - 110))
     janela.blit(img_battlebox, rect)
     
 

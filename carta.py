@@ -1,14 +1,13 @@
 import pygame
 import random
 from medidor import *
+from monstro import *
 from infotext import *
 from ataque import *
 from eventos import j
-from particulas import *
 
 pygame.init()
 
-particulaDef = ParticleStar()
 class Card():
     def __init__(self, nome, custo, descricao):
         self.image = pygame.image.load("imagem/card/cardframe.png")
@@ -124,11 +123,53 @@ class Card():
                 alvo = random.choice(equipe)
                 if alvo.vivo:
                     break
-            cura = int(alvo.vida / 4)
+            cura = int(alvo.vidamax / 4)
             alvo.vida += cura
             if alvo.vida > alvo.vidamax:
                 alvo.vida = alvo.vidamax
             DefineTextoStatus(f"{cura}", alvo, j.txt_grupo, "green", 16)
+        
+        if self.nome == 'Enamorados':
+            while 1:
+                alvo = random.choice(equipe)
+                if alvo.vivo:
+                    break
+            while 1:
+                alvo2 = random.choice(equipeInim)
+                if alvo2.vivo:
+                    break
+            alvo.MODatk = 1.5
+            alvo.MODdef = 1.5
+            alvo.CounterDef = 0
+            alvo.CounterAtk = 0
+            alvo2.MODatk = 1.5
+            alvo2.MODdef = 1.5
+            alvo2.CounterDef = 0
+            alvo2.CounterAtk = 0
+            alvo.updateStatus()
+            alvo2.updateStatus()
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "red", 10)
+            DefineTextoStatus("UP", alvo2, j.txt_grupo, "red", 10)
+            
+        if self.nome == 'Mundo':
+            while 1:
+                alvo = random.choice(equipe)
+                print(f"1 nome: {alvo.nome}")
+                if alvo.vivo:
+                    break
+            while 1:
+                alvo2 = random.choice(selecao)
+                print(f"2 nome: {alvo2.nome}")
+                if alvo2.custo >= alvo.custo and alvo2 not in equipe:
+                    break
+                    
+            alvo2.ativar(alvo.x_pos, alvo.y_pos)
+            alvo2.vida = alvo2.vidamax
+            equipe.remove(alvo)
+            equipe.append(alvo2)
+            print(equipe)
+            DefineAnimacaoAtaque(alvo2, 9)
+                
                 
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 descricao_img.set_alpha(200)
@@ -144,20 +185,26 @@ carta7 = Card("Fisico", 20, "+ATQ para um aliado aleatorio")
 carta8 = Card("Resistencia", 20, "+DEF para um aliado aleatorio")
 carta9 = Card("Cafeina", 25, "+1 acao")
 carta10 = Card("Milagre", 25, "1/4 de cura a um aliado aleatorio")
+carta11 = Card("Enamorados", 20, "Fortalece 1 inimigo e 1 aliado")
+carta12 = Card("Mundo", 25, "Troca um aliado por um de custo + ou =")
+carta13 = Card("Mago", 25, "Status negativo aleatorio a um inimigo")
 
 deck = []
 
-deck.append(carta)
-deck.append(carta1)
-deck.append(carta2)
-deck.append(carta3)
-deck.append(carta4)
-deck.append(carta5)
-deck.append(carta6)
-deck.append(carta7)
-deck.append(carta8)
-deck.append(carta9)
+# deck.append(carta)
+# deck.append(carta1)
+# deck.append(carta2)
+# deck.append(carta3)
+# deck.append(carta4)
+# deck.append(carta5)
+# deck.append(carta6)
+# deck.append(carta7)
+# deck.append(carta8)
+# deck.append(carta9)
 deck.append(carta10)
+deck.append(carta11)
+deck.append(carta12)
+deck.append(carta13)
 
 mao = []
 
@@ -214,7 +261,7 @@ def desenhaDescricao(janela, fonte):
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 95))
             janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
             janela.blit(txtCusto, (posicao[0] + 10, posicao[1] - 55))
-
+            return True
 rubiImagem = pygame.image.load("imagem/medidor/rubi.png")
 
 def desenhaPrecoCompra(janela, fonte):

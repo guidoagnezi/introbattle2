@@ -27,6 +27,14 @@ class Medidor():
         pygame.draw.rect(janela, "gray", (730, 500, barraLar, barraAlt))
         pygame.draw.rect(janela, "yellow", (730, 500, barraLar * ratio, barraAlt))
         janela.blit(txtEnergia, (740, 497))
+    
+    def desenhaRubisMP(self, janela, fonte):
+
+        rubyFrame = pygame.image.load("imagem/background/rubiFrameMP.png")
+        janela.blit(rubyFrame, (700, 2))
+        janela.blit(self.rubiImagem, (730, 15))
+        rubiNumero = fonte.render(f"{self.rubis}", True, "white")
+        janela.blit(rubiNumero, (775, 25))
 
     def rendaRubi(self, renda):
         self.rubis += renda
@@ -44,4 +52,4 @@ class Medidor():
         if self.energia <= 0:
             self.energia = 0
             
-med = Medidor(40, 50)
+med = Medidor(60, 50)

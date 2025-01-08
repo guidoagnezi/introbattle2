@@ -146,9 +146,11 @@ def selecionarPersonagem(grupo, position):
       
       for botao in grupo:
             if botao.checkForInput(position) and botao.nome == "cardframe":
-                  if botao.selected == False and len(equipe) != 3:
+                  if botao.selected == False and len(equipe) != 3 and med.rubis >= botao.monstro.custo:
                         botao.image = pygame.image.load("imagem/background/cardframe_selected.png")
                         equipe.append(botao.monstro)
+                        j.event_perdeuRubi = True
+                        med.valor = botao.monstro.custo
                         botao.selected = True
                   elif botao.selected == True:
                         botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")

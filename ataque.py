@@ -36,15 +36,24 @@ class Ataque(pygame.sprite.Sprite):
         return self.count
 
 class Skill():
-    def __init__(self, nome, dano, custo, tipo, status, descricao, descricao2):
+    def __init__(self, nome, dano, custo, tipo, auto, benigno , descricao, descricao2):
         self.nome = nome
         self.dano = dano
         self.custo = custo
         self.tipo = tipo
-        self.status = status
+        self.auto = auto
+        self.benigno = benigno
         self.descricao = descricao
 
-explosao = Skill("Explosao", 50, 15, 10, False, "Dano elevado de FOGO a um inimigo", "")
+explosao = Skill("Explosao", 50, 15, 10, False, False, "50 de dano a um inimigo", "")
+cura = Skill("Cura", 0, 30, 10, False, True, "Cura 1/3 da vida de um aliado", "")
+treinar = Skill("Treinar", 0, 20, 10, True, True, "O proximo ataque dará muito mais dano", "")
+surra = Skill("Surra", 30, 35, 4, False, False, "Saraivada de porrada a todos os inimigos", "")
+corre = Skill("Correr", 0, 35, 10, True, True, "Dá +1 ação no turno", "")
+wekapipo = Skill("Wekapipo", 35, 35, 8, False, False, "Dano mágico a todos os inimigos", "")
+cortar = Skill("Cortar", 20, 20, 3, False, False, "Causa sangramento a um inimigo", "")
+congelar = Skill("Congelar", 20, 20, 6, False, False, "Causa congelamento a um inimigo", "")
+
 
 def DefineAnimacaoAtaque(posicao, tipo):
 

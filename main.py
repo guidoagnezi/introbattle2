@@ -72,7 +72,7 @@ def desenhaCursor(posicao):
     else:
         janela.blit(cursor0_img, posicao)
 
-def draw_aviso(janela, fonte):
+def draw_aviso(janela, fonte, flag):
     texto = fonte.render("Nenhum personagem selecionado", True, "yellow")
     texto_rect = texto.get_rect(center=(1010, 565))
     janela.blit(texto, texto_rect)
@@ -84,7 +84,9 @@ def atacar(atacante, alvo):
     else:
         mod = 1
 
-    dano = atacante.ataque * mod
+    dano = atacante.ataque * mod * atacante.MODatk2
+    if atacante.MODatk2 != 1:
+        atacante.MODatk2 = 1
     alvo.vida -= dano
     print(f"Vida do {alvo.nome} = {alvo.vida}")
     alvo.machucado()
@@ -125,6 +127,7 @@ def menuPrincipal():
     scrollou = False
     clicou = False
     mensagem = False
+    flag = 0
     while(1):
 
         posMouse = pygame.mouse.get_pos()
@@ -141,6 +144,10 @@ def menuPrincipal():
                 if event.button == 4:
                     wheelUp = False
                     scrollou = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    j.event_ganhouRubi = True
+                    med.valor = 100
                 
         if clicou:
             mensagem = False
@@ -151,11 +158,25 @@ def menuPrincipal():
                 batalha()
             elif main_go_button.checkForInput(posMouse):
                 mensagem = True
+                flag = 1
             clicou = False
             
         if scrollou:
             scrollBotoes(char_buttons, wheelUp)
             scrollou = False
+        
+        if j.event_ganhouRubi:
+            med.rendaRubi(med.valor)
+            DefineTextoMedidor(med.valor, False, True, (900, 35), j.txt_grupo)
+            med.valor = 0
+            j.event_ganhouRubi = False
+            
+        if j.event_perdeuRubi:
+            med.prejuizoRubi(med.valor)
+            DefineTextoMedidor(-med.valor, False, True, (900, 35), j.txt_grupo)
+            med.valor = 0
+            j.event_perdeuRubi = False
+
 
         janela.fill("white")
         janela.blit(img_descricaoBox, (680, 70))
@@ -163,9 +184,11 @@ def menuPrincipal():
         desenhaBotoes(janela, menu_buttons)
         desenhaMonstrosMenuPrincipal(janela, selecao)
         desenhaDescricaoMenu(janela, char_buttons, posMouse, fonte, fonte3, equipe)
+        med.desenhaRubisMP(janela, fonte)
         if mensagem:
-            draw_aviso(janela, fonte)
+            draw_aviso(janela, fonte, flag)
         desenhaCursor(posMouse)
+        desenhaTexto(j.txt_grupo, janela)
         pygame.display.flip()
 
 def batalha():
@@ -247,6 +270,10 @@ def batalha():
                 if j.event_primeiroTurno:
                     j.event_primeiroTurno = False
                 j.event_novoTurno = False
+
+            if monsVez.condicao == 2:
+                j.event_novoTurno = True
+
             elif vivos == 0 and not j.event_primeiroTurno:
                 gameOver(j)
 
@@ -273,8 +300,16 @@ def batalha():
 
                     elif skl_button.checkForInput(posMouse):
                         if med.energia >= monsVez.skill.custo:
-                            if monsVez.skill.status == False:
+                            if monsVez.skill.auto == False:
                                 j.event_usarSkill = True
+                            else:
+                                j.event_perdeuEnergia = True
+                                med.valorE = monsVez.skill.custo
+                                monsVez.ativarSkill(monsVez)
+                                j.event_novoTurno = True
+                                j.event_usarSkill = False
+                                j.acoesEquipe -= 1
+                                turno += 1
                             j.event_atacar = False
                             j.event_comprouCarta = False
                 
@@ -292,11 +327,14 @@ def batalha():
                         turno += 1
                 
                 if j.event_usarSkill:
-                    monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
+                    if not monsVez.skill.benigno:
+                        monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
+                    else:
+                        monsAlvo = cliqueMonstroBatalha(equipe, posMouse)
                     if monsAlvo != False:
                         j.event_perdeuEnergia = True
-                        med.valorE = monsAlvo.skill.custo
-                        monsAlvo.ativarSkill(monsAlvo)
+                        med.valorE = monsVez.skill.custo
+                        monsVez.ativarSkill(monsAlvo)
                         j.event_novoTurno = True
                         j.event_usarSkill = False
                         j.acoesEquipe -= 1
@@ -313,8 +351,13 @@ def batalha():
                     if monsVez.vivo:
                         break
                     turno += 1
+                monsVez.updateStatus()
                 print(turno)
                 j.event_novoTurno = False
+            
+            if monsVez.condicao == 2:
+                j.event_novoTurno = True
+                j.acoesEquipeInimiga -= 1
             
             if cd_acaoInimiga > tempoEspera_acaoInimiga:
                 
@@ -378,8 +421,8 @@ def batalha():
             desenhaAcoes(vivosInim, j.acoesEquipeInimiga, j.event_vezJogador)
         desenhaCursor(posMouse)
         if j.event_info:
-            desenhaDescricao(janela, fonte)
-            desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
+            if not desenhaDescricao(janela, fonte):
+                desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
             
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)
@@ -457,6 +500,15 @@ def continuar():
         monstros.idle()
         monstros.update_animation()
         print(f"{monstros.nome} - Vida: {monstros.vida}")
+
+    for botao in char_buttons:
+        if botao.nome == 'cardframe':
+            if botao.monstro not in equipe:
+                botao.selected = False
+                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")
+            else:
+                botao.selected = True
+                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")
 
     j.round += 1
     img_bg_gameover.set_alpha(20)

@@ -53,7 +53,7 @@ class MedidorText(pygame.sprite.Sprite):
                 self.rect.y -= 1
             #delete the text after a few seconds
             self.counter += 1
-            if self.counter > 30:
+            if self.counter > 50:
                 self.kill()
 
 class Icone(pygame.sprite.Sprite):
@@ -99,16 +99,11 @@ class Icone(pygame.sprite.Sprite):
         
     def update(self):
         #move damage text up
-        if self.tipo != 1 and self.tipo < 10:
-            self.rect.y += self.vel_y
-            self.rect.x += self.vel_x
-            self.vel_y += 0.5
-        else:
-            self.rect.y -= 1
+        self.rect.y -= 1
 
         #delete the text after a few seconds
         self.counter += 1
-        if self.counter > 30:
+        if self.counter > 50:
             self.kill()
 
 
@@ -147,7 +142,6 @@ def desenhaTexto(txt_grupo, janela):
 
 def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
 
-    cor = "black"
     offX = 90
     offY = -10
     texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)
