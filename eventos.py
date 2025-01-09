@@ -15,16 +15,23 @@ class Jogo():
         self.event_novoTurno = True
         self.event_primeiroTurno = True
         self.event_matouInimigo = False
+        self.event_standby = False
+        self.event_realizouAtaque = False
+        self.event_realizouSkill = False
+        self.event_trocouTime = False
         self.buttonPosOffset = 0
         self.round = 1
         self.emitir = False
         self.particula = 0
         self.cd = 0
         self.cdMax = 1000
+        self.cdStandby = 0
+        self.cdMaxStandby = 100
         self.acoesEquipeInimiga = 0
         self.acoesEquipe = 3
         self.alvoPar = (0, 0)
         self.txt_grupo = pygame.sprite.Group()
+        self.txt_dano = pygame.sprite.Group()
         self.ataque_grupo = pygame.sprite.Group()
 
 j = Jogo()

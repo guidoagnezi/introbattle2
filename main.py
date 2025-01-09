@@ -51,6 +51,27 @@ def desenhaAcoes(vivos, acoes, vezPlayer):
             janela.blit(actionE_img, (x, y))
         x += 90
 
+img_guia = pygame.image.load("imagem/background/img_guia.png")
+
+def desenhaGuiaDeBatalha(MonsVez, alvo):
+
+    janela.blit(img_guia, (700, 15))
+
+    if j.event_realizouAtaque:
+        texto = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}!", True, "white")
+    elif j.event_realizouSkill:
+        texto = fonte3.render(f"{MonsVez.nome} usou sua skill {MonsVez.skill.nome}!", True, "yellow")
+    elif j.event_primeiroTurno:
+        texto = fonte3.render(f"GAME!   START!", True, "white")
+    elif j.event_vezJogador:
+        texto = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white")
+    elif not j.event_vezJogador:
+        texto = fonte3.render(f"O inimigo {MonsVez.nome} vai atacar!", True, "white")
+        print("NADA NADA NADA NADA")
+    janela.blit(texto, (740, 40))
+
+        
+
 #cursor
 pygame.mouse.set_visible(False)
 cursor0_img = pygame.image.load("imagem/background/cursor_normal.png")
@@ -84,7 +105,8 @@ def atacar(atacante, alvo):
     else:
         mod = 1
 
-    dano = atacante.ataque * mod * atacante.MODatk2
+    dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2)
+
     if atacante.MODatk2 != 1:
         atacante.MODatk2 = 1
     alvo.vida -= dano
@@ -200,6 +222,9 @@ def batalha():
     monsVerif = 0
     monsAlvo = 0
     monsVez = equipe[0]
+    alvo = equipeInim[0]
+    alvoGuia = alvo
+    monsVezGuia = monsVez
     posMouse = pygame.mouse.get_pos()
     turno = 0
     j.acoesEquipeInimiga = 0
@@ -209,6 +234,7 @@ def batalha():
     j.event_vezJogador = True
     j.ataque_grupo.empty()
     j.txt_grupo.empty()
+    j.txt_dano.empty()
     tamEquipe = len(equipe)
     tamEquipeInim = len(equipeInim)
     j.acoesEquipe = tamEquipe
@@ -252,24 +278,38 @@ def batalha():
             j.event_vezJogador = False
             j.acoesEquipeInimiga = contarVivosInimigos(equipeInim)
             print("VISH")
+            j.event_trocouTime = True
         
         if vivosInim != 0 and j.acoesEquipeInimiga <= 0 and not j.event_vezJogador:
             j.event_vezJogador = True
             j.acoesEquipe = contarVivos(equipe)
+            j.event_trocouTime = True
         
         if j.event_vezJogador:
-
+            
             if j.event_novoTurno and vivos > 0:
-                while 1:
-                    monsVez = equipe[turno % tamEquipe]
-                    if monsVez.vivo:
-                        break
-                    turno += 1
-                monsVez.updateStatus()
-                print(f"turno: {turno}")
-                if j.event_primeiroTurno:
-                    j.event_primeiroTurno = False
-                j.event_novoTurno = False
+                if j.cdStandby > j.cdMaxStandby:
+                    while 1:
+                        monsVez = equipe[turno % tamEquipe]
+                        if monsVez.vivo:
+                            break
+                        turno += 1
+                    monsVez.updateStatus()
+                    monsVez.updateCondicao()
+                    monsVezGuia = monsVez
+                    print(f"turno: {turno}")
+                    if j.event_primeiroTurno:
+                        j.event_primeiroTurno = False
+                    j.event_novoTurno = False
+                    j.event_realizouSkill = False
+                    j.event_realizouAtaque = False
+                    j.cdStandby = 0
+                    j.event_standby = False
+                    j.event_trocouTime = False
+                else:
+                    j.cdStandby += 1
+                    j.event_standby = True
+                    clicou = False
 
             if monsVez.condicao == 2:
                 j.event_novoTurno = True
@@ -284,7 +324,7 @@ def batalha():
                     med.valor = med.custoComprar
                 j.event_comprouCarta = False
             
-            if clicou:
+            if clicou and not j.event_standby:
                 if vivos != 0:
                     cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos)                      #checagem ativacao de card
                 
@@ -308,6 +348,7 @@ def batalha():
                                 monsVez.ativarSkill(monsVez)
                                 j.event_novoTurno = True
                                 j.event_usarSkill = False
+                                j.event_realizouSkill = True
                                 j.acoesEquipe -= 1
                                 turno += 1
                             j.event_atacar = False
@@ -318,11 +359,14 @@ def batalha():
                     if monsAlvo != False:
                         dano = atacar(monsVez, monsAlvo)
                         j.event_ganhouEnergia = True
+                        monsVezGuia = monsVez
+                        alvoGuia =  monsAlvo
                         med.valorE = med.ganhoEnergia
                         DefineTextoDano(dano, monsAlvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
+                        j.event_realizouAtaque = True
                         j.acoesEquipe -= 1
                         turno += 1
                 
@@ -337,6 +381,8 @@ def batalha():
                         monsVez.ativarSkill(monsAlvo)
                         j.event_novoTurno = True
                         j.event_usarSkill = False
+                        monsVezGuia = monsVez
+                        j.event_realizouSkill = True
                         j.acoesEquipe -= 1
                         turno += 1
 
@@ -345,21 +391,33 @@ def batalha():
         if not j.event_vezJogador:
 
             if j.event_novoTurno and vivosInim > 0:
-                turno += 1
-                while 1:
-                    monsVez = equipeInim[turno % tamEquipeInim]
-                    if monsVez.vivo:
-                        break
+                if j.cdStandby > j.cdMaxStandby:
                     turno += 1
-                monsVez.updateStatus()
-                print(turno)
-                j.event_novoTurno = False
+                    while 1:
+                        monsVez = equipeInim[turno % tamEquipeInim]
+                        if monsVez.vivo:
+                            break
+                        turno += 1
+                    monsVez.updateStatus()
+                    monsVez.updateCondicao()
+                    monsVezGuia = monsVez
+                    print(turno)
+                    j.event_novoTurno = False
+                    j.event_realizouAtaque = False
+                    j.event_realizouSkill = False
+                    j.event_trocouTime = False
+                    j.cdStandby = 0
+                    j.event_standby = False
+                else:
+                    j.cdStandby += 1
+                    j.event_standby = True
+                    clicou = False
             
             if monsVez.condicao == 2:
                 j.event_novoTurno = True
                 j.acoesEquipeInimiga -= 1
             
-            if cd_acaoInimiga > tempoEspera_acaoInimiga:
+            if cd_acaoInimiga > tempoEspera_acaoInimiga and not j.event_standby:
                 
                 comando = random.randint(0, 8)
 
@@ -375,10 +433,13 @@ def batalha():
                     dano = atacar(monsVez, alvo)
                     DefineTextoDano(dano, alvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
                     DefineAnimacaoAtaque(alvo, monsVez.magia)
+                    monsVezGuia = monsVez
+                    alvoGuia = alvo
                     j.event_novoTurno = True
+                    j.event_realizouAtaque = True
                     cd_acaoInimiga = 0
                     j.acoesEquipeInimiga -= 1
-            else:
+            elif not j.event_standby:
                 cd_acaoInimiga += 1
 
         if j.event_ganhouRubi:
@@ -405,16 +466,19 @@ def batalha():
             med.valorE = 0
             j.event_perdeuEnergia = False
 
+        atualizaBotoes()
+        monsVezGuia = monsVez
         #RENDERIZACAO --- //
         janela.blit(bg0_img, (0,0))
+        if vivos != 0 and not j.event_standby:
+            desenharMonsVez(janela, monsVez)
         desenharMonstros(janela, equipe)
         desenharMonstros(janela, equipeInim)
         med.desenhaMedidores(janela, fonte)
         desenhaMao(mao, largura, altura, janela, fonte)
         desenharHud(janela, hud_buttons)
         desenhaPrecoCompra(janela, fonte1)
-        if vivos != 0:
-            desenharMonsVez(janela, monsVez)
+        desenhaGuiaDeBatalha(monsVezGuia, alvoGuia)
         if j.event_vezJogador:
             desenhaAcoes(vivos, j.acoesEquipe, j.event_vezJogador)
         else:
@@ -426,6 +490,7 @@ def batalha():
             
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)
+        desenhaTexto(j.txt_dano, janela)
         pygame.display.flip()
 
 img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png")
@@ -468,6 +533,9 @@ def reset():
         print(f"{monstros.nome} - Vida: {monstros.vida}")
     
     equipeAtivos.clear()
+    j.event_realizouAtaque = False
+    j.event_realizouSkill = False
+    
 
     j.round = 0
 
@@ -516,6 +584,9 @@ def continuar():
     clicou = False
     txtContinue = fonte4.render("Round completo! Continue lutando!!", True, "white")
     txtContinue_rect = txtContinue.get_rect(center=(680, 300))
+    j.event_realizouAtaque = False
+    j.event_realizouSkill = False
+
     while(1):
 
         posMouse = pygame.mouse.get_pos()

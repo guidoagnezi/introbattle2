@@ -1,5 +1,6 @@
 import pygame
 import random
+from eventos import *
 pygame.init()
 
 fonte = pygame.font.Font("fonts/pixel.ttf", 24)
@@ -109,31 +110,35 @@ class Icone(pygame.sprite.Sprite):
 
 def DefineTextoMedidor(valor, event_rubi, event_energia, posicao, txt_grupo):
     
-    if valor >= 0:
-        sinal = "+"
-        if event_rubi:
-            cor = "crimson"
-    elif valor < 0:
-        sinal = "-"
-        if event_rubi:
-            cor = "gray27"
-    
-    if event_energia:
-        cor = "black"
+    if event_energia or event_rubi:
+        if valor >= 0:
+            sinal = "+"
+            if event_rubi:
+                cor = "crimson"
+        elif valor < 0:
+            sinal = "-"
+            if event_rubi:
+                cor = "gray27"
         
-    valor = abs(valor)
+        if event_energia:
+            cor = "black"
+        
+        valor = abs(valor)
+    
+    else:
+        cor = "crimson"
 
     if event_rubi:
         texto = MedidorText(posicao[0], posicao[1], f"{sinal} {str(int(valor))}", cor)
         icone = Icone(posicao[0] - 50, posicao[1], 1)
-    if event_energia:
+        txt_grupo.add(icone)
+    elif event_energia:
         texto = MedidorText(posicao[0], posicao[1], f"{sinal} {str(int(valor))}", cor)
+    else:
+        texto = MedidorText(posicao[0], posicao[1], f"{valor}", cor)
 
     if valor != 0:
         txt_grupo.add(texto)
-    
-    if not event_energia:
-        txt_grupo.add(icone)
 
 
 def desenhaTexto(txt_grupo, janela):
@@ -144,18 +149,43 @@ def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
 
     offX = 90
     offY = -10
+    offset = -40
+    
     texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)
     # icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
 
-    txt_grupo.add(texto)
+    while 1:
+        ok = True
+        for sprite in j.txt_dano:
+            if texto.rect.colliderect(sprite.rect):
+                offY += offset
+                texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)
+                ok = False
+        if ok:
+            break
+
+    j.txt_dano.add(texto)
     # txt_grupo.add(icone)
 
 def DefineTextoStatus(nome, posicao, txt_grupo, cor, tipo):
 
     offX = 90
     offY = -10
+    offset = -40
+
     texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
     icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
+
+    while 1:
+        ok = True
+        for sprite in txt_grupo:
+            if texto.rect.colliderect(sprite.rect):
+                offY += offset
+                texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
+                icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
+                ok = False
+        if ok:
+            break
 
     txt_grupo.add(texto)
     txt_grupo.add(icone)

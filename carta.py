@@ -116,7 +116,10 @@ class Card():
             DefineTextoStatus("UP", alvo, j.txt_grupo, "darkgreen", 11)
 
         if self.nome == 'Cafeina':
-            j.acoesEquipe += 1
+            if j.acoesEquipe != 5:
+                j.acoesEquipe += 1
+            else:
+                DefineTextoMedidor("MAX", False, False, pygame.mouse.get_pos(), j.txt_grupo)
 
         if self.nome == 'Milagre':
             while 1:
@@ -149,7 +152,9 @@ class Card():
             alvo.updateStatus()
             alvo2.updateStatus()
             DefineTextoStatus("UP", alvo, j.txt_grupo, "red", 10)
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "green", 11)
             DefineTextoStatus("UP", alvo2, j.txt_grupo, "red", 10)
+            DefineTextoStatus("UP", alvo2, j.txt_grupo, "green", 11)
             
         if self.nome == 'Mundo':
             while 1:
@@ -169,7 +174,21 @@ class Card():
             equipe.append(alvo2)
             print(equipe)
             DefineAnimacaoAtaque(alvo2, 9)
-                
+
+        if self.nome == 'Mago':
+            condicao = random.randint(1, 2)
+            while 1:
+                alvo = random.choice(equipeInim)
+                print(f"1 nome: {alvo.nome}")
+                if alvo.vivo:
+                    break
+            if alvo.condicao == 0:
+                alvo.condicao = condicao
+                alvo.updateCondicao()
+            elif condicao == 2:
+                DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "blue", 6)
+            elif condicao == 1:
+                DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "red", 3)
                 
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 descricao_img.set_alpha(200)
@@ -200,11 +219,11 @@ deck = []
 # deck.append(carta6)
 # deck.append(carta7)
 # deck.append(carta8)
-# deck.append(carta9)
+deck.append(carta9)
 deck.append(carta10)
 deck.append(carta11)
 deck.append(carta12)
-deck.append(carta13)
+# deck.append(carta13)
 
 mao = []
 

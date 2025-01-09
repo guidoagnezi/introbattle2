@@ -219,3 +219,21 @@ def draw_aviso(janela, fonte):
     texto_rect = texto.get_rect(center=(750, 650))
     janela.blit(texto, texto_rect)
       
+def atualizaBotoes():
+      
+      if not j.event_vezJogador or j.event_standby:
+
+            atk_button.image = pygame.image.load("imagem/background/atk_button_off.png")
+            skl_button.image = pygame.image.load("imagem/background/skl_button_off.png")
+            com_button.image = pygame.image.load("imagem/background/com_button_off.png")
+      
+      else:
+            atk_button.image = pygame.image.load("imagem/background/atk_button.png")
+            skl_button.image = pygame.image.load("imagem/background/skl_button.png")
+            com_button.image = pygame.image.load("imagem/background/com_button.png")
+      atk_button.image = pygame.transform.scale_by(atk_button.image, 1.2)
+      atk_button.rect = atk_button.image.get_rect(center=(atk_button.x_pos, atk_button.y_pos))
+      com_button.image = pygame.transform.scale_by(com_button.image, 1.2)
+      com_button.rect = com_button.image.get_rect(center=(com_button.x_pos, com_button.y_pos))
+      skl_button.image = pygame.transform.scale_by(skl_button.image, 1.2)
+      skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button.y_pos))  
