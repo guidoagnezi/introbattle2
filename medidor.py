@@ -2,6 +2,9 @@ import pygame
 
 pygame.init()
 
+rubyFrame = pygame.image.load("imagem/background/rubiFrame.png")
+rubyFrameMP = pygame.image.load("imagem/background/rubiFrameMP.png")
+
 class Medidor():
     def __init__(self, rubis, energia):
         self.rubis = rubis
@@ -10,14 +13,13 @@ class Medidor():
         self.energiaMax = 100
         self.custoComprar = 5
         self.ganhoEnergia = 8
+        self.corEnergia = "yellow"
         self.valor = 0
         self.valorE = 0
 
     def desenhaMedidores(self, janela, fonte):
-        
         barraLar = 605
         barraAlt = 25
-        rubyFrame = pygame.image.load("imagem/background/rubiFrame.png")
         janela.blit(rubyFrame, (30, 12))
         janela.blit(self.rubiImagem, (55, 35))
         rubiNumero = fonte.render(f"{self.rubis}", True, "white")
@@ -25,13 +27,12 @@ class Medidor():
         txtEnergia = fonte.render(f"Energia   {self.energiaMax}/{self.energia}", True, "black")
         ratio = self.energia / self.energiaMax
         pygame.draw.rect(janela, "gray", (730, 500, barraLar, barraAlt))
-        pygame.draw.rect(janela, "yellow", (730, 500, barraLar * ratio, barraAlt))
+        pygame.draw.rect(janela, self.corEnergia, (730, 500, barraLar * ratio, barraAlt))
         janela.blit(txtEnergia, (740, 497))
     
     def desenhaRubisMP(self, janela, fonte):
 
-        rubyFrame = pygame.image.load("imagem/background/rubiFrameMP.png")
-        janela.blit(rubyFrame, (700, 2))
+        janela.blit(rubyFrameMP, (700, 2))
         janela.blit(self.rubiImagem, (730, 15))
         rubiNumero = fonte.render(f"{self.rubis}", True, "white")
         janela.blit(rubiNumero, (775, 25))

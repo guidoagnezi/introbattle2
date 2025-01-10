@@ -63,35 +63,35 @@ class Icone(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.tipo = tipo
         if self.tipo == 1:
-            self.image = pygame.image.load("imagem/medidor/rubi.png")
+            self.image = pygame.image.load("imagem/medidor/rubi.png")            
         elif self.tipo == 2:
-            self.image = pygame.image.load("imagem/medidor/energia.png")
+            self.image = pygame.image.load("imagem/medidor/energia.png")            
         elif self.tipo == 3:
-            self.image = pygame.image.load("imagem/medidor/coracao.png")
+            self.image = pygame.image.load("imagem/medidor/coracao.png")            
         elif self.tipo == 4:
-            self.image = pygame.image.load("imagem/medidor/soco.png")
+            self.image = pygame.image.load("imagem/medidor/soco.png")            
         elif self.tipo == 5:
-            self.image = pygame.image.load("imagem/medidor/fogo.png")
+            self.image = pygame.image.load("imagem/medidor/fogo.png")            
         elif self.tipo == 6:
-            self.image = pygame.image.load("imagem/medidor/agua.png")
+            self.image = pygame.image.load("imagem/medidor/agua.png")            
         elif self.tipo == 7:
-            self.image = pygame.image.load("imagem/medidor/raio.png")
+            self.image = pygame.image.load("imagem/medidor/raio.png")            
         elif self.tipo == 8:
-            self.image = pygame.image.load("imagem/medidor/magica.png")
+            self.image = pygame.image.load("imagem/medidor/magica.png")            
         elif self.tipo == 10:
-            self.image = pygame.image.load("imagem/medidor/atk_up.png")
+            self.image = pygame.image.load("imagem/medidor/atk_up.png")            
         elif self.tipo == 11:
-            self.image = pygame.image.load("imagem/medidor/def_up.png")
+            self.image = pygame.image.load("imagem/medidor/def_up.png")            
         elif self.tipo == 12:
-            self.image = pygame.image.load("imagem/medidor/atk_down.png")
+            self.image = pygame.image.load("imagem/medidor/atk_down.png")            
         elif self.tipo == 13:
-            self.image = pygame.image.load("imagem/medidor/def_down.png")
+            self.image = pygame.image.load("imagem/medidor/def_down.png")            
         elif self.tipo == 14:
-            self.image = pygame.image.load("imagem/medidor/atk_normal.png")
+            self.image = pygame.image.load("imagem/medidor/atk_normal.png")            
         elif self.tipo == 15:
-            self.image = pygame.image.load("imagem/medidor/def_normal.png")
+            self.image = pygame.image.load("imagem/medidor/def_normal.png")            
         elif self.tipo == 16:
-            self.image = pygame.image.load("imagem/medidor/cura.png")
+            self.image = pygame.image.load("imagem/medidor/cura.png")            
         self.rect = self.image.get_rect()
         self.vel_y = -5
         self.vel_x = 2

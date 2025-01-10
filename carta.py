@@ -10,8 +10,8 @@ pygame.init()
 
 class Card():
     def __init__(self, nome, custo, descricao):
-        self.image = pygame.image.load("imagem/card/cardframe.png")
-        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")
+        self.image = pygame.image.load("imagem/card/cardframe.png")        
+        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")        
         self.nome = nome
         self.custo = custo
         self.descricao = descricao
@@ -210,20 +210,20 @@ carta13 = Card("Mago", 25, "Status negativo aleatorio a um inimigo")
 
 deck = []
 
-# deck.append(carta)
-# deck.append(carta1)
-# deck.append(carta2)
-# deck.append(carta3)
-# deck.append(carta4)
-# deck.append(carta5)
-# deck.append(carta6)
-# deck.append(carta7)
-# deck.append(carta8)
+deck.append(carta)
+deck.append(carta1)
+deck.append(carta2)
+deck.append(carta3)
+deck.append(carta4)
+deck.append(carta5)
+deck.append(carta6)
+deck.append(carta7)
+deck.append(carta8)
 deck.append(carta9)
 deck.append(carta10)
 deck.append(carta11)
 deck.append(carta12)
-# deck.append(carta13)
+deck.append(carta13)
 
 mao = []
 
@@ -243,6 +243,8 @@ def cliqueCarta(mao, deck, posicao, equipeInim, equipe, equipeAtivos):
                 cartas.ativarEfeito(equipeInim, equipe, equipeAtivos)
                 mao.remove(cartas)
                 deck.append(cartas)
+            else:
+                med.corEnergia = "red"
             
 
 def desenhaMao(mao, largura, altura, janela, fonte):

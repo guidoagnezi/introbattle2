@@ -38,7 +38,9 @@ class Monstro:
         self.especial = 0
         self.skill = skill
         self.image = pygame.image.load(f"imagem/lutador/{self.nome}/0.png")
+        
         self.imageLoja = pygame.image.load(f"imagem/lutador/{self.nome}/loja.png")
+        
         self.animation_cooldown = 100
         self.update_time = pygame.time.get_ticks()
         self.animationtam = animationtam
@@ -50,11 +52,13 @@ class Monstro:
         temp_list = []
         for i in range(self.animationtam):
             img = pygame.image.load(f"imagem/lutador/{self.nome}/{i}.png")
+            
             temp_list.append(img)
         self.animation_list.append(temp_list)
         temp_list = []
         for i in range(7, 5, -1):
             img = pygame.image.load(f'imagem/lutador/{self.nome}/{i}.png')
+            
             temp_list.append(img)
         self.animation_list.append(temp_list)
         self.image = self.animation_list[self.action][self.index]
@@ -92,22 +96,6 @@ class Monstro:
     def desenhaMonstro(self, janela):
         janela.blit(self.image, self.rect)
     
-    def desenhaMonstroLoja(self, janela, fonte, rubis):
-        janela.blit(self.imageLoja, self.rectLoja)
-        if rubis < self.custo:
-            custoTxt = fonte.render("Custo: ", True, "gray")
-            preco = fonte.render(f"{self.custo}", True, "gray")
-        else:
-            custoTxt = fonte.render("Custo: ", True, "crimson")
-            preco = fonte.render(f"{self.custo}", True, "crimson")
-        janela.blit(preco, (self.x_loja + 60, self.y_loja))
-        janela.blit(custoTxt, (self.x_loja + 60, self.y_loja - 30))
-    
-    def checkForInputLoja(self, position):
-            if position[0] in range(self.rectLoja.left, self.rectLoja.right) and position[1] in range(self.rectLoja.top, self.rectLoja.bottom):
-                print(f"Button Press! Monstro: {self.nome}")
-                return True
-    
     def checkForInputBatalha(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
                 print(f"Button Press! Monstro: {self.nome}")
@@ -115,11 +103,6 @@ class Monstro:
 
     def destacar(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom): 
-                return True
-            else:
-                return False
-    def destacarLoja(self, position):
-            if position[0] in range(self.rectLoja.left, self.rectLoja.right) and position[1] in range(self.rectLoja.top, self.rectLoja.bottom): 
                 return True
             else:
                 return False
@@ -292,14 +275,8 @@ equipeInim  = []
 
 loja0_img = pygame.image.load("imagem/background/loja0.png")
 
+
 #FUNCOES --- ///
-
-def cliqueMonstroLoja(equipe, posicao):
-
-    for monstro in equipe:
-        if monstro.checkForInputLoja(posicao):
-            return monstro
-    return False
 
 def cliqueMonstroBatalha(equipe, posicao):
     for monstro in equipe:
@@ -313,20 +290,6 @@ def desenharMonstros(janela, equipe): #A posicao de batalha dos monstros é defi
         if monstro.vivo:
             monstro.desenhaMonstro(janela)
             monstro.update_animation()
-
-def desenharLoja(janela, equipe, fonte, rubis):
-    x = 95
-    y = 70
-    espacamento = 150
-
-    janela.blit(loja0_img, (20, 10))
-
-    for monstro in equipe:
-        monstro.x_loja = x
-        monstro.y_loja = y
-        monstro.rectLoja = monstro.imageLoja.get_rect(center=(monstro.x_loja, monstro.y_loja))
-        monstro.desenhaMonstroLoja(janela, fonte, rubis)
-        y += espacamento
 
 def contarAtivos(equipe):
 
@@ -394,6 +357,7 @@ def contarVivosInimigos(grupo):
     return count
 
 img_battlebox = pygame.image.load("imagem/background/battle_box.png")
+
 img_battlebox.set_alpha(100)
 
 def desenharMonsVez(janela, monstro):
@@ -401,7 +365,6 @@ def desenharMonsVez(janela, monstro):
     rect = img_battlebox.get_rect(center=(monstro.x_pos, monstro.y_pos + 40))
     janela.blit(img_battlebox, rect)
     
-
 def inimigoEscolheAlvo(equipe):
 
     alvo = random.choice(equipe)
@@ -412,13 +375,14 @@ def inimigoEscolheAlvo(equipe):
         return -1
 
 descricao_img = pygame.image.load("imagem/background/descricao.png")
+
 descricao_img = pygame.transform.scale(descricao_img, (300, 240))
 descricao_img.set_alpha(200)
 
 def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
 
     for monstro in equipe:
-        if monstro.destacar(posicao) or monstro.destacarLoja(posicao):
+        if monstro.destacar(posicao):
 
             if monstro.magia == 3:
                 magia = "Corte"
@@ -438,14 +402,23 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
                 cor = "gray"
             
             txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
+            
             txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
+            
             # txtDescricao = fonte.render(monstro.descricao, True, "white")
+            
             txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")
+            
             txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")
+            
             txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")
+            
             txtMagia = fonte.render(f"Tipo de ataque: {magia}", True, cor)
+            
             txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")
+            
             txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
+            
             janela.blit(descricao_img, (posicao[0], posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 235))
             # janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
@@ -506,14 +479,23 @@ def desenhaDescricaoLoja(janela, fonte, fonteNome, equipe, posicao):
                 cor = "gray"
             
             txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
+            
             txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
+            
             # txtDescricao = fonte.render(monstro.descricao, True, "white")
+            
             txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")
+            
             txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")
+            
             txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")
+            
             txtMagia = fonte.render(f"Tipo de ataque: {magia}", True, cor)
+            
             txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")
+            
             txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
+            
             janela.blit(descricao_img, (posicao[0]+ 60, posicao[1] - 80))
             janela.blit(txtNome, (posicao[0] + 70, posicao[1] - 75))
             # janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
