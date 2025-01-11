@@ -105,9 +105,12 @@ def atacar(atacante, alvo):
 
     if atacante.magia == alvo.fraqueza:
         mod = 1.5
+        alvo.revelouFraqueza = True
     else:
         mod = 1
 
+    atacante.revelouMagia = True
+    
     dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2)
 
     if atacante.MODatk2 != 1:
@@ -206,7 +209,6 @@ def menuPrincipal():
         janela.blit(img_descricaoBox, (680, 70))
         desenhaBotoes(janela, char_buttons)
         desenhaBotoes(janela, menu_buttons)
-        desenhaMonstrosMenuPrincipal(janela, selecao)
         desenhaDescricaoMenu(janela, char_buttons, posMouse, fonte, fonte3, equipe)
         med.desenhaRubisMP(janela, fonte)
         if mensagem:
@@ -218,8 +220,8 @@ def menuPrincipal():
 def batalha():
 
     #VARIAVEIS DE VERIFICACAO --- //
-    i = random.randint(0, 2)
-    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png")    
+    i = random.randint(1, 1)
+    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png")
 
     gerarInimigos(j.round)
     clicou = False
@@ -369,7 +371,7 @@ def batalha():
                         monsVezGuia = monsVez
                         alvoGuia =  monsAlvo
                         med.valorE = med.ganhoEnergia
-                        DefineTextoDano(dano, monsAlvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
+                        DefineTextoDano(dano, monsAlvo, j.txt_grupo, retornaCor(monsVez.magia), monsVez.magia)
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
@@ -439,7 +441,7 @@ def batalha():
                         if contador >= 12:
                             gameOver(j)
                     dano = atacar(monsVez, alvo)
-                    DefineTextoDano(dano, alvo, j.txt_grupo, retornaCor(monsVez), monsVez.magia)
+                    DefineTextoDano(dano, alvo, j.txt_grupo, retornaCor(monsVez.magia), monsVez.magia)
                     DefineAnimacaoAtaque(alvo, monsVez.magia)
                     monsVezGuia = monsVez
                     alvoGuia = alvo
@@ -497,6 +499,7 @@ def batalha():
         if j.event_info:
             if not desenhaDescricao(janela, fonte):
                 desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
+                desenhaDescricaoMonstroInim(janela, fonte, fonte1, equipeInim, posMouse)
             
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)

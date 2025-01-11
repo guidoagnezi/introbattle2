@@ -54,3 +54,30 @@ class Medidor():
             self.energia = 0
             
 med = Medidor(60, 50)
+
+agua = pygame.image.load("imagem/medidor/agua.png")
+raio = pygame.image.load("imagem/medidor/raio.png")
+fogo = pygame.image.load("imagem/medidor/fogo.png")
+soco = pygame.image.load("imagem/medidor/soco.png")
+magica = pygame.image.load("imagem/medidor/magica.png")
+corte = pygame.image.load("imagem/medidor/coracao.png")
+
+# 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
+def retornaImagem(tipo):
+
+    if tipo == 3:
+        img = corte
+    if tipo == 4:
+        img = soco
+    if tipo == 5:
+        img = fogo
+    if tipo == 6:
+        img = agua
+    if tipo == 7:
+        img = raio
+    if tipo == 8:
+        img = magica
+    if tipo == 0:
+        img = magica
+
+    return img

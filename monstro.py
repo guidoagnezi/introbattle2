@@ -11,7 +11,7 @@ pygame.init()
 
 class Monstro:
 
-    def __init__(self, nome, vida, defesa, ataque, skill, custo, magia, fraqueza, animationtam): 
+    def __init__(self, nome, vida, defesa, ataque, sorte, skill, custo, magia, fraqueza, animationtam): 
         self.nome = nome
         self.vidamax = vida
         self.vida = vida
@@ -19,6 +19,7 @@ class Monstro:
         self.custo = custo
         self.defesa = defesa
         self.ataque = ataque
+        self.sorte = sorte
         self.defesaBase = defesa
         self.ataqueBase = ataque
         self.MODdef = 1
@@ -33,14 +34,12 @@ class Monstro:
         self.fraqueza = fraqueza
         self.x_pos = 0
         self.y_pos = 0
-        self.x_loja = 0
-        self.y_loja = 0
         self.especial = 0
+        self.revelouMagia = False
+        self.revelouFraqueza = False
+        self.revelouVida = False
         self.skill = skill
         self.image = pygame.image.load(f"imagem/lutador/{self.nome}/0.png")
-        
-        self.imageLoja = pygame.image.load(f"imagem/lutador/{self.nome}/loja.png")
-        
         self.animation_cooldown = 100
         self.update_time = pygame.time.get_ticks()
         self.animationtam = animationtam
@@ -63,7 +62,6 @@ class Monstro:
         self.animation_list.append(temp_list)
         self.image = self.animation_list[self.action][self.index]
         self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-        self.rectLoja = self.imageLoja.get_rect(center=(self.x_loja, self.y_loja))
     
     def machucado(self):
         #set variables to hurt animation
@@ -227,24 +225,27 @@ class Monstro:
 #JOGAVEIS --- /// 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
-ico = Monstro       ("Ico"     , 20, 50, 30, explosao, 10, 5, 6, 6)
-linguico = Monstro  ("Linguico", 20, 50, 30, surra, 10, 4, 3, 6)
-amigo = Monstro     ("Amigo"   , 20, 50, 30, wekapipo, 10, 8, 0, 6)
-filho = Monstro     ("Filho",       100, 20, 20, cura, 20, 5, 6, 6)
-gelo = Monstro      ("Gelo",      1090, 20, 20, congelar, 20, 6, 4, 6)
-horroroso = Monstro ("Xamilo", 100, 20, 20, cortar, 20, 3, 5, 6)
-adiburai = Monstro  ("Adiburai",  100, 20, 20, treinar, 40, 4, 4, 6)
-demonio = Monstro   ("Odiburoi", 1000, 50, 10, corre, 40, 5, 6, 4)
+                    #nome        vda def atq srt  skl     cst mga fqz animationtam                                
+ico = Monstro       ("Ico"     , 20,  50, 30, 3, explosao, 10, 5, 6, 6)
+linguico = Monstro  ("Linguico", 20,  50, 30, 3, surra,    10, 4, 3, 6)
+amigo = Monstro     ("Amigo"   , 20,  50, 30, 3, wekapipo, 10, 8, 0, 6)
+filho = Monstro     ("Filho",    100, 20, 20, 3, cura,     20, 5, 6, 6)
+gelo = Monstro      ("Gelo",     100, 20, 20, 3, congelar, 20, 6, 4, 6)
+horroroso = Monstro ("Xamilo",   100, 20, 20, 3, cortar,   20, 3, 5, 6)
+adiburai = Monstro  ("Adiburai", 100, 20, 20, 3, treinar,  40, 4, 4, 6)
+kamirider = Monstro ("Kamirider",100, 50, 10, 3, corre,    40, 7, 6, 4)
+demonio = Monstro   ("Demonio",  120, 50, 20, 3, explosao, 40, 7, 5, 6)
+odiburoi = Monstro  ("Odiburoi", 80,  30, 35, 3, corre,    40, 4, 6, 4)
 
 #INIMIGOS --- ///
 
-inim1 = Monstro     ("Amigo",     100, 20, 20, explosao, 10, 8, 0, 6)
-inim2 = Monstro     ("Filho",     100, 20, 20, explosao, 10, 6, 7, 6)
-inim3 = Monstro     ("Linguico",  100, 20, 20, explosao, 10, 4, 3, 6)
-inim4 = Monstro     ("Ico",       100, 20, 20, explosao, 10, 5, 6, 6)
-inim5 = Monstro     ("Gelo",      100, 20, 20, explosao, 10, 6, 4, 6)
-inim6 = Monstro     ("Xamilo", 100, 20, 20, explosao, 10, 3, 5, 6)
-inim7 = Monstro     ("Adiburai",  100, 20, 20, explosao, 10, 4, 4, 6)
+inim1 = Monstro     ("Amigo",    100, 20, 20, 3, explosao, 10, 8, 0, 6)
+inim2 = Monstro     ("Filho",    100, 20, 20, 3, explosao, 10, 6, 7, 6)
+inim3 = Monstro     ("Linguico", 100, 20, 20, 3, explosao, 10, 4, 3, 6)
+inim4 = Monstro     ("Ico",      100, 20, 20, 3, explosao, 10, 5, 6, 6)
+inim5 = Monstro     ("Gelo",     100, 20, 20, 3, explosao, 10, 6, 4, 6)
+inim6 = Monstro     ("Xamilo",   100, 20, 20, 3, explosao, 10, 3, 5, 6)
+inim7 = Monstro     ("Adiburai", 100, 20, 20, 3, explosao, 10, 4, 4, 6)
 
 selecao = []
 
@@ -335,6 +336,7 @@ def contarVivos(grupo):
         if monstro.vida <= 0 and monstro.vivo:
             monstro.vivo = False
             DefineAnimacaoAtaque(monstro, 9)
+            monstro.vida = 0
         elif monstro.vivo:
             count += 1
 
@@ -348,8 +350,10 @@ def contarVivosInimigos(grupo):
             med.valor += monstro.custo
             DefineAnimacaoAtaque(monstro, 9)
             print(f"Valor: {med.valor}")
+            monstro.revelouVida = True
             j.event_ganhouRubi = True
             monstro.vivo = False
+            monstro.vida = 0
 
         elif monstro.vivo:
             count += 1
@@ -376,7 +380,7 @@ def inimigoEscolheAlvo(equipe):
 
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 
-descricao_img = pygame.transform.scale(descricao_img, (300, 240))
+descricao_img = pygame.transform.scale(descricao_img, (380, 240))
 descricao_img.set_alpha(200)
 
 def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
@@ -384,52 +388,32 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
     for monstro in equipe:
         if monstro.destacar(posicao):
 
-            if monstro.magia == 3:
-                magia = "Corte"
-            if monstro.magia == 4:
-                magia = "Impacto"
-            if monstro.magia == 5:
-                magia = "Fogo"
-            if monstro.magia == 6:
-                magia = "Agua"
-            if monstro.magia == 7:
-                magia = "Raio"
-            if monstro.magia == 8:
-                magia = "Neutro"
-            
-            cor = retornaCor(monstro)
-            if cor == "gray20":
-                cor = "gray"
-            
+            cor = retornaCor(monstro.magia)
             txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
-            
             txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
-            
-            # txtDescricao = fonte.render(monstro.descricao, True, "white")
-            
-            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")
-            
-            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")
-            
-            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")
-            
-            txtMagia = fonte.render(f"Tipo de ataque: {magia}", True, cor)
-            
-            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")
-            
+            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")           
+            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")            
+            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")            
+            txtMagia = fonte.render(f"Ataque:", True, cor)
+            txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))         
+            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")            
             txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
-            
+            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white")            
             janela.blit(descricao_img, (posicao[0], posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 235))
-            # janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
             janela.blit(txtAtaque, (posicao[0] + 10, posicao[1] - 205))
             janela.blit(txtDefesa, (posicao[0] + 10, posicao[1] - 175))
-            janela.blit(txtMagia, (posicao[0] + 10, posicao[1] - 145))
+            janela.blit(txtSorte, (posicao[0] + 10, posicao[1] - 145))
+
+            janela.blit(txtMagia, (posicao[0] + 280, posicao[1] - 235))
+            janela.blit(retornaImagem(monstro.magia), (posicao[0] + 300, posicao[1] - 195))
+            if monstro.fraqueza != 0:
+                janela.blit(txtFraqueza, (posicao[0] + 270, posicao[1] - 140))
+                janela.blit(retornaImagem(monstro.fraqueza), (posicao[0] + 300, posicao[1] - 100))
+
             janela.blit(txtSkill, (posicao[0] + 10, posicao[1] - 115))
             janela.blit(txtCustoSkill,(posicao[0] + 10, posicao[1] - 85))   
             janela.blit(txtCusto, (posicao[0] + 10, posicao[1] - 55))
-
-            
             barraLar = 130
             barraAlt = 25
             ratio = monstro.vida / monstro.vidamax
@@ -438,93 +422,71 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
             janela.blit(txtVida, (posicao[0] + 120, posicao[1] - 205))
 
             return True
- 
-def retornaCor(monstro):
 
-    if monstro.magia == 3:
-        cor = "gray20"
-    if monstro.magia == 4:
-        cor = "gray20"
-    if monstro.magia == 5:
-        cor = "red"
-    if monstro.magia == 6:
-        cor = "blue"
-    if monstro.magia == 7:
-        cor = "yellow"
-    if monstro.magia == 8:
-        cor = "purple"
+descricaoInim_img = pygame.image.load("imagem/background/descricao.png")
 
-    return cor
+descricaoInim_img = pygame.transform.scale(descricao_img, (300, 240))
+descricaoInim_img.set_alpha(200)
 
-def desenhaDescricaoLoja(janela, fonte, fonteNome, equipe, posicao):
+def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
 
-    for monstro in equipe:
-        if monstro.destacarLoja(posicao):
+    for monstro in equipeInim:
+        if monstro.destacar(posicao) and monstro.vivo:
 
-            if monstro.magia == 3:
-                magia = "Corte"
-            if monstro.magia == 4:
-                magia = "Impacto"
-            if monstro.magia == 5:
-                magia = "Fogo"
-            if monstro.magia == 6:
-                magia = "Agua"
-            if monstro.magia == 7:
-                magia = "Raio"
-            if monstro.magia == 8:
-                magia = "Neutro"
-            
-            cor = retornaCor(monstro)
-            if cor == "gray20":
-                cor = "gray"
-            
+            cor = retornaCor(monstro.magia)
             txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
-            
-            txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
-            
-            # txtDescricao = fonte.render(monstro.descricao, True, "white")
-            
-            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")
-            
-            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")
-            
-            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")
-            
-            txtMagia = fonte.render(f"Tipo de ataque: {magia}", True, cor)
-            
-            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")
-            
-            txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
-            
-            janela.blit(descricao_img, (posicao[0]+ 60, posicao[1] - 80))
-            janela.blit(txtNome, (posicao[0] + 70, posicao[1] - 75))
-            # janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
-            janela.blit(txtAtaque, (posicao[0] + 70, posicao[1] - 45))
-            janela.blit(txtDefesa, (posicao[0] + 70, posicao[1] - 15))
-            janela.blit(txtMagia, (posicao[0] + 70, posicao[1] + 15))
-            janela.blit(txtSkill, (posicao[0] + 70, posicao[1] + 45))
-            janela.blit(txtCustoSkill,(posicao[0] + 70, posicao[1] + 75))   
-            janela.blit(txtCusto, (posicao[0] + 70, posicao[1] + 105))
+            if monstro.revelouVida:
+                txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
+                txtCusto = fonte.render(f"Recompensa: {int(monstro.custo)}", True, "crimson") 
+            else:
+                txtVida = fonte.render(f"Vida: ???/???", True, "white")
+                txtCusto = fonte.render(f"Recompensa: ???", True, "crimson")
+            if monstro.revelouMagia:
+                txtMagia = fonte.render(f"Ataque:", True, cor)
+            else:
+                txtMagia = fonte.render(f"Ataque:", True, "white")
+            if monstro.revelouFraqueza:
+                txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))
+            else:
+                txtFraqueza = fonte.render(f"Fraqueza:", True, "white")                
+            janela.blit(descricaoInim_img, (posicao[0] - 300, posicao[1] - 240))
+            janela.blit(txtNome, (posicao[0] - 290, posicao[1] - 235))
+            janela.blit(txtMagia, (posicao[0] - 290, posicao[1] - 205))
+            janela.blit(txtFraqueza, (posicao[0] - 290, posicao[1] - 130))
+            if monstro.revelouMagia:
+                janela.blit(retornaImagem(monstro.magia), (posicao[0] - 275, posicao[1] - 175))
+            if monstro.revelouFraqueza:
+                janela.blit(retornaImagem(monstro.fraqueza), (posicao[0]  - 275, posicao[1] - 100))
+            janela.blit(txtCusto, (posicao[0] - 290, posicao[1] - 55))
 
-            
             barraLar = 130
             barraAlt = 25
-            ratio = monstro.vida / monstro.vidamax
-            pygame.draw.rect(janela, "darkred", (posicao[0] + 180, posicao[1] - 75, barraLar, barraAlt))
-            pygame.draw.rect(janela, "green3", (posicao[0] + 180, posicao[1] - 75, barraLar * ratio, barraAlt))
-            janela.blit(txtVida, (posicao[0] + 180, posicao[1] - 45))
+            if monstro.revelouVida:
+                ratio = monstro.vida / monstro.vidamax
+                pygame.draw.rect(janela, "darkred", (posicao[0] - 180, posicao[1] - 235, barraLar, barraAlt))
+                pygame.draw.rect(janela, "green3", (posicao[0] - 180, posicao[1] - 235, barraLar * ratio, barraAlt))
+            else:
+                pygame.draw.rect(janela, "gray", (posicao[0] - 180, posicao[1] - 235, barraLar, barraAlt))
+
+            janela.blit(txtVida, (posicao[0] - 180, posicao[1] - 205))
 
             return True
+ 
+def retornaCor(tipo):
 
-def desenhaMonstrosMenuPrincipal(janela, equipe):
-    x = 130
-    y = 180
-    espacamentoX = 210
-    espacamentoY = 290
-    for monstro in equipe:
-        rect = monstro.image.get_rect(center=(x , y + j.buttonPosOffset))
-        janela.blit(monstro.image, rect)
-        x += espacamentoX
-        if x > 550:
-            x = 130
-            y += espacamentoY
+    if tipo == 3:
+        cor = "gray"
+    if tipo == 4:
+        cor = "gray"
+    if tipo == 5:
+        cor = "red"
+    if tipo == 6:
+        cor = "blue"
+    if tipo == 7:
+        cor = "yellow"
+    if tipo == 8:
+        cor = "purple"
+    if tipo == 0:
+        cor = "white"
+
+    return cor

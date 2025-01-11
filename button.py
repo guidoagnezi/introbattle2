@@ -14,6 +14,10 @@ class Button():
 
     def desenhaBotao(self, janela):
             janela.blit(self.image, self.rect)
+      
+    def desenhaEstampa(self, janela):
+          rect = self.monstro.image.get_rect(center=(self.x_pos, self.y_pos + j.buttonPosOffset))
+          janela.blit(self.monstro.image, rect)
 
     def checkForInput(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
@@ -62,6 +66,10 @@ main_char_button6 = Button("cardframe", 130, 760)
 main_char_button6.monstro = adiburai
 main_char_button7 = Button("cardframe", 340, 760)
 main_char_button7.monstro = demonio
+main_char_button8 = Button("cardframe", 550, 760)
+main_char_button8.monstro = odiburoi
+main_char_button9 = Button("cardframe", 130, 1050)
+main_char_button9.monstro = kamirider
 
 main_custo10 = Button("custo_10", 190, 40)
 main_custo20 = Button("custo_20", 190, 330)
@@ -95,6 +103,8 @@ char_buttons.append(main_char_button4)
 char_buttons.append(main_char_button5)
 char_buttons.append(main_char_button6)
 char_buttons.append(main_char_button7)
+char_buttons.append(main_char_button8)
+char_buttons.append(main_char_button9)
 char_buttons.append(main_custo10)
 char_buttons.append(main_custo20)
 char_buttons.append(main_custo40)
@@ -123,6 +133,8 @@ def desenhaBotoes(janela, grupo):
       
       for button in grupo:
             button.desenhaBotao(janela)
+            if grupo == char_buttons and button.nome == "cardframe":
+                  button.desenhaEstampa(janela)
 
 
 def cliqueBotao(grupo, posicao):
@@ -136,7 +148,7 @@ def scrollBotoes(grupo, wheelUp):
       if wheelUp == False and j.buttonPosOffset < 0:
             j.buttonPosOffset += valor
 
-      elif wheelUp and j.buttonPosOffset > -180:
+      elif wheelUp and j.buttonPosOffset > -450:
             j.buttonPosOffset -= valor
 
       for botao in grupo:
@@ -160,6 +172,7 @@ def selecionarPersonagem(grupo, position):
 
 img_rubi = pygame.image.load("imagem/medidor/rubi.png")
 
+
 def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
       
       espacamento = 150
@@ -173,30 +186,16 @@ def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
       for botao in grupo:
             if botao.nome == "cardframe" and botao.destacar(posicao):
 
-                  if botao.monstro.magia == 3:
-                        magia = "Corte"
-                  if botao.monstro.magia == 4:
-                        magia = "Impacto"
-                  if botao.monstro.magia == 5:
-                        magia = "Fogo"
-                  if botao.monstro.magia == 6:
-                        magia = "Agua"
-                  if botao.monstro.magia == 7:
-                        magia = "Raio"
-                  if botao.monstro.magia == 8:
-                        magia = "Neutro"
-                  
-                  cor = retornaCor(botao.monstro)
-                  if cor == "gray20":
-                        cor = "gray"
-            
+                  cor = retornaCor(botao.monstro.magia)
                   txtNome = fonte2.render(f"{botao.monstro.nome}", True, "white")
                   txtVida = fonte.render(f"Vida: {botao.monstro.vidamax}", True, "white")
                   # txtDescricao = fonte.render(botao.monstro.descricao, True, "white")
                   txtCusto = fonte2.render(f"{int(botao.monstro.custo)}", True, "crimson")
-                  txtAtaque = fonte.render(f"Atq: {int(botao.monstro.ataque)}", True, "white")
-                  txtDefesa = fonte.render(f"Def: {int(botao.monstro.defesa)}", True, "white")
-                  txtMagia = fonte.render(f"Tipo de ataque: {magia}", True, cor)
+                  txtAtaque = fonte.render(f"Ataque: {int(botao.monstro.ataque)}", True, "white")
+                  txtDefesa = fonte.render(f"Defesa: {int(botao.monstro.defesa)}", True, "white")
+                  txtSorte = fonte.render(f"Sorte: {int(botao.monstro.sorte)}", True, "white")  
+                  txtMagia = fonte.render(f"Tipo de ataque:", True, cor)
+                  txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(botao.monstro.fraqueza))
                   txtCustoSkill = fonte.render(f"Custo da Skill: {botao.monstro.skill.custo}", True, "yellow")
                   txtSkill = fonte.render(f"Skill: {botao.monstro.skill.nome} - {botao.monstro.skill.descricao}", True, "gray")
                   rect = botao.monstro.image.get_rect(center=(800, 180))
@@ -206,8 +205,13 @@ def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
                   # janela.blit(txtDescricao ,)
                   janela.blit(txtVida, (890, 130))
                   janela.blit(txtAtaque, (890, 170))
+                  janela.blit(txtSorte, (1020, 170))
                   janela.blit(txtDefesa,(890, 210))
                   janela.blit(txtMagia, (890, 250))
+                  janela.blit(retornaImagem(botao.monstro.magia), (1040, 255))
+                  if botao.monstro.fraqueza != 0:
+                        janela.blit(txtFraqueza, (1090, 250))
+                        janela.blit(retornaImagem(botao.monstro.fraqueza), (1192, 255))
                   janela.blit(txtSkill, (740, 310))
                   janela.blit(txtCustoSkill, (740, 350))
                   janela.blit(img_rubi, (1170, 130))
@@ -218,8 +222,6 @@ def draw_aviso(janela, fonte):
     texto = fonte.render("Você não selecionou 3 personagens", True, "white")
     texto_rect = texto.get_rect(center=(750, 650))
     janela.blit(texto, texto_rect)
-
-
 
 def atualizaBotoes():
       
