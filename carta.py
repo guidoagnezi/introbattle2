@@ -47,7 +47,7 @@ class Card():
             for monstro in equipeInim:
                 if monstro.vivo:
                     monstro.vida -= 10
-                    DefineTextoDano(10, monstro, j.txt_grupo, "lightslateblue", 7)
+                    DefineTextoDano(10, monstro, j.txt_grupo, "gray20", 7)
                     DefineAnimacaoAtaque(monstro, 7)
                 print(monstro.vida)
 
@@ -84,14 +84,14 @@ class Card():
                 if monstro.vivo:
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
-                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "darkred", 3)
+                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
                     DefineAnimacaoAtaque(monstro, 5)
 
             for monstro in equipeInim:
                 if monstro.vivo:
                     monstro.vida = int(monstro.vida / 2)
                     print(f"{monstro.nome}: {monstro.vida}")
-                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "darkred", 3)
+                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
                     DefineAnimacaoAtaque(monstro, 5)
         
         if self.nome == 'Fisico':
@@ -102,7 +102,7 @@ class Card():
             alvo.MODatk = 1.3
             alvo.updateStatus()
             alvo.CounterAtk = 0
-            DefineTextoStatus("UP", alvo, j.txt_grupo, "red", 10)
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             
         
         if self.nome == 'Resistencia':
@@ -113,7 +113,7 @@ class Card():
             alvo.MODdef = 1.3
             alvo.updateStatus()
             alvo.CounterDef = 0
-            DefineTextoStatus("UP", alvo, j.txt_grupo, "darkgreen", 11)
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
 
         if self.nome == 'Cafeina':
             if j.acoesEquipe != 5:
@@ -122,15 +122,16 @@ class Card():
                 DefineTextoMedidor("MAX", False, False, pygame.mouse.get_pos(), j.txt_grupo)
 
         if self.nome == 'Milagre':
-            while 1:
-                alvo = random.choice(equipe)
-                if alvo.vivo:
-                    break
+            base = 1000
+            for monstro in equipe:
+                if monstro.vida < base:
+                    alvo = monstro
+                    base = monstro.vida
             cura = int(alvo.vidamax / 4)
             alvo.vida += cura
             if alvo.vida > alvo.vidamax:
                 alvo.vida = alvo.vidamax
-            DefineTextoStatus(f"{cura}", alvo, j.txt_grupo, "green", 16)
+            DefineTextoStatus(f"{cura}", alvo, j.txt_grupo, "black", 16)
         
         if self.nome == 'Enamorados':
             while 1:
@@ -151,10 +152,10 @@ class Card():
             alvo2.CounterAtk = 0
             alvo.updateStatus()
             alvo2.updateStatus()
-            DefineTextoStatus("UP", alvo, j.txt_grupo, "red", 10)
-            DefineTextoStatus("UP", alvo, j.txt_grupo, "green", 11)
-            DefineTextoStatus("UP", alvo2, j.txt_grupo, "red", 10)
-            DefineTextoStatus("UP", alvo2, j.txt_grupo, "green", 11)
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
+            DefineTextoStatus("UP", alvo2, j.txt_grupo, "black", 10)
+            DefineTextoStatus("UP", alvo2, j.txt_grupo, "black", 11)
             
         if self.nome == 'Mundo':
             while 1:
@@ -186,10 +187,32 @@ class Card():
                 alvo.condicao = condicao
                 alvo.updateCondicao()
             elif condicao == 2:
-                DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "blue", 6)
+                DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "black", 6)
             elif condicao == 1:
-                DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "red", 3)
-                
+                DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "black", 3)
+        
+        if self.nome == 'Estrela':
+            while 1:
+                alvo = random.choice(equipe)
+                if alvo.vivo:
+                    break
+            
+            alvo.ataque += 5
+            DefineTextoStatus("    UP", alvo, j.txt_grupo, "black", 10)
+        
+        if self.nome == 'Fortuna':
+            while 1:
+                alvo = random.choice(equipe)
+                if alvo.vivo:
+                    break
+            
+            alvo.sorte += 1
+            if alvo.sorte <= 10:
+                DefineTextoStatus("    UP", alvo, j.txt_grupo, "black", 11)
+            else:
+                alvo.sorte = 10
+                DefineTextoStatus("    MAX", alvo, j.txt_grupo, "black", 11)
+
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 descricao_img.set_alpha(200)
 
@@ -203,10 +226,12 @@ carta6 = Card("Mensagem", 40, "Imprime uma mensagem")
 carta7 = Card("Fisico", 20, "+ATQ para um aliado aleatorio")
 carta8 = Card("Resistencia", 20, "+DEF para um aliado aleatorio")
 carta9 = Card("Cafeina", 25, "+1 acao")
-carta10 = Card("Milagre", 25, "1/4 de cura a um aliado aleatorio")
+carta10 = Card("Milagre", 25, "1/4 de cura ao aliado com menos vida")
 carta11 = Card("Enamorados", 20, "Fortalece 1 inimigo e 1 aliado")
 carta12 = Card("Mundo", 25, "Troca um aliado por um de custo + ou =")
 carta13 = Card("Mago", 25, "Status negativo aleatorio a um inimigo")
+carta14 = Card("Estrela", 30, "+ atq. de um aliado aleatorio (perma.)")
+carta15 = Card("Fortuna", 30, "+ srt. de um aliado aleatorio (perma.)")
 
 deck = []
 
@@ -224,6 +249,8 @@ deck.append(carta10)
 deck.append(carta11)
 deck.append(carta12)
 deck.append(carta13)
+deck.append(carta14)
+deck.append(carta15)
 
 mao = []
 

@@ -81,3 +81,8 @@ def retornaImagem(tipo):
         img = magica
 
     return img
+
+atk_up = pygame.image.load("imagem/medidor/atk_up.png")
+def_up = pygame.image.load("imagem/medidor/def_up.png")
+atk_down = pygame.image.load("imagem/medidor/atk_down.png")
+def_down = pygame.image.load("imagem/medidor/def_down.png")

@@ -19,6 +19,7 @@ class Jogo():
         self.event_realizouAtaque = False
         self.event_realizouSkill = False
         self.event_trocouTime = False
+        self.event_acertouCritico = False
         self.botoesOff = False
         self.textoAtualizou = False
         self.textoGuia = ""

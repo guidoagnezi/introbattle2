@@ -15,11 +15,15 @@ class Monstro:
         self.nome = nome
         self.vidamax = vida
         self.vida = vida
+        self.vidaBase = vida
         self.vivo = True
         self.custo = custo
         self.defesa = defesa
         self.ataque = ataque
         self.sorte = sorte
+        self.ataqueBase = ataque
+        self.defesaBase = defesa
+        self.sorteBase = sorte
         self.defesaBase = defesa
         self.ataqueBase = ataque
         self.MODdef = 1
@@ -123,9 +127,9 @@ class Monstro:
         if self.CounterAtk >= 4:
             self.MODatk = 1
             self.CounterAtk = 0
-            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "green", 14)
+            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 14)
         if self.CounterDef >= 4:
-            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "green", 15)
+            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 15)
             self.MODdef = 1
             self.CounterDef = 0
 
@@ -140,19 +144,19 @@ class Monstro:
             self.CounterCon += 1
 
         if self.CounterCon >= 3:
-            DefineTextoStatus("         NORMAL", self, j.txt_grupo, "green", 16)
+            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 16)
             self.condicao = 0
             self.CounterCon = 0
         
         if self.condicao == 1:
             dano = self.vidamax / 6
             DefineTextoDano(dano, self, j.txt_grupo, "crimson", 8)
-            DefineTextoStatus("     BLEED", self, j.txt_grupo, "crimson", 3)
+            DefineTextoStatus("       BLEED", self, j.txt_grupo, "crimson", 3)
             self.vida -= dano
             self.machucado()
 
         if self.condicao == 2:
-            DefineTextoStatus("     FREEZE", self, j.txt_grupo, "blue", 6)
+            DefineTextoStatus("       FREEZE", self, j.txt_grupo, "blue", 6)
     
     def ativarSkill(self, alvo):
         if self.skill.nome == "Explosao":
@@ -170,7 +174,7 @@ class Monstro:
         
         if self.skill.nome == 'Treinar':
             self.MODatk2 = 2.5
-            DefineTextoStatus("     UUPP!!", self, j.txt_grupo, "red", 10)
+            DefineTextoStatus("      UUPP!!", self, j.txt_grupo, "red", 10)
         
         if self.skill.nome == 'Surra':
             for alvo in equipeInim:
@@ -205,7 +209,7 @@ class Monstro:
                 alvo.machucado()
                 alvo.updateCondicao()
             else:
-                DefineTextoStatus("      FALHOU", self, j.txt_grupo, "crimson", 3)
+                DefineTextoStatus("       FALHOU", self, j.txt_grupo, "crimson", 3)
         
         if self.skill.nome == 'Congelar':
             if alvo.condicao == 0:
@@ -218,7 +222,7 @@ class Monstro:
                 alvo.machucado()
                 alvo.updateCondicao()
             else:
-                DefineTextoStatus("       FALHOU", self, j.txt_grupo, "blue", 6)
+                DefineTextoStatus("        FALHOU", self, j.txt_grupo, "blue", 6)
             
         
 
@@ -226,12 +230,12 @@ class Monstro:
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
                     #nome        vda def atq srt  skl     cst mga fqz animationtam                                
-ico = Monstro       ("Ico"     , 20,  50, 30, 3, explosao, 10, 5, 6, 6)
-linguico = Monstro  ("Linguico", 20,  50, 30, 3, surra,    10, 4, 3, 6)
-amigo = Monstro     ("Amigo"   , 20,  50, 30, 3, wekapipo, 10, 8, 0, 6)
-filho = Monstro     ("Filho",    100, 20, 20, 3, cura,     20, 5, 6, 6)
-gelo = Monstro      ("Gelo",     100, 20, 20, 3, congelar, 20, 6, 4, 6)
-horroroso = Monstro ("Xamilo",   100, 20, 20, 3, cortar,   20, 3, 5, 6)
+ico = Monstro       ("Ico"     , 20,  50, 30, 5, explosao, 10, 5, 6, 6)
+linguico = Monstro  ("Linguico", 20,  50, 30, 5, surra,    10, 4, 3, 6)
+amigo = Monstro     ("Amigo"   , 20,  50, 30, 5, wekapipo, 10, 8, 0, 6)
+filho = Monstro     ("Filho",    100, 20, 20, 5, cura,     20, 5, 6, 6)
+gelo = Monstro      ("Gelo",     100, 20, 20, 5, congelar, 20, 6, 4, 6)
+horroroso = Monstro ("Xamilo",   100, 20, 20, 5, cortar,   20, 3, 5, 6)
 adiburai = Monstro  ("Adiburai", 100, 20, 20, 3, treinar,  40, 4, 4, 6)
 kamirider = Monstro ("Kamirider",100, 50, 10, 3, corre,    40, 7, 6, 4)
 demonio = Monstro   ("Demonio",  120, 50, 20, 3, explosao, 40, 7, 5, 6)
@@ -257,6 +261,8 @@ selecao.append(gelo)
 selecao.append(horroroso)
 selecao.append(adiburai)
 selecao.append(demonio)
+selecao.append(odiburoi)
+selecao.append(kamirider)
 
 equipe = []
 equipeAtivos = []
@@ -398,7 +404,8 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
             txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))         
             txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")            
             txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
-            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white")            
+            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white")
+          
             janela.blit(descricao_img, (posicao[0], posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 235))
             janela.blit(txtAtaque, (posicao[0] + 10, posicao[1] - 205))
@@ -414,6 +421,14 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
             janela.blit(txtSkill, (posicao[0] + 10, posicao[1] - 115))
             janela.blit(txtCustoSkill,(posicao[0] + 10, posicao[1] - 85))   
             janela.blit(txtCusto, (posicao[0] + 10, posicao[1] - 55))
+            if monstro.MODdef > 1:
+                janela.blit(def_up, (posicao[0] + 280, posicao[1] - 55))
+            if monstro.MODatk > 1:
+                janela.blit(atk_up, (posicao[0] + 310, posicao[1] - 55))
+            if monstro.MODdef < 1:
+                janela.blit(def_down, (posicao[0] + 280, posicao[1] - 55))
+            if monstro.MODatk < 1:
+                janela.blit(atk_down, (posicao[0] + 310, posicao[1] - 55))
             barraLar = 130
             barraAlt = 25
             ratio = monstro.vida / monstro.vidamax
@@ -458,6 +473,14 @@ def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
             if monstro.revelouFraqueza:
                 janela.blit(retornaImagem(monstro.fraqueza), (posicao[0]  - 275, posicao[1] - 100))
             janela.blit(txtCusto, (posicao[0] - 290, posicao[1] - 55))
+            if monstro.MODdef > 1:
+                janela.blit(def_up, (posicao[0] - 90, posicao[1] - 55))
+            if monstro.MODatk > 1:
+                janela.blit(atk_up, (posicao[0] - 60, posicao[1] - 55))
+            if monstro.MODdef < 1:
+                janela.blit(def_down, (posicao[0] - 90, posicao[1] - 55))
+            if monstro.MODatk < 1:
+                janela.blit(atk_down, (posicao[0] - 60, posicao[1] - 55))
 
             barraLar = 130
             barraAlt = 25

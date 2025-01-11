@@ -61,6 +61,8 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
         
         if j.event_realizouAtaque:
             j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}!", True, "white")
+            if j.event_acertouCritico:
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}! Ataque critico!", True, "red")
         elif j.event_realizouSkill:
             j.textoGuia = fonte3.render(f"{MonsVez.nome} usou sua skill {MonsVez.skill.nome}!", True, "yellow")
         elif j.event_primeiroTurno:
@@ -103,15 +105,23 @@ def draw_aviso(janela, fonte, flag):
 
 def atacar(atacante, alvo):
 
+    j.event_acertouCritico = False
+
+    mod2 = 1
+    mod = 1
+
+    if random.randint(1, 11) >= 11 - (atacante.sorte * (5/10)):
+        j.event_acertouCritico = True
+        mod2 = 1.5
+        
     if atacante.magia == alvo.fraqueza:
         mod = 1.5
         alvo.revelouFraqueza = True
-    else:
-        mod = 1
+        
 
     atacante.revelouMagia = True
     
-    dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2)
+    dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2
 
     if atacante.MODatk2 != 1:
         atacante.MODatk2 = 1
@@ -371,7 +381,10 @@ def batalha():
                         monsVezGuia = monsVez
                         alvoGuia =  monsAlvo
                         med.valorE = med.ganhoEnergia
-                        DefineTextoDano(dano, monsAlvo, j.txt_grupo, retornaCor(monsVez.magia), monsVez.magia)
+                        if not j.event_acertouCritico:
+                            DefineTextoDano(dano, monsAlvo, j.txt_grupo, "gray20", monsVez.magia)
+                        else:
+                            DefineTextoDano(dano, monsAlvo, j.txt_grupo, "red", monsVez.magia)
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
@@ -441,7 +454,10 @@ def batalha():
                         if contador >= 12:
                             gameOver(j)
                     dano = atacar(monsVez, alvo)
-                    DefineTextoDano(dano, alvo, j.txt_grupo, retornaCor(monsVez.magia), monsVez.magia)
+                    if not j.event_acertouCritico:
+                        DefineTextoDano(dano, alvo, j.txt_grupo, "gray20", monsVez.magia)
+                    else:
+                        DefineTextoDano(dano, alvo, j.txt_grupo, "red", monsVez.magia)
                     DefineAnimacaoAtaque(alvo, monsVez.magia)
                     monsVezGuia = monsVez
                     alvoGuia = alvo
@@ -526,6 +542,10 @@ def reset():
         monstros.MODatk = 1
         monstros.CounterAtk = 0
         monstros.CounterDef = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBase
         monstros.CounterCon = 0
         monstros.condicao = 0
         monstros.ativo = False
@@ -541,6 +561,10 @@ def reset():
         monstros.CounterDef = 0
         monstros.CounterCon = 0
         monstros.condicao = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBasea
         monstros.ativo = False
         monstros.vivo = True
         monstros.idle()
