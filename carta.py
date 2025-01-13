@@ -9,12 +9,14 @@ from eventos import j
 pygame.init()
 
 class Card():
-    def __init__(self, nome, custo, descricao):
+    def __init__(self, nome, custo, preco, descricao):
         self.image = pygame.image.load("imagem/card/cardframe.png")        
         self.entalho = pygame.image.load(f"imagem/card/{nome}.png")        
         self.nome = nome
         self.custo = custo
+        self.preco = preco
         self.descricao = descricao
+        self.selecionado = False
         self.x_pos = 0
         self.y_pos = 0
         self.recem = True
@@ -46,17 +48,20 @@ class Card():
         if self.nome == 'Raio':
             for monstro in equipeInim:
                 if monstro.vivo:
-                    monstro.vida -= 10
-                    DefineTextoDano(10, monstro, j.txt_grupo, "gray20", 7)
+                    monstro.vida -= 25
+                    DefineTextoDano(25, monstro, j.txt_grupo, "gray20", 7)
                     DefineAnimacaoAtaque(monstro, 7)
                 print(monstro.vida)
 
         if self.nome == 'Louco':
-            while 1:
-                alvo = random.choice(equipeInim)
-                if alvo.vivo:
-                    break
-            alvo.vida = 0
+            if not j.event_bossBattle:
+                while 1:
+                    alvo = random.choice(equipeInim)
+                    if alvo.vivo:
+                        break
+                alvo.vida = 0
+            else:
+                DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
 
         if self.nome == 'Mensagem':
             print("Eu sou MENSAGEM")
@@ -80,19 +85,23 @@ class Card():
             med.valorE = 20          
 
         if self.nome == 'Diabo':
-            for monstro in equipe:
-                if monstro.vivo:
-                    monstro.vida = int(monstro.vida / 2)
-                    print(f"{monstro.nome}: {monstro.vida}")
-                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
-                    DefineAnimacaoAtaque(monstro, 5)
+            if not j.event_bossBattle:
+                for monstro in equipe:
+                    if monstro.vivo:
+                        monstro.vida = int(monstro.vida / 2)
+                        print(f"{monstro.nome}: {monstro.vida}")
+                        DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
+                        DefineAnimacaoAtaque(monstro, 5)
 
-            for monstro in equipeInim:
-                if monstro.vivo:
-                    monstro.vida = int(monstro.vida / 2)
-                    print(f"{monstro.nome}: {monstro.vida}")
-                    DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
-                    DefineAnimacaoAtaque(monstro, 5)
+                for monstro in equipeInim:
+                    if monstro.vivo:
+                        monstro.vida = int(monstro.vida / 2)
+                        print(f"{monstro.nome}: {monstro.vida}")
+                        DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
+                        DefineAnimacaoAtaque(monstro, 5)
+            else:
+                DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
+
         
         if self.nome == 'Fisico':
             while 1:
@@ -104,7 +113,6 @@ class Card():
             alvo.CounterAtk = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             
-        
         if self.nome == 'Resistencia':
             while 1:
                 alvo = random.choice(equipe)
@@ -198,6 +206,7 @@ class Card():
                     break
             
             alvo.ataque += 5
+            alvo.ataqueNormal += 5
             DefineTextoStatus("    UP", alvo, j.txt_grupo, "black", 10)
         
         if self.nome == 'Fortuna':
@@ -213,44 +222,92 @@ class Card():
                 alvo.sorte = 10
                 DefineTextoStatus("    MAX", alvo, j.txt_grupo, "black", 11)
 
+        if self.nome == 'Aumento':
+            med.energiaMax = 150
+        
+        if self.nome == 'Vampiro':
+            j.event_vampirismo = True
+        
+        if self.nome == 'Fluxo':
+            med.multiEnergia = 1.5
+        
+        if self.nome == 'Investimento':
+            med.multiRubis = 1.2
+        
+        if self.nome == 'Subiu':
+            for monstro in selecao:
+                monstro.ataque += 5
+                monstro.ataqueNormal += 5
+                monstro.defesa += 3
+                monstro.defesaNormal += 3
+                monstro.sorte += 1
+        if self.nome == 'Promocao':
+            for monstro in selecao:
+                monstro.custo = int(monstro.custo * 0.8)
+        
+        if self.nome == 'Chance':
+            j.event_oneMore = True
+        
+        if self.nome == 'Carroagem':
+            j.event_dropaCard = True
+
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 descricao_img.set_alpha(200)
 
-carta = Card("Avareza", 10, "+10 rubis")
-carta1 = Card("Raio", 20, "10 de dano a todos os inimigos")
-carta2 = Card("Louco", 30, "Mata um inimigo aleatorio")
-carta3= Card("Diabo", 20, "A vida de TODOS será metade")
-carta4 = Card("Energia", 0, "+20 energia")
-carta5 = Card("Troca", 0, "Troca os rubis e energia")
-carta6 = Card("Mensagem", 40, "Imprime uma mensagem")
-carta7 = Card("Fisico", 20, "+ATQ para um aliado aleatorio")
-carta8 = Card("Resistencia", 20, "+DEF para um aliado aleatorio")
-carta9 = Card("Cafeina", 25, "+1 acao")
-carta10 = Card("Milagre", 25, "1/4 de cura ao aliado com menos vida")
-carta11 = Card("Enamorados", 20, "Fortalece 1 inimigo e 1 aliado")
-carta12 = Card("Mundo", 25, "Troca um aliado por um de custo + ou =")
-carta13 = Card("Mago", 25, "Status negativo aleatorio a um inimigo")
-carta14 = Card("Estrela", 30, "+ atq. de um aliado aleatorio (perma.)")
-carta15 = Card("Fortuna", 30, "+ srt. de um aliado aleatorio (perma.)")
+carta  = Card("Avareza", 20, 5, "+10 rubis")
+carta1 = Card("Raio", 20, 5,"25 de dano a todos os inimigos")
+carta2 = Card("Louco", 100, 140,"Mata um inimigo aleatorio")
+carta3 = Card("Diabo", 35, 10,"A vida de TODOS será metade")
+carta4 = Card("Energia", 0, 5,"+20 energia")
+carta5 = Card("Troca", 0, 80,"Troca os rubis e energia")
+carta6 = Card("Mensagem", 40, 5, "Imprime uma mensagem")
+carta7 = Card("Fisico", 20, 5,"+ATQ para um aliado aleatorio")
+carta8 = Card("Resistencia", 20, 5, "+DEF para um aliado aleatorio")
+carta9 = Card("Cafeina", 30, 10,"+1 acao")
+carta10 = Card("Milagre", 25, 10,"1/4 de cura ao aliado com menos vida")
+carta11 = Card("Enamorados", 40, 15, "Fortalece 1 inimigo e 1 aliado")
+carta12 = Card("Mundo", 65, 25, "Troca um aliado por um de custo + ou =")
+carta13 = Card("Mago", 35, 10, "Status negativo aleatorio a um inimigo")
+carta14 = Card("Estrela", 70, 30, "+ atq. a um aliado aleatorio (perma.)")
+carta15 = Card("Fortuna", 70, 25, "+ srt. a um aliado aleatorio (perma.)")
+carta16 = Card("Julgamento", 40, 25, "60 de dano ao monstro que mais atacou")
+carta17 = Card("Final", 0, 25, "Dano aos inimigos igual a energia, zera")
+carta18 = Card("Visao", 20, 10, "Revela as informaçoes de um inimigo")
+carta19 = Card("Gratis", 10, 10, "Compra uma carta")
+carta20 = Card("Flush", 30, 20, "25 x Cartas na mao de dano ao inimigo")
+
+
+investimento = Card("Investimento", 0, 0, "Ganha 20% mais rubis")
+promocao = Card("Promocao", 0, 0, "Os monstros na loja custam 20% menos")
+vampiro = Card("Vampiro", 0, 0, "Atacar dará vida ao atacante aliado")
+fluxo = Card("Fluxo", 0, 0, "Ataques concedem mais energia")
+aumento = Card("Aumento", 0, 0, "Aumenta a energia máxima em 50%")
+subiu = Card("Subiu", 0, 0, "A equipe ganha +5 de atq., def. e +1 de srt.")
+chance = Card("Chance", 0, 0, "Ataques criticos concedem + uma ação")
+carroagem = Card("Carroagem", 0, 0, "Derrotar alguem pode dropar uma carta")
+
+aprimoramentos = []
+
+leque = []
+
+escolhidos = []
+
+aprimoramentos.append(investimento)
+aprimoramentos.append(promocao)
+aprimoramentos.append(vampiro)
+aprimoramentos.append(fluxo)
+aprimoramentos.append(aumento)
+aprimoramentos.append(subiu)
+aprimoramentos.append(chance)
+aprimoramentos.append(carroagem)
 
 deck = []
 
 deck.append(carta)
 deck.append(carta1)
-deck.append(carta2)
-deck.append(carta3)
-deck.append(carta4)
-deck.append(carta5)
-deck.append(carta6)
-deck.append(carta7)
 deck.append(carta8)
-deck.append(carta9)
-deck.append(carta10)
-deck.append(carta11)
-deck.append(carta12)
-deck.append(carta13)
-deck.append(carta14)
-deck.append(carta15)
+deck.append(carta7)
+deck.append(carta4)
 
 mao = []
 
@@ -320,3 +377,45 @@ def desenhaPrecoCompra(janela, fonte):
     else:
         txtPreco = fonte.render(f"{med.custoComprar}", True, "gray")
     janela.blit(txtPreco, (1275, 565))
+
+def sorteiaAprimoramentos():
+
+    leque.clear()
+    amostra = random.sample(aprimoramentos, 3)
+    leque.extend(amostra)
+
+def cliqueAprimoramento(posicao):
+     
+    for cartas in leque:
+        if cartas.checkForInput(posicao):
+            cartas.ativarEfeito(equipeInim, equipe, equipeAtivos)
+            cartas.selecionado = True
+            j.selecionou = True
+            aprimoramentos.remove(cartas)
+            escolhidos.append(cartas)
+            return True
+    return False
+
+def desenhaAprimoramentos(janela, fonte, leque):
+
+    posicao = pygame.mouse.get_pos()
+    y_axis = 200
+    x_axis = 1360 / 3 - 200
+    offset = 400
+    for cards in leque:
+        if cards.destacar(posicao):
+            cor = "yellow"
+        else:
+            cor = "white"
+        if j.selecionou:
+            cor = "gray20"
+        if cards.selecionado:
+            cor = "orange"
+        cards.x_pos = x_axis
+        cards.y_pos = y_axis
+        cards.rect = cards.image.get_rect(center=(cards.x_pos, cards.y_pos))
+        desc = fonte.render(f"{cards.descricao}", True, cor)
+        descRect = desc.get_rect(center=(x_axis, y_axis + 120))
+        x_axis += offset
+        cards.desenhaCards(janela)
+        janela.blit(desc, descRect)

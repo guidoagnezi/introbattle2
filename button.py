@@ -1,6 +1,7 @@
 import pygame
 from eventos import *
 from monstro import *
+from carta import *
 
 class Button():
         
@@ -9,6 +10,7 @@ class Button():
             self.image = pygame.image.load(f"imagem/background/{nome}.png")            
             self.x_pos = x_pos
             self.y_pos = y_pos
+            self.monstro = 0
             self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
             self.selected = False
 
@@ -16,8 +18,12 @@ class Button():
             janela.blit(self.image, self.rect)
       
     def desenhaEstampa(self, janela):
-          rect = self.monstro.image.get_rect(center=(self.x_pos, self.y_pos + j.buttonPosOffset))
-          janela.blit(self.monstro.image, rect)
+          if self.monstro != 0:
+            rect = self.monstro.image.get_rect(center=(self.x_pos, self.y_pos + j.buttonPosOffset))
+            janela.blit(self.monstro.image, rect)
+          else:
+            rect = self.carta.entalho.get_rect(center=(self.x_pos, self.y_pos + j.buttonPosOffset))
+            janela.blit(self.carta.entalho, rect)    
 
     def checkForInput(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
@@ -70,17 +76,51 @@ main_char_button8 = Button("cardframe", 550, 760)
 main_char_button8.monstro = odiburoi
 main_char_button9 = Button("cardframe", 130, 1050)
 main_char_button9.monstro = kamirider
+main_char_button10 = Button("cardframe", 340, 1050)
+main_char_button10.monstro = bombinha
 
-main_custo10 = Button("custo_10", 190, 40)
-main_custo20 = Button("custo_20", 190, 330)
-main_custo40 = Button("custo_40", 190, 620)
+main_card_button = Button("cardframe", 130, 180)
+main_card_button.carta = carta
+main_card_button1 = Button("cardframe", 340, 180)
+main_card_button1.carta = carta1
+main_card_button2 = Button("cardframe", 550, 180)
+main_card_button2.carta = carta2
+main_card_button3 = Button("cardframe", 130, 470)
+main_card_button3.carta = carta3
+main_card_button4 = Button("cardframe", 340, 470)
+main_card_button4.carta = carta4
+main_card_button5 = Button("cardframe", 550, 470)
+main_card_button5.carta = carta5
+main_card_button6 = Button("cardframe", 130, 760)
+main_card_button6.carta = carta6
+main_card_button7 = Button("cardframe", 340, 760)
+main_card_button7.carta = carta7
+main_card_button8 = Button("cardframe", 550, 760)
+main_card_button8.carta = carta8
+main_card_button9 = Button("cardframe", 130, 1050)
+main_card_button9.carta = carta9
+main_card_button10 = Button("cardframe", 340, 1050)
+main_card_button10.carta = carta10
+main_card_button11 = Button("cardframe", 550, 1050)
+main_card_button11.carta = carta11
+main_card_button12 = Button("cardframe", 130, 1340)
+main_card_button12.carta = carta12
+main_card_button13 = Button("cardframe", 340, 1340)
+main_card_button13.carta = carta13
+main_card_button14 = Button("cardframe", 550, 1340)
+main_card_button14.carta = carta14
+main_card_button15= Button("cardframe", 130, 1630)
+main_card_button15.carta = carta15
+
 
 main_go_button = Button("go_button", 1150, 650)
+monstro_button = Button("monstro_button", 760, 650)
+carta_button = Button("carta_button", 860, 650)
 
-gameover_reset = Button("voltar_button", 680, 460)
+gameover_reset = Button("voltar_button", 680, 600)
 
-continue_button = Button("continue_button", 680, 400)
-return_button = Button("return_button", 680, 500)
+continue_button = Button("continue_button", 680, 500)
+return_button = Button("return_button", 680, 600)
 
 hud_buttons = []
 
@@ -105,13 +145,32 @@ char_buttons.append(main_char_button6)
 char_buttons.append(main_char_button7)
 char_buttons.append(main_char_button8)
 char_buttons.append(main_char_button9)
-char_buttons.append(main_custo10)
-char_buttons.append(main_custo20)
-char_buttons.append(main_custo40)
+char_buttons.append(main_char_button10)
+
+card_buttons = []
+
+card_buttons.append(main_card_button)
+card_buttons.append(main_card_button1)
+card_buttons.append(main_card_button2)
+card_buttons.append(main_card_button3)
+card_buttons.append(main_card_button4)
+card_buttons.append(main_card_button5)
+card_buttons.append(main_card_button6)
+card_buttons.append(main_card_button7)
+card_buttons.append(main_card_button8)
+card_buttons.append(main_card_button9)
+card_buttons.append(main_card_button10)
+card_buttons.append(main_card_button11)
+card_buttons.append(main_card_button12)
+card_buttons.append(main_card_button13)
+card_buttons.append(main_card_button14)
+card_buttons.append(main_card_button15)
 
 menu_buttons = []
 
 menu_buttons.append(main_go_button)
+menu_buttons.append(monstro_button)
+menu_buttons.append(carta_button)
 
 gameover_buttons = []
 
@@ -133,7 +192,7 @@ def desenhaBotoes(janela, grupo):
       
       for button in grupo:
             button.desenhaBotao(janela)
-            if grupo == char_buttons and button.nome == "cardframe":
+            if (grupo == char_buttons or grupo == card_buttons) and button.nome == "cardframe":
                   button.desenhaEstampa(janela)
 
 
@@ -142,13 +201,13 @@ def cliqueBotao(grupo, posicao):
       for button in grupo:
             button.checkForInput(posicao)
 
-def scrollBotoes(grupo, wheelUp):
+def scrollBotoes(grupo, wheelUp, limite):
 
       valor = 30
       if wheelUp == False and j.buttonPosOffset < 0:
             j.buttonPosOffset += valor
 
-      elif wheelUp and j.buttonPosOffset > -450:
+      elif wheelUp and j.buttonPosOffset > limite:
             j.buttonPosOffset -= valor
 
       for botao in grupo:
@@ -169,9 +228,27 @@ def selecionarPersonagem(grupo, position):
                         equipe.remove(botao.monstro)
                         botao.selected = False
 
+def selecionarCarta(grupo, position):
+      
+      for botao in grupo:
+            if botao.checkForInput(position) and botao.nome == "cardframe":
+                  if botao.selected == False and med.rubis >= botao.carta.preco:
+                        botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        
+                        deck.append(botao.carta)
+                        j.event_perdeuRubi = True
+                        med.valor = botao.carta.preco
+                        botao.selected = True
+                        return True
+                  elif botao.selected == True and len(deck) > 4:
+                        botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        
+                        deck.remove(botao.carta)
+                        botao.selected = False
+                        return True
+                  elif len(deck) == 4:
+                        return False
+      return True
 
 img_rubi = pygame.image.load("imagem/medidor/rubi.png")
-
 
 def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
       
@@ -217,6 +294,26 @@ def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
                   janela.blit(img_rubi, (1170, 130))
                   janela.blit(txtCusto, (1220, 130))
 
+def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
+      
+      for botao in grupo:
+            if botao.nome == "cardframe" and botao.destacar(posicao):
+
+                  rect = botao.carta.entalho.get_rect(center=(810, 190))
+                  txtCusto = fonte.render(f"{botao.carta.preco}", True, "crimson")
+                  txtDescricao = fonte.render(f"{botao.carta.descricao}", True, "white")
+                  txtCusto2 = fonte.render(f"Custo: {botao.carta.custo} energia", True, "yellow")
+                  txtNome = fonte2.render(f"{botao.carta.nome}", True, "white")
+                  rect1 = txtNome.get_rect(center=(810, 300))
+                  txtDeck = fonte.render(f"No deck", True, "white")
+                  janela.blit(botao.carta.entalho, rect)
+                  janela.blit(txtNome, rect1)
+                  janela.blit(txtDescricao, (890, 180))
+                  if botao.selected:
+                        janela.blit(txtDeck, (890, 240))
+                  janela.blit(txtCusto2, (890, 210))
+                  janela.blit(img_rubi, (1170, 130))
+                  janela.blit(txtCusto, (1220, 130))
 
 def draw_aviso(janela, fonte):
     texto = fonte.render("Você não selecionou 3 personagens", True, "white")

@@ -53,7 +53,13 @@ corre = Skill("Correr", 0, 35, 10, True, True, "Dá +1 ação no turno", "")
 wekapipo = Skill("Wekapipo", 35, 35, 8, False, False, "Dano mágico a todos os inimigos", "")
 cortar = Skill("Cortar", 20, 20, 3, False, False, "Causa sangramento a um inimigo", "")
 congelar = Skill("Congelar", 20, 20, 6, False, False, "Causa congelamento a um inimigo", "")
-
+mudar = Skill("Trocar", 0, 0, 0, True, True, "O ataque se torna a fraqueza de um inimigo", "")
+focar = Skill("Focar", 0, 0, 0, True, True, "O proximo ataque dará MUITO mais dano", "")
+analisar = Skill("Analisar", 0, 20, 10, False, False, "Exibe todas as informações de um inimigo", "")
+devolver = Skill("Devolver", 0, 40, 10, False, False, "Devolve o dano acumulado a um inimigo", "")
+comer = Skill("Comer", 35, 20, 4, False, False, "Se essa skill matar, ganha 15 energia", "")
+rezar = Skill("Rezar", 0, 0, 10, True, True, "Ganha 10 energia", "")
+sabotar = Skill("Sabotar", 35, 0, 10, True, False, "Perde 30 energia e dá dano em área", "")
 
 def DefineAnimacaoAtaque(posicao, tipo):
 

@@ -91,7 +91,9 @@ class Icone(pygame.sprite.Sprite):
         elif self.tipo == 15:
             self.image = pygame.image.load("imagem/medidor/def_normal.png")            
         elif self.tipo == 16:
-            self.image = pygame.image.load("imagem/medidor/cura.png")            
+            self.image = pygame.image.load("imagem/medidor/cura.png")
+        if self.tipo == 17:
+            self.image = pygame.image.load("imagem/medidor/card.png")           
         self.rect = self.image.get_rect()
         self.vel_y = -5
         self.vel_x = 2

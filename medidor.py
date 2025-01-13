@@ -1,4 +1,5 @@
 import pygame
+from infotext import *
 
 pygame.init()
 
@@ -16,6 +17,8 @@ class Medidor():
         self.corEnergia = "yellow"
         self.valor = 0
         self.valorE = 0
+        self.multiRubis = 1
+        self.multiEnergia = 1
 
     def desenhaMedidores(self, janela, fonte):
         barraLar = 605
@@ -38,13 +41,15 @@ class Medidor():
         janela.blit(rubiNumero, (775, 25))
 
     def rendaRubi(self, renda):
-        self.rubis += renda
+        med.valor = int(med.valor * self.multiRubis)
+        self.rubis += med.valor  
 
     def prejuizoRubi(self, prejuizo):
         self.rubis -= prejuizo
 
     def rendaEnergia(self, renda):
-        self.energia += renda
+        med.valorE = int(med.valorE * self.multiEnergia)
+        self.energia += med.valorE
         if self.energia >= self.energiaMax:
             self.energia = self.energiaMax
 
