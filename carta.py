@@ -11,7 +11,7 @@ pygame.init()
 class Card():
     def __init__(self, nome, custo, preco, descricao):
         self.image = pygame.image.load("imagem/card/cardframe.png")        
-        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")        
+        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")     
         self.nome = nome
         self.custo = custo
         self.preco = preco
@@ -40,7 +40,7 @@ class Card():
             else:
                 return False
             
-    def ativarEfeito(self, equipeInim, equipe, equipeAtivos):
+    def ativarEfeito(self, equipeInim, equipe, equipeAtivos, monsVez):
         if self.nome == 'Avareza':
             j.event_ganhouRubi = True
             med.valor = 10
@@ -51,7 +51,6 @@ class Card():
                     monstro.vida -= 25
                     DefineTextoDano(25, monstro, j.txt_grupo, "gray20", 7)
                     DefineAnimacaoAtaque(monstro, 7)
-                print(monstro.vida)
 
         if self.nome == 'Louco':
             if not j.event_bossBattle:
@@ -102,22 +101,15 @@ class Card():
             else:
                 DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
 
-        
         if self.nome == 'Fisico':
-            while 1:
-                alvo = random.choice(equipe)
-                if alvo.vivo:
-                    break
+            alvo = monsVez
             alvo.MODatk = 1.3
             alvo.updateStatus()
             alvo.CounterAtk = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             
         if self.nome == 'Resistencia':
-            while 1:
-                alvo = random.choice(equipe)
-                if alvo.vivo:
-                    break
+            alvo = monsVez
             alvo.MODdef = 1.3
             alvo.updateStatus()
             alvo.CounterDef = 0
@@ -140,6 +132,7 @@ class Card():
             if alvo.vida > alvo.vidamax:
                 alvo.vida = alvo.vidamax
             DefineTextoStatus(f"{cura}", alvo, j.txt_grupo, "black", 16)
+            DefineAnimacaoAtaque(alvo, 11)
         
         if self.nome == 'Enamorados':
             while 1:
@@ -200,20 +193,13 @@ class Card():
                 DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "black", 3)
         
         if self.nome == 'Estrela':
-            while 1:
-                alvo = random.choice(equipe)
-                if alvo.vivo:
-                    break
-            
+            alvo = monsVez
             alvo.ataque += 5
             alvo.ataqueNormal += 5
             DefineTextoStatus("    UP", alvo, j.txt_grupo, "black", 10)
         
         if self.nome == 'Fortuna':
-            while 1:
-                alvo = random.choice(equipe)
-                if alvo.vivo:
-                    break
+            alvo = monsVez
             
             alvo.sorte += 1
             if alvo.sorte <= 10:
@@ -241,6 +227,7 @@ class Card():
                 monstro.defesa += 3
                 monstro.defesaNormal += 3
                 monstro.sorte += 1
+
         if self.nome == 'Promocao':
             for monstro in selecao:
                 monstro.custo = int(monstro.custo * 0.8)
@@ -250,7 +237,203 @@ class Card():
         
         if self.nome == 'Carroagem':
             j.event_dropaCard = True
+        
+        if self.nome == 'Hierofante':
+            for skill in skills:
+                skill.custo = int(skill.custo * 0.8)
 
+        if self.nome == 'Briga':
+            soma = 0
+            for monstro in equipe:
+                soma += monstro.ataque
+            
+            dano = soma * 0.6
+
+            for monstro in equipeInim:
+                if monstro.vivo:
+                    monstro.vida -= dano
+                    alvo.machucado()
+                    DefineTextoDano(dano, monstro, j.txt_grupo, "gray20", 7)
+                    DefineAnimacaoAtaque(monstro, 4)
+        
+        if self.nome == 'Julgamento':
+
+            base = -1
+            for monstro in equipe:
+                if monstro.danoAcumulado > base:
+                    alvo = monstro
+                    base = monstro.danoAcumulado
+
+            for monstro in equipeInim:
+                if monstro.danoAcumulado > base:
+                    alvo = monstro
+                    base = monstro.danoAcumulado
+
+            alvo.vida -= 60
+            alvo.machucado()
+            DefineTextoDano("60", alvo, j.txt_dano, "black", 7)
+            DefineAnimacaoAtaque(8, alvo)
+        
+        if self.nome == 'Final':
+
+            for monstro in equipeInim:
+                monstro.vida -= med.energia - self.custo
+                DefineTextoDano(f"{med.energia - self.custo}", monstro, j.txt_grupo, "gray20", 5)
+                DefineAnimacaoAtaque(monstro, 5)
+                alvo.machucado()
+            
+            med.energia = 0
+            med.valorE = med.energiaMax
+
+        if self.nome == 'Visao':
+            while 1:
+                alvo = random.choice(equipeInim)
+                if alvo.vivo:
+                    break
+
+            alvo.revelouMagia = True
+            alvo.revelouFraqueza = True
+            alvo.revelouVida = True
+            DefineTextoStatus("        INFO", alvo, j.txt_grupo, "black", 11)
+        
+        if self.nome == 'Gratis':
+
+            if len(deck) > 4:
+                numero = random.randint(0, len(deck) - 1)
+                mao.append(deck.pop(numero))
+
+            else:
+                DefineTextoMedidor("IMPOSSIVEL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
+
+        
+        if self.nome == 'Flush':
+            while 1:
+                alvo = random.choice(equipeInim)
+                if alvo.vivo:
+                    break
+            
+            dano = 20 * len(mao)
+
+            alvo.vida -= dano
+            alvo.machucado()
+            DefineTextoDano(f"{dano}", alvo, j.txt_dano, "black", 3)
+            DefineAnimacaoAtaque(3, alvo)
+
+        if self.nome == 'Polimerizacao':
+
+            vivos = contarVivos(equipe)
+            if vivos >= 2:
+                if bombinha in equipe and linguico in equipe and azuliu not in equipe:
+                    equipe.remove(linguico)
+                    azuliu.ativar(linguico.x_pos, linguico.y_pos)
+                    azuliu.vida = azuliu.vidamax
+                    bombinha.vida = 0
+                    equipe.append(azuliu)
+                    print(equipe)
+                    DefineAnimacaoAtaque(linguico, 9)
+                    DefineAnimacaoAtaque(bombinha, 9)
+                    j.event_novoTurno = True
+                
+                elif adiburai in equipe and odiburoi in equipe and ediburei not in equipe:
+                    equipe.remove(adiburai)
+                    ediburei.ativar(adiburai.x_pos, adiburai.y_pos)
+                    ediburei.vida = ediburei.vidamax
+                    odiburoi.vida = 0
+                    equipe.append(ediburei)
+                    print(equipe)
+                    DefineAnimacaoAtaque(adiburai, 9)
+                    DefineAnimacaoAtaque(odiburoi, 9)
+                    j.event_novoTurno = True
+                
+                elif parceiro not in equipe:
+                    while 1:
+                        monstro = random.choice(equipe)
+                        if monstro.vivo:
+                            break
+                    while 1:
+                        monstro2 = random.choice(equipe)
+                        if monstro2.vivo and monstro2 != monstro:
+                            break
+                    equipe.remove(monstro)
+                    parceiro.ativar(monstro.x_pos, monstro.y_pos)
+                    parceiro.vida = parceiro.vidamax
+                    monstro2.vida = 0
+                    equipe.append(parceiro)
+                    DefineAnimacaoAtaque(monstro, 9)
+                    DefineAnimacaoAtaque(monstro2, 9)
+                    j.event_novoTurno = True
+                else:
+                    DefineTextoMedidor("IMPOSSIVEL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
+            else:
+                DefineTextoMedidor("IMPOSSIVEL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
+
+        if self.nome == 'Mano':
+            j.event_mano = True
+        
+        if self.nome == 'Justica':
+            soma1 = 0
+            soma2 = 0
+
+            for monstro in equipe:
+                soma1 += monstro.vida
+            for monstro in equipeInim:
+                soma2 += monstro.vida
+            
+            if soma1 < soma2:
+                for monstro in equipe:
+                    monstro.vida = monstro.vidamax
+                    DefineTextoStatus(f"{int(monstro.vidamax)}", monstro, j.txt_grupo, "black", 16)
+                    DefineAnimacaoAtaque(monstro, 11)
+            else:
+                for monstro in equipeInim:
+                    monstro.vida = monstro.vidamax
+                    DefineTextoStatus(f"{int(monstro.vidamax)}", monstro, j.txt_grupo, "black", 16)
+                    DefineAnimacaoAtaque(monstro, 11)
+                    
+        if self.nome == 'Temperanca':
+
+            for monstro in equipe:
+                if monstro.condicao != 0:
+                    DefineTextoStatus("           NORMAL", self, j.txt_grupo, "black", 16)
+                    self.condicao = 0
+                    self.CounterCon = 0
+
+        if self.nome == 'Morte':
+            
+            while 1:
+                monstro1 = random.choice(equipe)
+                if monstro1.vivo:
+                    break
+
+            while 1:
+                monstro = random.choice(equipeInim)
+                if monstro.vivo:
+                    monstro.fraqueza = monstro1.magia
+                    break
+            
+            DefineTextoStatus("        CHANGE", monstro, j.txt_grupo, "black", monstro.fraqueza)
+            monstro.revelouFraqueza = True
+
+        if self.nome == 'Fraqueza':
+            while 1:
+                alvo = random.choice(equipeInim)
+                if alvo.vivo:
+                    break
+            alvo.MODatk = 0.7
+            alvo.updateStatus()
+            alvo.CounterAtk = 0
+            DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 12)
+            
+        if self.nome == 'Vulneravel':
+            while 1:
+                alvo = random.choice(equipeInim)
+                if alvo.vivo:
+                    break
+            alvo.MODdef = 0.7
+            alvo.updateStatus()
+            alvo.CounterDef = 0
+            DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 13)
+                    
 descricao_img = pygame.image.load("imagem/background/descricao.png")
 descricao_img.set_alpha(200)
 
@@ -261,21 +444,27 @@ carta3 = Card("Diabo", 35, 10,"A vida de TODOS será metade")
 carta4 = Card("Energia", 0, 5,"+20 energia")
 carta5 = Card("Troca", 0, 80,"Troca os rubis e energia")
 carta6 = Card("Mensagem", 40, 5, "Imprime uma mensagem")
-carta7 = Card("Fisico", 20, 5,"+ATQ para um aliado aleatorio")
-carta8 = Card("Resistencia", 20, 5, "+DEF para um aliado aleatorio")
+carta7 = Card("Fisico", 20, 5,"+ATQ para o aliado da vez")
+carta8 = Card("Resistencia", 20, 5, "+DEF para o aliado da vez")
 carta9 = Card("Cafeina", 30, 10,"+1 acao")
 carta10 = Card("Milagre", 25, 10,"1/4 de cura ao aliado com menos vida")
 carta11 = Card("Enamorados", 40, 15, "Fortalece 1 inimigo e 1 aliado")
 carta12 = Card("Mundo", 65, 25, "Troca um aliado por um de custo + ou =")
 carta13 = Card("Mago", 35, 10, "Status negativo aleatorio a um inimigo")
-carta14 = Card("Estrela", 70, 30, "+ atq. a um aliado aleatorio (perma.)")
-carta15 = Card("Fortuna", 70, 25, "+ srt. a um aliado aleatorio (perma.)")
-carta16 = Card("Julgamento", 40, 25, "60 de dano ao monstro que mais atacou")
-carta17 = Card("Final", 0, 25, "Dano aos inimigos igual a energia, zera")
+carta14 = Card("Estrela", 70, 30, "+ATQ para o aliado da vez (perma)")
+carta15 = Card("Fortuna", 70, 25, "+SRT para o aliado da vez (perma)")
+carta16 = Card("Julgamento", 40, 25, "60 de dano ao monstro que mais atacou") ###
+carta17 = Card("Final", 30, 25, "Dano aos inimigos igual a energia, zera")
 carta18 = Card("Visao", 20, 10, "Revela as informaçoes de um inimigo")
 carta19 = Card("Gratis", 10, 10, "Compra uma carta")
-carta20 = Card("Flush", 30, 20, "25 x Cartas na mao de dano ao inimigo")
-
+carta20 = Card("Flush", 35, 35, "(20 x cartas na mao) de dano ao inimigo")
+carta21 = Card("Briga", 50, 30, "Dano ao inimigos baseado no atq da equipe")
+carta22 = Card("Polimerizacao", 90, 50, "Funde dois aliados")
+carta23 = Card("Temperanca", 15, 15, "Cura as condicoes de status da equipe")
+carta24 = Card("Justica", 60, 35, "Cura a equipe com menos vida")
+carta25 = Card("Morte", 30, 20, "Troca a fraqueza de um inimigo")
+carta26 = Card("Fraqueza", 30, 15, "-ATQ para um inimigo")
+carta27 = Card("Vulneravel", 30, 15, "-DEF para um inimigo")
 
 investimento = Card("Investimento", 0, 0, "Ganha 20% mais rubis")
 promocao = Card("Promocao", 0, 0, "Os monstros na loja custam 20% menos")
@@ -285,6 +474,8 @@ aumento = Card("Aumento", 0, 0, "Aumenta a energia máxima em 50%")
 subiu = Card("Subiu", 0, 0, "A equipe ganha +5 de atq., def. e +1 de srt.")
 chance = Card("Chance", 0, 0, "Ataques criticos concedem + uma ação")
 carroagem = Card("Carroagem", 0, 0, "Derrotar alguem pode dropar uma carta")
+mano = Card("Mano", 0, 0, "O ultimo aliado vivo ganha buffs")
+hierofante = Card("Hierofante", 0, 0, "Diminui o custo das skills em 20%")
 
 aprimoramentos = []
 
@@ -298,16 +489,17 @@ aprimoramentos.append(vampiro)
 aprimoramentos.append(fluxo)
 aprimoramentos.append(aumento)
 aprimoramentos.append(subiu)
-aprimoramentos.append(chance)
-aprimoramentos.append(carroagem)
+aprimoramentos.append(mano)
+aprimoramentos.append(hierofante)
+
 
 deck = []
 
 deck.append(carta)
-deck.append(carta1)
-deck.append(carta8)
-deck.append(carta7)
 deck.append(carta4)
+deck.append(carta7)
+deck.append(carta8)
+deck.append(carta1)
 
 mao = []
 
@@ -317,14 +509,14 @@ def adicionaCarta(deck, mao):
         numero = random.randint(0, len(deck) - 1)
         mao.append(deck.pop(numero))
 
-def cliqueCarta(mao, deck, posicao, equipeInim, equipe, equipeAtivos):
+def cliqueCarta(mao, deck, posicao, equipeInim, equipe, equipeAtivos, monsVez):
      
     for cartas in mao:
         if cartas.checkForInput(posicao):
             if cartas.custo <= med.energia:
                 med.valorE = cartas.custo
                 j.event_perdeuEnergia = True
-                cartas.ativarEfeito(equipeInim, equipe, equipeAtivos)
+                cartas.ativarEfeito(equipeInim, equipe, equipeAtivos, monsVez)
                 mao.remove(cartas)
                 deck.append(cartas)
             else:

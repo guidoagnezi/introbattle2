@@ -35,9 +35,11 @@ class Monstro:
         self.condicao = 0
         self.CounterCon = 0
         self.gauge = 0
+        self.danoAcumulado = 0
         self.player = False
         self.magia = magia
         self.fraqueza = fraqueza
+        self.fraquezaBase = fraqueza
         self.x_pos = 0
         self.y_pos = 0
         self.especial = 0
@@ -151,7 +153,7 @@ class Monstro:
             self.CounterCon = 0
         
         if self.condicao == 1:
-            dano = self.vidamax / 6
+            dano = self.vidamax / 10
             DefineTextoDano(dano, self, j.txt_grupo, "crimson", 8)
             DefineTextoStatus("       BLEED", self, j.txt_grupo, "crimson", 3)
             self.vida -= dano
@@ -162,12 +164,14 @@ class Monstro:
     
     def ativarSkill(self, alvo, grupo1, grupo2):
         if self.skill.nome == "Explosao":
-            alvo.vida -= self.skill.dano
+            dano = self.skill.dano * self.MODatk
+            alvo.vida -= dano
+            self.danoAcumulado += dano
             alvo.machucado()
-            DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "red", 5)
+            DefineTextoDano(dano, alvo, j.txt_grupo, "red", 5)
             DefineAnimacaoAtaque(alvo, self.skill.tipo)
             if alvo.skill.nome == "Devolver":
-                    alvo.gauge += int(self.skill.dano * 0.8)
+                    alvo.gauge += int(dano * 0.8)
 
         if self.skill.nome == 'Cura':
             cura = int(alvo.vidamax / 3)
@@ -175,20 +179,23 @@ class Monstro:
             if alvo.vida > alvo.vidamax:
                 alvo.vida = alvo.vidamax
             DefineTextoStatus(cura, alvo, j.txt_grupo, "green", 16)
+            DefineAnimacaoAtaque(alvo, 11)
         
         if self.skill.nome == 'Treinar':
             self.MODatk2 = 2.5
             DefineTextoStatus("      UUPP!!", self, j.txt_grupo, "red", 10)
         
         if self.skill.nome == 'Surra':
+            dano = self.skill.dano * self.MODatk
             for alvo in grupo1:
                 if alvo.vivo:
-                    alvo.vida -= self.skill.dano
-                    DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "black", 4)
+                    alvo.vida -= dano
+                    DefineTextoDano(dano, alvo, j.txt_grupo, "black", 4)
                     DefineAnimacaoAtaque(alvo, 4)
                     alvo.machucado()
+                    self.danoAcumulado += dano
                     if alvo.skill.nome == "Devolver":
-                        alvo.gauge += int(self.skill.dano * 0.8)
+                        alvo.gauge += int(dano * 0.8)
 
         if self.skill.nome == 'Correr':
             if j.acoesEquipe != 5:
@@ -198,42 +205,48 @@ class Monstro:
 
         
         if self.skill.nome == 'Wekapipo':
+            dano = self.skill.dano * self.MODatk
             for alvo in grupo1:
                 if alvo.vivo:
-                    alvo.vida -= self.skill.dano
-                    DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "black", 4)
+                    alvo.vida -= dano
+                    DefineTextoDano(dano, alvo, j.txt_grupo, "black", 4)
                     DefineAnimacaoAtaque(alvo, 8)
                     alvo.machucado()
+                    self.danoAcumulado += dano
                     if alvo.skill.nome == "Devolver":
-                        alvo.gauge += int(self.skill.dano * 0.8)
+                        alvo.gauge += int(dano * 0.8)
         
         if self.skill.nome == 'Cortar':
+            dano = self.skill.dano * self.MODatk
             if alvo.condicao == 0:
                 alvo.condicao = 1
                 alvo.CounterCon = 0
-                alvo.vida -= self.skill.dano
-                DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "red", 5)
+                alvo.vida -= dano
+                DefineTextoDano(dano, alvo, j.txt_grupo, "red", 5)
                 DefineAnimacaoAtaque(alvo, self.skill.tipo)
                 # DefineTextoStatus("    BLEED", alvo, j.txt_grupo, "crimson", 3)
                 alvo.machucado()
                 alvo.updateCondicao()
+                self.danoAcumulado += dano
                 if alvo.skill.nome == "Devolver":
-                    alvo.gauge += int(self.skill.dano * 0.8)
+                    alvo.gauge += int(dano * 0.8)
             else:
                 DefineTextoStatus("       FALHOU", self, j.txt_grupo, "crimson", 3)
         
         if self.skill.nome == 'Congelar':
+            dano = self.skill.dano * self.MODatk
             if alvo.condicao == 0:
                 alvo.condicao = 2
                 alvo.CounterCon = 0
-                alvo.vida -= self.skill.dano
-                DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "blue", 6)
+                alvo.vida -= dano
+                DefineTextoDano(dano, alvo, j.txt_grupo, "blue", 6)
                 DefineAnimacaoAtaque(alvo, self.skill.tipo)
                 # DefineTextoStatus("     FREEZE", alvo, j.txt_grupo, "blue", 6)
                 alvo.machucado()
                 alvo.updateCondicao()
+                self.danoAcumulado += dano
                 if alvo.skill.nome == "Devolver":
-                    alvo.gauge += int(self.skill.dano * 0.8)
+                    alvo.gauge += int(dano * 0.8)
             else:
                 DefineTextoStatus("        FALHOU", self, j.txt_grupo, "blue", 6)
         
@@ -268,16 +281,19 @@ class Monstro:
             DefineTextoStatus("        INFO", alvo, j.txt_grupo, "black", 11)
         
         if self.skill.nome == "Devolver":
-            alvo.vida -= self.gauge
+            dano = self.gauge * self.MODatk
+            alvo.vida -= dano
+            self.danoAcumulado += dano
             alvo.machucado()
-            DefineTextoDano(self.gauge, alvo, j.txt_dano, "black", 3)
+            DefineTextoDano(dano, alvo, j.txt_dano, "black", 3)
             self.gauge = 0
             DefineTextoStatus("       RESET", self, j.txt_grupo, "black", 15)
 
         if self.skill.nome == "Comer":
-            alvo.vida -= self.skill.dano
+            dano = self.skill.dano * self.MODatk
+            alvo.vida -= dano
             alvo.machucado()
-            DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "black", 3)
+            DefineTextoDano(dano, alvo, j.txt_grupo, "black", 3)
             if alvo.vida <= 0:
                 j.event_perdeuEnergia = False
                 j.event_ganhouEnergia = True
@@ -286,6 +302,10 @@ class Monstro:
         if self.skill.nome == "Rezar":
             j.event_perdeuEnergia = False
             j.event_ganhouEnergia = True
+            self.vida -= 15
+            self.machucado()
+            DefineTextoDano(15, self, j.txt_dano, "black", 3)
+            DefineAnimacaoAtaque(self, 8)
             med.valorE = 30
         
         if self.skill.nome == "Sabotar":
@@ -296,13 +316,61 @@ class Monstro:
             else:
                 for alvo in grupo1:
                     if alvo.vivo:
-                        alvo.vida -= self.skill.dano
-                        DefineTextoDano(self.skill.dano, alvo, j.txt_grupo, "black", 4)
+                        dano = self.skill.dano * self.MODatk
+                        alvo.vida -= dano
+                        DefineTextoDano(dano, alvo, j.txt_grupo, "black", 4)
                         DefineAnimacaoAtaque(alvo, 4)
                         alvo.machucado()
+                        self.danoAcumulado += dano
                         if alvo.skill.nome == "Devolver":
-                            alvo.gauge += int(self.skill.dano * 0.8)
+                            alvo.gauge += int(dano * 0.8)
+        
+        if self.skill.nome == 'Saraivada':
+            for alvo in grupo1:
+                if alvo.vivo:
+                    dano = self.skill.dano * self.MODatk
+                    alvo.vida -= dano
+                    DefineTextoDano(dano, alvo, j.txt_grupo, "black", 4)
+                    DefineAnimacaoAtaque(alvo, 6)
+                    alvo.machucado()
+                    self.danoAcumulado += dano
+                    if alvo.skill.nome == "Devolver":
+                        alvo.gauge += int(dano * 0.8)
 
+        if self.skill.nome == 'Wekapeople':
+            for alvo in grupo1:
+                if alvo.vivo:
+                    dano = self.skill.dano * self.MODatk
+                    alvo.vida -= dano
+                    DefineTextoDano(dano, alvo, j.txt_grupo, "black", 4)
+                    DefineAnimacaoAtaque(alvo, 8)
+                    alvo.machucado()
+                    self.danoAcumulado += dano
+                    if alvo.skill.nome == "Devolver":
+                        alvo.gauge += int(dano * 0.8)
+        
+        if self.skill.nome == 'Eletroterapia':
+            alvo.MODatk *= 1.5
+            alvo.MODatk2 *= 1.3
+            alvo.CounterAtk = 0
+            alvo.CounterDef = 0
+            alvo.updateStatus()
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
+            DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
+        
+        if self.skill.nome == 'Debilitar':
+
+            for alvo in grupo1:
+                if random.randint(1, 2) == 1:
+                    alvo.condicao = random.randint(1, 2)
+                    alvo.CounterCon = 0
+                    alvo.updateCondicao()
+                else:
+                    alvo.MODdef = 0.8
+                    alvo.MODatk = 0.8
+                    alvo.updateStatus()
+                    DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 12)
+                    DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 13)
 #JOGAVEIS --- /// 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
@@ -314,44 +382,55 @@ filho = Monstro     ("Filho",    120,  25, 40, 6, cura,     20, 8, 4, 6)
 gelo = Monstro      ("Gelo",     130,  30, 40, 4, congelar, 20, 6, 5, 6)
 horroroso = Monstro ("Xamilo",   145,  25, 45, 3, cortar,   25, 3, 4, 6)
 bombinha = Monstro  ("Bombinha", 140,  30, 45, 4, devolver, 30, 5, 7, 6)
+camboja = Monstro   ("Camboja",  150,  35, 40, 3, eletroterapia, 30, 7, 5, 3)
+monge = Monstro     ("Monge",    160,  25, 40, 5, rezar,    30, 4, 8, 1)
+camboja.animation_cooldown = 200
 adiburai = Monstro  ("Adiburai", 180,  35, 50, 6, treinar,  40, 4, 4, 6)
 kamirider = Monstro ("Kamirider",160,  30, 45, 6, comer,    40, 3, 3, 4)
 demonio = Monstro   ("Demonio",  200,  50, 20, 3, analisar, 40, 8, 0, 6)
 odiburoi = Monstro  ("Odiburoi", 180,  30, 55, 3, corre,    40, 7, 6, 4)
 
+parceiro = Monstro  ("Parceiro", 190,  35, 55, 6, wekapeople,  0, 8, 0, 6)
+azuliu = Monstro    ("Azuliu",   210,  30, 60, 4, saraivada,     0, 6, 0, 6)
+ediburei = Monstro  ("Ediburei", 200,  40, 55, 6, focar,     0, 4, 0, 6)
+
 #INIMIGOS --- /// # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
-inim1 = Monstro     ("Amigo",    100, 20, 30, 3, wekapipo,  10, 8, 0, 6)
-inim2 = Monstro     ("Filho",    100, 25, 20, 3, cura,      10, 5, 7, 6)
-inim3 = Monstro     ("Linguico", 100, 20, 20, 3, surra,     10, 4, 3, 6)
-inim4 = Monstro     ("Ico",      120, 20, 25, 3, explosao,  15, 5, 6, 6)
-inim5 = Monstro     ("Gelo",     110, 20, 20, 3, congelar,  10, 6, 4, 6)
-inim6 = Monstro     ("Xamilo",   110, 25, 25, 3, cortar,    10, 3, 5, 6)
-inim7 = Monstro     ("Adiburai", 110, 20, 30, 3, treinar,   15, 4, 4, 6)
+inim1 = Monstro     ("Amigo",    100, 20, 35, 3, wekapipo,  10, 8, 0, 6)
+inim2 = Monstro     ("Filho",    100, 25, 25, 3, cura,      10, 5, 7, 6)
+inim3 = Monstro     ("Linguico", 100, 20, 25, 3, surra,     10, 4, 3, 6)
+inim4 = Monstro     ("Ico",      120, 20, 30, 3, explosao,  15, 5, 6, 6)
+inim5 = Monstro     ("Gelo",     110, 20, 25, 3, congelar,  10, 6, 4, 6)
+inim6 = Monstro     ("Xamilo",   110, 25, 30, 3, cortar,    10, 3, 5, 6)
+inim7 = Monstro     ("Adiburai", 110, 20, 35, 3, treinar,   15, 4, 4, 6)
 
-inim8 = Monstro     ("Demonio",  160, 50, 15, 3, wekapipo,  10, 8, 0, 6)
+inim8 = Monstro     ("Demonio",  160, 50, 20, 3, wekapipo,  10, 8, 0, 6)
 inim9 = Monstro     ("Bombinha", 135, 30, 35, 3, devolver,  10, 5, 3, 6)
-inim10 = Monstro    ("Linguico", 120, 30, 35, 4, surra,     10, 4, 7, 6)
-inim11 = Monstro    ("Ico",      140, 30, 30, 3, explosao,  10, 5, 7, 6)
-inim12 = Monstro    ("Gelo",     120, 35, 25, 3, congelar,  10, 6, 5, 6)
-inim13 = Monstro    ("Xamilo",   130, 35, 40, 5, cortar,    10, 3, 0, 6)
-inim14 = Monstro    ("Adiburai", 130, 30, 40, 5, treinar,   10, 4, 6, 6)
+inim10 = Monstro    ("Linguico", 120, 30, 40, 4, surra,     10, 4, 7, 6)
+inim11 = Monstro    ("Ico",      140, 30, 35, 3, explosao,  10, 5, 7, 6)
+inim12 = Monstro    ("Gelo",     120, 35, 30, 3, congelar,  10, 6, 5, 6)
+inim13 = Monstro    ("Xamilo",   130, 35, 45, 5, cortar,    10, 3, 0, 6)
+inim14 = Monstro    ("Adiburai", 130, 30, 45, 5, treinar,   10, 4, 6, 6)
 
-inim15 = Monstro    ("Demonio",  210, 55, 15, 3, wekapipo,  10, 8, 0, 6)
-inim16 = Monstro    ("Bombinha", 170, 40, 40, 4, devolver,  10, 6, 6, 6)
-inim17 = Monstro    ("Kamirider",140, 30, 65, 5, surra,     10, 3, 3, 4)
-inim18 = Monstro    ("Odiburoi", 160, 30, 50, 4, corre,     10, 7, 6, 4)
-inim19 = Monstro    ("Gelo",     150, 35, 40, 3, congelar,  10, 6, 4, 6)
-inim20 = Monstro    ("Xamilo",   180, 45, 30, 5, cortar,    10, 3, 5, 6)
-inim21 = Monstro    ("Adiburai", 180, 40, 60, 5, treinar,   10, 4, 7, 6)
+inim15 = Monstro    ("Demonio",  210, 55, 20, 3, wekapipo,  10, 8, 0, 6)
+inim16 = Monstro    ("Bombinha", 170, 40, 45, 4, devolver,  10, 6, 6, 6)
+inim17 = Monstro    ("Kamirider",140, 30, 70, 5, surra,     10, 3, 3, 4)
+inim18 = Monstro    ("Odiburoi", 160, 30, 55, 4, corre,     10, 7, 6, 4)
+inim19 = Monstro    ("Monge",    150, 35, 45, 3, saraivada,  10, 6, 4, 1)
+inim20 = Monstro    ("Camboja",  180, 45, 35, 5, eletroterapia,    10, 3, 5, 3)
+inim21 = Monstro    ("Adiburai", 180, 40, 65, 5, treinar,   10, 4, 7, 6)
 #BOSS --- ///
 
-pepeteco = Monstro  ("Pepeteco", 1200, 30, 20, 4, explosao, 90, 8, 0, 6)
+pepeteco = Monstro  ("Pepeteco", 1200, 30, 40, 4, sabotar, 90, 3, 0, 6)
 pepeteco.bg = pygame.image.load("imagem/background/bg2.png")
-mestre = Monstro    ("Mestre", 800, 30, 30, 5, focar, 90, 8, 0, 6)
+mestre = Monstro    ("Mestre", 800, 35, 45, 5, focar, 90, 4, 0, 6)
 mestre.bg = pygame.image.load("imagem/background/bg3.png")
 mago = Monstro      ("Mago", 1000, 30, 30, 3, mudar, 90, 8, 0, 6)
 mago.bg = pygame.image.load("imagem/background/bg0.png")
+bobonauta = Monstro ("Bobonauta", 1100, 30, 45, 4, debilitar, 90, 6, 0, 6)
+bobonauta.bg = pygame.image.load("imagem/background/bg4.png")
+bobonauta.animation_cooldown = 200
+
 selecao = []
 
 selecao.append(ico)
@@ -365,6 +444,12 @@ selecao.append(demonio)
 selecao.append(odiburoi)
 selecao.append(kamirider)
 selecao.append(bombinha)
+selecao.append(ediburei)
+selecao.append(azuliu)
+selecao.append(parceiro)
+selecao.append(camboja)
+selecao.append(monge)
+
 
 equipe = []
 
@@ -408,8 +493,9 @@ loja0_img = pygame.image.load("imagem/background/loja0.png")
 colecaoBoss = []
 
 colecaoBoss.append(pepeteco)
-colecaoBoss.append(mestre)
-colecaoBoss.append(mago)
+# colecaoBoss.append(mestre)
+# colecaoBoss.append(mago)
+# colecaoBoss.append(bobonauta)
 
 
 #FUNCOES --- ///

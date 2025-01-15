@@ -69,15 +69,20 @@ main_char_button4.monstro = gelo
 main_char_button5 = Button("cardframe", 550, 470)
 main_char_button5.monstro = horroroso
 main_char_button6 = Button("cardframe", 130, 760)
-main_char_button6.monstro = adiburai
+main_char_button6.monstro = bombinha
 main_char_button7 = Button("cardframe", 340, 760)
-main_char_button7.monstro = demonio
+main_char_button7.monstro = camboja
 main_char_button8 = Button("cardframe", 550, 760)
-main_char_button8.monstro = odiburoi
+main_char_button8.monstro = monge
 main_char_button9 = Button("cardframe", 130, 1050)
 main_char_button9.monstro = kamirider
 main_char_button10 = Button("cardframe", 340, 1050)
-main_char_button10.monstro = bombinha
+main_char_button10.monstro = adiburai
+main_char_button11 = Button("cardframe", 550, 1050)
+main_char_button11.monstro = demonio
+main_char_button12 = Button("cardframe", 340, 1340)
+main_char_button12.monstro = odiburoi
+
 
 main_card_button = Button("cardframe", 130, 180)
 main_card_button.carta = carta
@@ -111,7 +116,30 @@ main_card_button14 = Button("cardframe", 550, 1340)
 main_card_button14.carta = carta14
 main_card_button15= Button("cardframe", 130, 1630)
 main_card_button15.carta = carta15
-
+main_card_button16 = Button("cardframe", 340, 1630)
+main_card_button16.carta = carta16
+main_card_button17 = Button("cardframe", 550, 1630)
+main_card_button17.carta = carta17
+main_card_button18 = Button("cardframe", 130, 1920)
+main_card_button18.carta = carta18
+main_card_button19 = Button("cardframe", 340, 1920)
+main_card_button19.carta = carta19
+main_card_button20 = Button("cardframe", 550, 1920)
+main_card_button20.carta = carta20
+main_card_button21= Button("cardframe", 130, 2210)
+main_card_button21.carta = carta21
+main_card_button22= Button("cardframe", 340, 2210)
+main_card_button22.carta = carta22
+main_card_button23= Button("cardframe", 550, 2210)
+main_card_button23.carta = carta23
+main_card_button24= Button("cardframe", 130, 2500)
+main_card_button24.carta = carta24
+main_card_button25= Button("cardframe", 340, 2500)
+main_card_button25.carta = carta25
+main_card_button26= Button("cardframe", 550, 2500)
+main_card_button26.carta = carta26
+main_card_button27= Button("cardframe", 120, 2790)
+main_card_button27.carta = carta27
 
 main_go_button = Button("go_button", 1150, 650)
 monstro_button = Button("monstro_button", 760, 650)
@@ -146,6 +174,8 @@ char_buttons.append(main_char_button7)
 char_buttons.append(main_char_button8)
 char_buttons.append(main_char_button9)
 char_buttons.append(main_char_button10)
+char_buttons.append(main_char_button11)
+char_buttons.append(main_char_button12)
 
 card_buttons = []
 
@@ -165,6 +195,18 @@ card_buttons.append(main_card_button12)
 card_buttons.append(main_card_button13)
 card_buttons.append(main_card_button14)
 card_buttons.append(main_card_button15)
+card_buttons.append(main_card_button16)
+card_buttons.append(main_card_button17)
+card_buttons.append(main_card_button18)
+card_buttons.append(main_card_button19)
+card_buttons.append(main_card_button20)
+card_buttons.append(main_card_button21)
+card_buttons.append(main_card_button22)
+card_buttons.append(main_card_button23)
+card_buttons.append(main_card_button24)
+card_buttons.append(main_card_button25)
+card_buttons.append(main_card_button26)
+card_buttons.append(main_card_button27)
 
 menu_buttons = []
 
@@ -203,7 +245,7 @@ def cliqueBotao(grupo, posicao):
 
 def scrollBotoes(grupo, wheelUp, limite):
 
-      valor = 30
+      valor = 45
       if wheelUp == False and j.buttonPosOffset < 0:
             j.buttonPosOffset += valor
 
@@ -251,14 +293,6 @@ def selecionarCarta(grupo, position):
 img_rubi = pygame.image.load("imagem/medidor/rubi.png")
 
 def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
-      
-      espacamento = 150
-      x = 860
-      y = 490
-      for monstro in equipe:
-            rect = monstro.image.get_rect(center=(x, y))
-            janela.blit(monstro.image, rect)
-            x += espacamento
 
       for botao in grupo:
             if botao.nome == "cardframe" and botao.destacar(posicao):

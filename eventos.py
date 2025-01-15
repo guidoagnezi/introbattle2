@@ -24,6 +24,7 @@ class Jogo():
         self.event_vampirismo = False
         self.event_dropaCard = False
         self.event_oneMore = False
+        self.event_mano = False 
         self.mensagem = False
         self.flag = 0
         self.catalogoMonstro = True

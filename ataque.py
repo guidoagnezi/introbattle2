@@ -40,12 +40,13 @@ class Skill():
         self.nome = nome
         self.dano = dano
         self.custo = custo
+        self.custoBase = custo
         self.tipo = tipo
         self.auto = auto
         self.benigno = benigno
         self.descricao = descricao
 
-explosao = Skill("Explosao", 50, 15, 10, False, False, "50 de dano a um inimigo", "")
+explosao = Skill("Explosao", 50, 25, 10, False, False, "50 de dano a um inimigo", "")
 cura = Skill("Cura", 0, 30, 10, False, True, "Cura 1/3 da vida de um aliado", "")
 treinar = Skill("Treinar", 0, 20, 10, True, True, "O proximo ataque dará muito mais dano", "")
 surra = Skill("Surra", 30, 35, 4, False, False, "Saraivada de porrada a todos os inimigos", "")
@@ -54,12 +55,37 @@ wekapipo = Skill("Wekapipo", 35, 35, 8, False, False, "Dano mágico a todos os i
 cortar = Skill("Cortar", 20, 20, 3, False, False, "Causa sangramento a um inimigo", "")
 congelar = Skill("Congelar", 20, 20, 6, False, False, "Causa congelamento a um inimigo", "")
 mudar = Skill("Trocar", 0, 0, 0, True, True, "O ataque se torna a fraqueza de um inimigo", "")
-focar = Skill("Focar", 0, 0, 0, True, True, "O proximo ataque dará MUITO mais dano", "")
+focar = Skill("Focar", 0, 0, 0, True, True, "O proximo ataque dará MUITO mais dano ou +DEF", "")
 analisar = Skill("Analisar", 0, 20, 10, False, False, "Exibe todas as informações de um inimigo", "")
 devolver = Skill("Devolver", 0, 40, 10, False, False, "Devolve o dano acumulado a um inimigo", "")
-comer = Skill("Comer", 35, 20, 4, False, False, "Se essa skill matar, ganha 15 energia", "")
-rezar = Skill("Rezar", 0, 0, 10, True, True, "Ganha 10 energia", "")
+comer = Skill("Comer", 35, 20, 4, False, False, "Se essa skill matar, ganha 40 energia", "")
+rezar = Skill("Rezar", 0, 0, 10, True, True, "Ganha 30 energia, sofre 15 dano", "")
 sabotar = Skill("Sabotar", 35, 0, 10, True, False, "Perde 30 energia e dá dano em área", "")
+wekapeople = Skill("Wekapeople", 45, 55, 8, False, False, "Dano mágico superior a todos os inimigos", "")
+saraivada = Skill("Saraivada", 45, 55, 4, False, False, "Saraivada de tiro a todos os inimigos", "")
+eletroterapia = Skill("Eletroterapia", 0, 45, 4, False, True, "Aumenta os stats de um aliado (estc)", "")
+debilitar = Skill("Debilitar", 0, 0, 10, False, False, "Chance de aflingir condicao ou baixar os status aos inimigos", "")
+
+skills = []
+
+skills.append(explosao)
+skills.append(cura)
+skills.append(treinar)
+skills.append(surra)
+skills.append(corre)
+skills.append(wekapipo)
+skills.append(cortar)
+skills.append(mudar)
+skills.append(focar)
+skills.append(analisar)
+skills.append(devolver)
+skills.append(comer)
+skills.append(rezar)
+skills.append(sabotar)
+skills.append(wekapeople)
+skills.append(saraivada)
+skills.append(eletroterapia)
+skills.append(debilitar)
 
 def DefineAnimacaoAtaque(posicao, tipo):
 
@@ -79,6 +105,8 @@ def DefineAnimacaoAtaque(posicao, tipo):
         nome = "kill"
     if tipo == 10:
         nome = "explosao"
+    if tipo == 11:
+        nome = "cura"
     
     ataque = Ataque(posicao.rect.x, posicao.rect.y, nome)
     ataque1 = Ataque(posicao.rect.x, posicao.rect.y, nome)

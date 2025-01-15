@@ -8,19 +8,21 @@ from button import *
 from infotext import *
 from eventos import *
 from ataque import *
+from pygame.locals import *
 
 
 pygame.init()
 
 #tempo
 clock = pygame.time.Clock()
-fps = 60
+fps = 70
 
 #tela
 largura = 1360
 altura = 720
 
-janela = pygame.display.set_mode((largura, altura))
+flags = DOUBLEBUF
+janela = pygame.display.set_mode((largura, altura), DOUBLEBUF)
 pygame.display.set_caption("Chabude bude")
 
 #fontes
@@ -32,9 +34,9 @@ fonte4 = pygame.font.Font("fonts/pixel.ttf", 35)
 
 #imagens
 i = random.randint(0, 2)
-bg0_img = pygame.image.load(f"imagem/background/bg{i}.png")
-action_img = pygame.image.load("imagem/background/action.png")
-actionE_img = pygame.image.load("imagem/background/action_enemy.png")
+bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert_alpha()
+action_img = pygame.image.load("imagem/background/action.png").convert_alpha()
+actionE_img = pygame.image.load("imagem/background/action_enemy.png").convert_alpha()
 
 #spritegroup
 j.txt_grupo = pygame.sprite.Group()
@@ -51,7 +53,7 @@ def desenhaAcoes(vivos, acoes, vezPlayer):
             janela.blit(actionE_img, (x, y))
         x += 90
 
-img_guia = pygame.image.load("imagem/background/img_guia.png")
+img_guia = pygame.image.load("imagem/background/img_guia.png").convert_alpha()
 
 def desenhaGuiaDeBatalha(MonsVez, alvo):
 
@@ -71,6 +73,8 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
                 j.textoGuia = fonte3.render(f"{MonsVez.nome} está focado! Cuidado!", True, "red")
             if MonsVez == pepeteco:
                 j.textoGuia = fonte3.render(f"{MonsVez.nome} sabotou o grupo!", True, "yellow")
+            if MonsVez == bobonauta:
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow")
         elif j.event_primeiroTurno:
             j.textoGuia = fonte3.render(f"GAME!   START!", True, "white")
         elif j.event_vezJogador:
@@ -85,13 +89,13 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
 
 #cursor
 pygame.mouse.set_visible(False)
-cursor0_img = pygame.image.load("imagem/background/cursor_normal.png")
+cursor0_img = pygame.image.load("imagem/background/cursor_normal.png").convert_alpha()
 cursor0_img = pygame.transform.scale_by(cursor0_img, 1.3)
-cursor1_img = pygame.image.load("imagem/background/cursor_atk.png")
+cursor1_img = pygame.image.load("imagem/background/cursor_atk.png").convert_alpha()
 cursor1_img = pygame.transform.scale_by(cursor1_img, 1.3)
-cursor2_img = pygame.image.load("imagem/background/cursor_info.png")
+cursor2_img = pygame.image.load("imagem/background/cursor_info.png").convert_alpha()
 cursor2_img = pygame.transform.scale_by(cursor2_img, 1.3)
-cursor3_img = pygame.image.load("imagem/background/cursor_skill.png")
+cursor3_img = pygame.image.load("imagem/background/cursor_skill.png").convert_alpha()
 cursor3_img = pygame.transform.scale_by(cursor3_img, 1.3)
 
 def desenhaCursor(posicao):
@@ -134,7 +138,7 @@ def atacar(atacante, alvo):
     atacante.revelouMagia = True
     
     dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2
-
+    atacante.danoAcumulado += dano
     if atacante.MODatk2 != 1:
         atacante.MODatk2 = 1
     alvo.vida -= dano
@@ -145,7 +149,7 @@ def atacar(atacante, alvo):
                 
     return dano
 
-img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png")
+img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png").convert_alpha()
 
 def menuTitulo():
 
@@ -173,17 +177,27 @@ def menuTitulo():
         desenhaCursor(posMouse)
         pygame.display.flip()
 
-img_descricaoBox = pygame.image.load("imagem/background/description_box.png")
+def desenhaMembros():
+
+    espacamento = 150
+    x = 860
+    y = 490
+    for monstro in equipe:
+        rect = monstro.image.get_rect(center=(x, y))
+        janela.blit(monstro.image, rect)
+        x += espacamento
+
+img_descricaoBox = pygame.image.load("imagem/background/description_box.png").convert_alpha()
 def menuPrincipal():
     txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson")
     for botao in card_buttons:
         if botao.nome == 'cardframe':
             if botao.carta not in deck:
                 botao.selected = False
-                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                
+                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                .convert_alpha()
             else:
                 botao.selected = True
-                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                
+                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                .convert_alpha()
 
     wheelUp = False
     scrollou = False
@@ -242,9 +256,9 @@ def menuPrincipal():
             
         if scrollou:
             if j.catalogoMonstro:
-                scrollBotoes(char_buttons, wheelUp, -470)
+                scrollBotoes(char_buttons, wheelUp, -730)
             else:
-                scrollBotoes(card_buttons, wheelUp, -1030)
+                scrollBotoes(card_buttons, wheelUp, -2230)
             scrollou = False
         
         if j.event_ganhouRubi:
@@ -267,6 +281,7 @@ def menuPrincipal():
         else:
             desenhaBotoes(janela, card_buttons)
         desenhaBotoes(janela, menu_buttons)
+        desenhaMembros()
         if j.catalogoMonstro:
             desenhaDescricaoMenu(janela, char_buttons, posMouse, fonte, fonte3, equipe)
         else:
@@ -284,8 +299,8 @@ def batalha():
     #VARIAVEIS DE VERIFICACAO --- //
     j.event_bossBattle = False
     j.selecionou = False
-    i = random.randint(0, 3)
-    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png")
+    i = random.randint(0, 4)
+    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert_alpha()
     if j.round == 4 or j.round == 8 or j.round == 12:
         bg0_img = gerarBoss(j.round)
         j.event_bossBattle = True
@@ -350,9 +365,7 @@ def batalha():
         
         if vivos != 0 and j.acoesEquipe <= 0 and j.event_vezJogador:
             j.event_vezJogador = False
-            print("FOI")
             j.acoesEquipeInimiga = contarVivosInimigos(equipeInim)
-            print(j.acoesEquipeInimiga)
             if j.event_bossBattle:
                 j.acoesEquipeInimiga = 2
             j.event_trocouTime = True
@@ -360,7 +373,6 @@ def batalha():
         if vivosInim != 0 and j.acoesEquipeInimiga <= 0 and not j.event_vezJogador:
             j.event_vezJogador = True
             j.acoesEquipe = contarVivos(equipe)
-            print("EAE")
             j.event_trocouTime = True
         
         if j.event_vezJogador:
@@ -373,6 +385,13 @@ def batalha():
                         if monsVez.vivo:
                             break
                         turno += 1
+                    if j.event_mano and vivos == 1:
+                        monsVez.MODdef = 1.8
+                        monsVez.MODatk = 1.5
+                        monsVez.CounterAtk = 0
+                        monsVez.CounterDef = 0
+                        DefineTextoStatus("UP", monsVez, j.txt_grupo, "black", 10)
+                        DefineTextoStatus("UP", monsVez, j.txt_grupo, "black", 11)
                     monsVez.updateStatus()
                     monsVez.updateCondicao()
                     monsVezGuia = monsVez
@@ -409,7 +428,7 @@ def batalha():
             if clicou and not j.event_standby:
                 med.corEnergia = "yellow"
                 if vivos != 0:
-                    cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos)                      #checagem ativacao de card
+                    cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos, monsVez)                      #checagem ativacao de card
                 
                     if atk_button.checkForInput(posMouse):
                         j.event_atacar = True
@@ -482,7 +501,6 @@ def batalha():
                 clicou = False                             #reset
         
         if not j.event_vezJogador:
-            print("FAAALA")
             if j.event_novoTurno and vivosInim > 0:
                 if j.cdStandby > j.cdMaxStandby:
                     turno += 1
@@ -503,8 +521,6 @@ def batalha():
                     j.event_standby = False
 
                     if monsVez.condicao == 2:
-                        print("FAAALA DOIDO")
-                        print(f"{monsVez.nome}, {monsVez.defesa}")
                         j.event_novoTurno = True
                         j.acoesEquipeInimiga -= 1
                 else:
@@ -628,7 +644,7 @@ def batalha():
         desenhaTexto(j.txt_dano, janela)
         pygame.display.flip()
 
-img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png")
+img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png").convert_alpha()
 
 def reset():
     
@@ -645,11 +661,13 @@ def reset():
         monstros.CounterAtk = 0
         monstros.CounterDef = 0
         monstros.gauge = 0
+        monstros.danoAcumulado = 0
         monstros.custo = monstros.custoBase
         monstros.ataque = monstros.ataqueBase
         monstros.defesa = monstros.defesaBase
         monstros.sorte = monstros.sorteBase
         monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
         monstros.CounterCon = 0
         monstros.condicao = 0
         monstros.ativo = False
@@ -665,26 +683,77 @@ def reset():
         monstros.CounterDef = 0
         monstros.CounterCon = 0
         monstros.condicao = 0
+        monstros.gauge = 0
+        monstros.danoAcumulado = 0
         monstros.ataque = monstros.ataqueBase
         monstros.ataqueNormal = monstros.ataqueBase
         monstros.defesa = monstros.defesaBase
         monstros.defesaNormal = monstros.ataqueNormal
         monstros.sorte = monstros.sorteBase
         monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
         monstros.ativo = False
         monstros.vivo = True
         monstros.idle()
         monstros.update_animation()
     
+    for monstros in colecaoInimigos2:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.CounterCon = 0
+        monstros.condicao = 0
+        monstros.gauge = 0
+        monstros.danoAcumulado = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.ataqueNormal = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.defesaNormal = monstros.ataqueNormal
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+    
+    for monstros in colecaoInimigos3:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.CounterCon = 0
+        monstros.condicao = 0
+        monstros.gauge = 0
+        monstros.danoAcumulado = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.ataqueNormal = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.defesaNormal = monstros.ataqueNormal
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+    
+    for skill in skills:
+        skill.custo = skill.custoBase
+
     equipe.clear()
     j.event_realizouAtaque = False
     j.event_realizouSkill = False
 
     colecaoBoss.clear()
 
+    colecaoBoss.append(pepeteco)
     colecaoBoss.append(mestre)
     colecaoBoss.append(mago)
-    colecaoBoss.append(pepeteco)
+    colecaoBoss.append(bobonauta)
 
     aprimoramentos.clear()
 
@@ -694,6 +763,8 @@ def reset():
     aprimoramentos.append(fluxo)
     aprimoramentos.append(aumento)
     aprimoramentos.append(subiu)
+    aprimoramentos.append(mano)
+    aprimoramentos.append(hierofante)
 
     for card in aprimoramentos:
         card.selecionado = False
@@ -707,6 +778,7 @@ def reset():
     j.event_vampirismo = False
     j.event_dropaCard = False
     j.event_oneMore = False
+    j.event_mano = False
 
     j.round = 1
 
@@ -714,10 +786,10 @@ def reset():
         if botao.nome == 'cardframe':
             if botao.monstro not in equipe:
                 botao.selected = False
-                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                
+                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                .convert_alpha()
             else:
                 botao.selected = True
-                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                
+                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                .convert_alpha()
     
     deck.clear()
     deck.append(carta)
@@ -732,10 +804,10 @@ def reset():
         if botao.nome == 'cardframe':
             if botao.carta not in deck:
                 botao.selected = False
-                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                
+                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                .convert_alpha()
             else:
                 botao.selected = True
-                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                
+                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                .convert_alpha()
 
 def desenhaGameover(janela):
 
@@ -769,16 +841,46 @@ def continuar():
     j.ataque_grupo.empty()
     j.txt_grupo.empty()
     equipeAtivos.clear()
-
+    
     for monstros in colecaoInimigos:
         monstros.vida = monstros.vidamax
         monstros.MODdef = 1
         monstros.MODatk = 1
         monstros.CounterAtk = 0
         monstros.CounterDef = 0
-        monstros.condicao = 0
         monstros.CounterCon = 0
+        monstros.condicao = 0
         monstros.gauge = 0
+        monstros.danoAcumulado = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.ataqueNormal = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.defesaNormal = monstros.ataqueNormal
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+    
+    for monstros in colecaoInimigos2:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.CounterCon = 0
+        monstros.condicao = 0
+        monstros.gauge = 0
+        monstros.danoAcumulado = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.ataqueNormal = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.defesaNormal = monstros.ataqueNormal
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
         monstros.ativo = False
         monstros.vivo = True
         monstros.idle()
@@ -792,6 +894,7 @@ def continuar():
         monstros.CounterDef = 0
         monstros.condicao = 0
         monstros.CounterCon = 0
+        monstros.danoAcumulado = 0
         monstros.ativo = False
         monstros.vivo = True
         monstros.idle()
@@ -801,10 +904,10 @@ def continuar():
         if botao.nome == 'cardframe':
             if botao.monstro not in equipe:
                 botao.selected = False
-                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                
+                botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")           .convert_alpha()
             else:
                 botao.selected = True
-                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                
+                botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                .convert_alpha()
     
     for carta in mao:
         mao.remove(carta)
