@@ -39,23 +39,23 @@ class Button():
                 return False
             
 atk_button = Button("atk_button", 885, 580)
-atk_button.image = pygame.transform.scale_by(atk_button.image, 1.2)
+atk_button.image = pygame.transform.scale_by(atk_button.image, 1.2).convert()
 atk_button.rect = atk_button.image.get_rect(center=(atk_button.x_pos, atk_button.y_pos))
 com_button = Button("com_button", 1175, 580)
-com_button.image = pygame.transform.scale_by(com_button.image, 1.2)
+com_button.image = pygame.transform.scale_by(com_button.image, 1.2).convert()
 com_button.rect = com_button.image.get_rect(center=(com_button.x_pos, com_button.y_pos))
 skl_button = Button("skl_button", 885, 650)
-skl_button.image = pygame.transform.scale_by(skl_button.image, 1.2)
+skl_button.image = pygame.transform.scale_by(skl_button.image, 1.2).convert()
 skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button.y_pos))
 
-hud0_img = pygame.image.load("imagem/background/hud0.png").convert_alpha()
+hud0_img = pygame.image.load("imagem/background/hud0.png").convert()
 
 t_start_button = Button("start_button", 675, 360)
-t_start_button.image = pygame.transform.scale_by(t_start_button.image, 1.2)
+t_start_button.image = pygame.transform.scale_by(t_start_button.image, 1.2).convert()
 t_start_button.rect = t_start_button.image.get_rect(center=(t_start_button.x_pos, t_start_button.y_pos))
 
 t_quit_button = Button("sair_button", 675, 440)
-t_quit_button.image = pygame.transform.scale_by(t_quit_button.image, 1.2)
+t_quit_button.image = pygame.transform.scale_by(t_quit_button.image, 1.2).convert()
 t_quit_button.rect = t_quit_button.image.get_rect(center=(t_quit_button.x_pos,t_quit_button.y_pos))
 
 main_char_button = Button("cardframe", 130, 180)
@@ -306,17 +306,17 @@ def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
             if botao.nome == "cardframe" and botao.destacar(posicao):
 
                   cor = retornaCor(botao.monstro.magia)
-                  txtNome = fonte2.render(f"{botao.monstro.nome}", True, "white").convert_alpha()
-                  txtVida = fonte.render(f"Vida: {botao.monstro.vidamax}", True, "white").convert_alpha()
-                  # txtDescricao = fonte.render(botao.monstro.descricao, True, "white").convert_alpha()
-                  txtCusto = fonte2.render(f"{int(botao.monstro.custo)}", True, "crimson").convert_alpha()
-                  txtAtaque = fonte.render(f"Ataque: {int(botao.monstro.ataque)}", True, "white").convert_alpha()
-                  txtDefesa = fonte.render(f"Defesa: {int(botao.monstro.defesa)}", True, "white").convert_alpha()
-                  txtSorte = fonte.render(f"Sorte: {int(botao.monstro.sorte)}", True, "white")  .convert_alpha()
-                  txtMagia = fonte.render(f"Tipo de ataque:", True, cor).convert_alpha()
-                  txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(botao.monstro.fraqueza)).convert_alpha()
-                  txtCustoSkill = fonte.render(f"Custo da Skill: {botao.monstro.skill.custo}", True, "yellow").convert_alpha()
-                  txtSkill = fonte.render(f"Skill: {botao.monstro.skill.nome} - {botao.monstro.skill.descricao}", True, "gray").convert_alpha()
+                  txtNome = fonte2.render(f"{botao.monstro.nome}", True, "white")
+                  txtVida = fonte.render(f"Vida: {botao.monstro.vidamax}", True, "white")
+                  # txtDescricao = fonte.render(botao.monstro.descricao, True, "white")
+                  txtCusto = fonte2.render(f"{int(botao.monstro.custo)}", True, "crimson")
+                  txtAtaque = fonte.render(f"Ataque: {int(botao.monstro.ataque)}", True, "white")
+                  txtDefesa = fonte.render(f"Defesa: {int(botao.monstro.defesa)}", True, "white")
+                  txtSorte = fonte.render(f"Sorte: {int(botao.monstro.sorte)}", True, "white")  
+                  txtMagia = fonte.render(f"Tipo de ataque:", True, cor)
+                  txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(botao.monstro.fraqueza))
+                  txtCustoSkill = fonte.render(f"Custo da Skill: {botao.monstro.skill.custo}", True, "yellow")
+                  txtSkill = fonte.render(f"Skill: {botao.monstro.skill.nome} - {botao.monstro.skill.descricao}", True, "gray")
                   rect = botao.monstro.image.get_rect(center=(800, 180))
                   rect1 = txtNome.get_rect(center=(800, 250))
                   janela.blit(botao.monstro.image, rect)
@@ -342,12 +342,12 @@ def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
             if botao.nome == "cardframe" and botao.destacar(posicao):
 
                   rect = botao.carta.entalho.get_rect(center=(810, 190))
-                  txtCusto = fonte.render(f"{botao.carta.preco}", True, "crimson").convert_alpha()
-                  txtDescricao = fonte.render(f"{botao.carta.descricao}", True, "white").convert_alpha()
-                  txtCusto2 = fonte.render(f"Custo: {botao.carta.custo} energia", True, "yellow").convert_alpha()
-                  txtNome = fonte2.render(f"{botao.carta.nome}", True, "white").convert_alpha()
+                  txtCusto = fonte.render(f"{botao.carta.preco}", True, "crimson")
+                  txtDescricao = fonte.render(f"{botao.carta.descricao}", True, "white")
+                  txtCusto2 = fonte.render(f"Custo: {botao.carta.custo} energia", True, "yellow")
+                  txtNome = fonte2.render(f"{botao.carta.nome}", True, "white")
                   rect1 = txtNome.get_rect(center=(810, 300))
-                  txtDeck = fonte.render(f"No deck", True, "white").convert_alpha()
+                  txtDeck = fonte.render(f"No deck", True, "white")
                   janela.blit(botao.carta.entalho, rect)
                   janela.blit(txtNome, rect1)
                   janela.blit(txtDescricao, (890, 180))
@@ -358,7 +358,7 @@ def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
                   janela.blit(txtCusto, (1220, 130))
 
 def draw_aviso(janela, fonte):
-    texto = fonte.render("Você não selecionou 3 personagens", True, "white").convert_alpha()
+    texto = fonte.render("Você não selecionou 3 personagens", True, "white")
     texto_rect = texto.get_rect(center=(750, 650))
     janela.blit(texto, texto_rect)
 

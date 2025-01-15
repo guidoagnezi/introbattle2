@@ -424,13 +424,13 @@ inim21 = Monstro    ("Adiburai", 210, 40, 65, 5, treinar,   45, 4, 7, 6)
 #BOSS --- ///
 
 pepeteco = Monstro  ("Pepeteco", 1200, 35, 40, 4, sabotar, 90, 3, 0, 6)
-pepeteco.bg = pygame.image.load("imagem/background/bg2.png").convert_alpha()
+pepeteco.bg = pygame.image.load("imagem/background/bg2.png").convert()
 mestre = Monstro    ("Mestre", 900, 40, 45, 5, focar, 90, 4, 0, 6)
-mestre.bg = pygame.image.load("imagem/background/bg3.png").convert_alpha()
+mestre.bg = pygame.image.load("imagem/background/bg3.png").convert()
 mago = Monstro      ("Mago", 1000, 35, 35, 3, mudar, 90, 8, 0, 6)
-mago.bg = pygame.image.load("imagem/background/bg0.png").convert_alpha()
+mago.bg = pygame.image.load("imagem/background/bg0.png").convert()
 bobonauta = Monstro ("Bobonauta", 1100, 30, 45, 4, debilitar, 90, 6, 0, 6)
-bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert_alpha()
+bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert()
 bobonauta.animation_cooldown = 200
 
 selecao = []
@@ -489,8 +489,6 @@ colecaoInimigos3.append(inim20)
 colecaoInimigos3.append(inim21)
 
 equipeInim  = []
-
-loja0_img = pygame.image.load("imagem/background/loja0.png").convert_alpha()
 
 colecaoBoss = []
 
@@ -632,7 +630,7 @@ def inimigoEscolheAlvo(equipeAlvo):
     else:
         return -1
 
-descricao_img = pygame.image.load("imagem/background/descricao.png").convert_alpha()
+descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 
 descricao_img = pygame.transform.scale(descricao_img, (380, 240))
 descricao_img.set_alpha(200)
@@ -643,16 +641,16 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
         if monstro.destacar(posicao):
 
             cor = retornaCor(monstro.magia)
-            txtNome = fonteNome.render(f"{monstro.nome}", True, "white").convert_alpha()
-            txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white").convert_alpha()
-            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")           .convert_alpha()
-            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")            .convert_alpha()
-            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")            .convert_alpha()
-            txtMagia = fonte.render(f"Ataque:", True, cor).convert_alpha()
-            txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))         .convert_alpha()
-            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")            .convert_alpha()
-            txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white").convert_alpha()
-            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white").convert_alpha()
+            txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
+            txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
+            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")           
+            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")            
+            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")            
+            txtMagia = fonte.render(f"Ataque:", True, cor)
+            txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))         
+            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")            
+            txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
+            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white")
           
             janela.blit(descricao_img, (posicao[0], posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 235))
@@ -686,7 +684,7 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
 
             return True
 
-descricaoInim_img = pygame.image.load("imagem/background/descricao.png").convert_alpha()
+descricaoInim_img = pygame.image.load("imagem/background/descricao.png").convert()
 
 descricaoInim_img = pygame.transform.scale(descricao_img, (300, 240))
 descricaoInim_img.set_alpha(200)
@@ -697,21 +695,21 @@ def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
         if monstro.destacar(posicao) and monstro.vivo:
 
             cor = retornaCor(monstro.magia)
-            txtNome = fonteNome.render(f"{monstro.nome}", True, "white").convert_alpha()
+            txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
             if monstro.revelouVida:
-                txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white").convert_alpha()
-                txtCusto = fonte.render(f"Recompensa: {int(monstro.custo)}", True, "crimson") .convert_alpha()
+                txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
+                txtCusto = fonte.render(f"Recompensa: {int(monstro.custo)}", True, "crimson") 
             else:
-                txtVida = fonte.render(f"Vida: ???/???", True, "white").convert_alpha()
-                txtCusto = fonte.render(f"Recompensa: ???", True, "crimson").convert_alpha()
+                txtVida = fonte.render(f"Vida: ???/???", True, "white")
+                txtCusto = fonte.render(f"Recompensa: ???", True, "crimson")
             if monstro.revelouMagia:
-                txtMagia = fonte.render(f"Ataque:", True, cor).convert_alpha()
+                txtMagia = fonte.render(f"Ataque:", True, cor)
             else:
-                txtMagia = fonte.render(f"Ataque:", True, "white").convert_alpha()
+                txtMagia = fonte.render(f"Ataque:", True, "white")
             if monstro.revelouFraqueza or monstro.fraqueza == 0:
-                txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza)).convert_alpha()
+                txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))
             else:
-                txtFraqueza = fonte.render(f"Fraqueza:", True, "white")                .convert_alpha()
+                txtFraqueza = fonte.render(f"Fraqueza:", True, "white")                
             janela.blit(descricaoInim_img, (posicao[0] - 300, posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] - 290, posicao[1] - 235))
             janela.blit(txtMagia, (posicao[0] - 290, posicao[1] - 205))

@@ -13,7 +13,7 @@ class DamageText(pygame.sprite.Sprite):
         
         def __init__(self, x, y, damage, colour):
             pygame.sprite.Sprite.__init__(self)
-            self.image = fonte.render(damage, True, colour).convert_alpha()
+            self.image = fonte.render(damage, True, colour)
             self.direction = random.choice(direcao)
             self.vinicial = random.choice(velocidade)
             self.rect = self.image.get_rect()
@@ -40,9 +40,9 @@ class MedidorText(pygame.sprite.Sprite):
         def __init__(self, x, y, damage, colour):
             pygame.sprite.Sprite.__init__(self)
             if colour != "black":
-                self.image = fonte2.render(damage, True, colour).convert_alpha()
+                self.image = fonte2.render(damage, True, colour)
             else:
-                self.image = fonte1.render(damage, True, colour).convert_alpha()
+                self.image = fonte1.render(damage, True, colour)
             self.rect = self.image.get_rect()
             self.rect.center = (x, y)
             self.colour = colour

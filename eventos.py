@@ -1,6 +1,6 @@
 import pygame
 pygame.init()
-pygame.display.set_mode((1,1), pygame.NOFRAME)
+
 class Jogo():
     def __init__(self):
         self.event_comprouCarta = False
@@ -34,7 +34,7 @@ class Jogo():
         self.selecionou = False
         self.textoGuia = ""
         self.buttonPosOffset = 0
-        self.round = 1
+        self.round = 4
         self.comandoPassado = -1
         self.emitir = False
         self.particula = 0

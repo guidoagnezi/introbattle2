@@ -469,7 +469,7 @@ class Card():
             else:
                 DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
                     
-descricao_img = pygame.image.load("imagem/background/descricao.png").convert_alpha()
+descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 descricao_img.set_alpha(200)
 
 carta  = Card("Avareza", 20, 5, "+10 rubis")
@@ -588,9 +588,9 @@ def desenhaDescricao(janela, fonte):
     posicao = pygame.mouse.get_pos()
     for cards in mao:
         if cards.destacar(posicao):
-            txtDescricao = fonte.render(cards.descricao, True, "white").convert_alpha()
-            txtNome = fonte.render(f"{cards.nome}", True, "white").convert_alpha()
-            txtCusto = fonte.render(f"Custo: {cards.custo}", True, "yellow").convert_alpha()
+            txtDescricao = fonte.render(cards.descricao, True, "white")
+            txtNome = fonte.render(f"{cards.nome}", True, "white")
+            txtCusto = fonte.render(f"Custo: {cards.custo}", True, "yellow")
             janela.blit(descricao_img, (posicao[0], posicao[1] - 100))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 95))
             janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
@@ -602,9 +602,9 @@ def desenhaPrecoCompra(janela, fonte):
 
     janela.blit(rubiImagem, (1225, 560))
     if med.rubis >= med.custoComprar:
-        txtPreco = fonte.render(f"{med.custoComprar}", True, "crimson").convert_alpha()
+        txtPreco = fonte.render(f"{med.custoComprar}", True, "crimson")
     else:
-        txtPreco = fonte.render(f"{med.custoComprar}", True, "gray").convert_alpha()
+        txtPreco = fonte.render(f"{med.custoComprar}", True, "gray")
     janela.blit(txtPreco, (1275, 565))
 
 def sorteiaAprimoramentos():
@@ -643,7 +643,7 @@ def desenhaAprimoramentos(janela, fonte, leque):
         cards.x_pos = x_axis
         cards.y_pos = y_axis
         cards.rect = cards.image.get_rect(center=(cards.x_pos, cards.y_pos))
-        desc = fonte.render(f"{cards.descricao}", True, cor).convert_alpha()
+        desc = fonte.render(f"{cards.descricao}", True, cor)
         descRect = desc.get_rect(center=(x_axis, y_axis + 120))
         x_axis += offset
         cards.desenhaCards(janela)

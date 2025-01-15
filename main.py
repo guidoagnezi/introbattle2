@@ -12,18 +12,19 @@ from pygame.locals import *
 
 
 pygame.init()
-
+pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
 #tempo
 clock = pygame.time.Clock()
-fps = 70
+fps = 60
 
 #tela
 largura = 1360
 altura = 720
 
-flags = DOUBLEBUF | OPENGL
-janela = pygame.display.set_mode((largura, altura), DOUBLEBUF)
+flags = DOUBLEBUF 
+janela = pygame.display.set_mode((largura, altura), flags, 16)
 pygame.display.set_caption("Chabude bude")
+janela.set_alpha(None)
 
 #fontes
 fonte = pygame.font.Font("fonts/pixel.ttf", 18)
@@ -34,7 +35,7 @@ fonte4 = pygame.font.Font("fonts/pixel.ttf", 35)
 
 #imagens
 i = random.randint(0, 2)
-bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert_alpha()
+bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
 action_img = pygame.image.load("imagem/background/action.png").convert_alpha()
 actionE_img = pygame.image.load("imagem/background/action_enemy.png").convert_alpha()
 
@@ -62,25 +63,25 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
     if j.textoAtualizou:
         
         if j.event_realizouAtaque:
-            j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}!", True, "white").convert_alpha()
+            j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}!", True, "white")
             if j.event_acertouCritico:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}! Ataque critico!", True, "red").convert_alpha()
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}! Ataque critico!", True, "red")
         elif j.event_realizouSkill:
-            j.textoGuia = fonte3.render(f"{MonsVez.nome} usou sua skill {MonsVez.skill.nome}!", True, "yellow").convert_alpha()
+            j.textoGuia = fonte3.render(f"{MonsVez.nome} usou sua skill {MonsVez.skill.nome}!", True, "yellow")
             if MonsVez == mago:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} trocou seu tipo de ataque para {retornaNome(MonsVez.magia)}!", True, retornaCor(MonsVez.magia)).convert_alpha()
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} trocou seu tipo de ataque para {retornaNome(MonsVez.magia)}!", True, retornaCor(MonsVez.magia))
             if MonsVez == mestre:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} está focado! Cuidado!", True, "red").convert_alpha()
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} está focado! Cuidado!", True, "red")
             if MonsVez == pepeteco:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} sabotou o grupo!", True, "yellow").convert_alpha()
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} sabotou o grupo!", True, "yellow")
             if MonsVez == bobonauta:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow").convert_alpha()
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow")
         elif j.event_primeiroTurno:
-            j.textoGuia = fonte3.render(f"GAME!   START!", True, "white").convert_alpha()
+            j.textoGuia = fonte3.render(f"GAME!   START!", True, "white")
         elif j.event_vezJogador:
-            j.textoGuia = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white").convert_alpha()
+            j.textoGuia = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white")
         elif not j.event_vezJogador:
-            j.textoGuia = fonte3.render(f"O inimigo {MonsVez.nome} vai atacar!", True, "white").convert_alpha()
+            j.textoGuia = fonte3.render(f"O inimigo {MonsVez.nome} vai atacar!", True, "white")
         j.textoAtualizou = False
 
     janela.blit(j.textoGuia, (740, 40))
@@ -110,9 +111,9 @@ def desenhaCursor(posicao):
 
 def draw_aviso(janela, fonte, flag):
     if flag == 1:
-        texto = fonte.render("Nenhum personagem selecionado", True, "yellow").convert_alpha()
+        texto = fonte.render("Nenhum personagem selecionado", True, "yellow")
     else:
-        texto = fonte.render("Deck nao pode ter menos que 4 cartas", True, "yellow").convert_alpha()
+        texto = fonte.render("Deck nao pode ter menos que 4 cartas", True, "yellow")
     texto_rect = texto.get_rect(center=(1010, 565))
     janela.blit(texto, texto_rect)
 
@@ -149,7 +150,7 @@ def atacar(atacante, alvo):
                 
     return dano
 
-img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png").convert_alpha()
+img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png").convert()
 
 def menuTitulo():
 
@@ -189,7 +190,7 @@ def desenhaMembros():
 
 img_descricaoBox = pygame.image.load("imagem/background/description_box.png").convert_alpha()
 def menuPrincipal():
-    txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson").convert_alpha()
+    txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson")
     for botao in card_buttons:
         if botao.nome == 'cardframe':
             if botao.carta not in deck:
@@ -205,7 +206,7 @@ def menuPrincipal():
     j.mensagem = False
     j.flag = 0
     while(1):
-
+        clock.tick(120)
         posMouse = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
@@ -300,7 +301,7 @@ def batalha():
     j.event_bossBattle = False
     j.selecionou = False
     i = random.randint(0, 4)
-    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert_alpha()
+    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
     if j.round == 4 or j.round == 8 or j.round == 12:
         bg0_img = gerarBoss(j.round)
         j.event_bossBattle = True
@@ -328,7 +329,7 @@ def batalha():
     tamEquipeInim = len(equipeInim)
     j.acoesEquipe = tamEquipe
 
-    while(1):
+    while 1:
 
         clock.tick(fps)
         posMouse = pygame.mouse.get_pos()
@@ -621,7 +622,7 @@ def batalha():
         
         atualizaBotoes()
         monsVezGuia = monsVez
-        #RENDERIZACAO --- //
+        #REN
         janela.blit(bg0_img, (0,0))
         if vivos != 0 and not j.event_standby and not  (not j.event_vezJogador and j.event_bossBattle):
             desenharMonsVez(janela, monsVez)
@@ -647,7 +648,7 @@ def batalha():
         desenhaTexto(j.txt_dano, janela)
         pygame.display.flip()
 
-img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png").convert_alpha()
+img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png").convert()
 
 def reset():
     
@@ -814,8 +815,8 @@ def reset():
 
 def desenhaGameover(janela):
 
-    txtEquipe = fonte3.render("Equipe", True, "white").convert_alpha()
-    txtAprimoramentos = fonte3.render("Aprimoramentos", True, "white").convert_alpha()
+    txtEquipe = fonte3.render("Equipe", True, "white")
+    txtAprimoramentos = fonte3.render("Aprimoramentos", True, "white")
     espacamento = 200
     x = largura / 3
     y = 90
@@ -928,7 +929,7 @@ def continuar():
     img_bg_gameover.set_alpha(20)
     transparencia = 40
     clicou = False
-    txtContinue = fonte4.render("Round completo! Continue lutando!!", True, "white").convert_alpha()
+    txtContinue = fonte4.render("Round completo! Continue lutando!!", True, "white")
     txtContinue_rect = txtContinue.get_rect(center=(680, 420))
     j.event_realizouAtaque = False
     j.event_realizouSkill = False
@@ -979,9 +980,9 @@ def gameOver(jogo):
     img_bg_gameover.set_alpha(20)
     transparencia = 40
     clicou = False
-    txtFim = fonte4.render("Todos os lutadores PERECERAM, aceite seu fim.", True, "white").convert_alpha()
+    txtFim = fonte4.render("Todos os lutadores PERECERAM, aceite seu fim.", True, "white")
     if j.round == 12:
-        txtFim = fonte4.render("Parabéns! Você concluiu os 12 rounds", True, "white").convert_alpha()
+        txtFim = fonte4.render("Parabéns! Você concluiu os 12 rounds", True, "white")
     txtFim_rect = txtFim.get_rect(center=(680, 420))
     while(1):
 

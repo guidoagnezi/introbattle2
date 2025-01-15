@@ -25,9 +25,9 @@ class Medidor():
         barraAlt = 25
         janela.blit(rubyFrame, (30, 12))
         janela.blit(self.rubiImagem, (55, 35))
-        rubiNumero = fonte.render(f"{self.rubis}", True, "white").convert_alpha()
+        rubiNumero = fonte.render(f"{self.rubis}", True, "white")
         janela.blit(rubiNumero, (100, 45))
-        txtEnergia = fonte.render(f"Energia   {self.energiaMax}/{self.energia}", True, "black").convert_alpha()
+        txtEnergia = fonte.render(f"Energia   {self.energiaMax}/{self.energia}", True, "black")
         ratio = self.energia / self.energiaMax
         pygame.draw.rect(janela, "gray", (730, 500, barraLar, barraAlt))
         pygame.draw.rect(janela, self.corEnergia, (730, 500, barraLar * ratio, barraAlt))
@@ -37,7 +37,7 @@ class Medidor():
 
         janela.blit(rubyFrameMP, (700, 2))
         janela.blit(self.rubiImagem, (730, 15))
-        rubiNumero = fonte.render(f"{self.rubis}", True, "white").convert_alpha()
+        rubiNumero = fonte.render(f"{self.rubis}", True, "white")
         janela.blit(rubiNumero, (775, 25))
 
     def rendaRubi(self, renda):
