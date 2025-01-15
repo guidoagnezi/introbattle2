@@ -2,12 +2,14 @@ import pygame
 from eventos import *
 from monstro import *
 from carta import *
+pygame.init()
 
+pygame.display.set_mode((1,1), pygame.NOFRAME)
 class Button():
         
     def __init__(self, nome, x_pos, y_pos):
             self.nome = nome
-            self.image = pygame.image.load(f"imagem/background/{nome}.png")            
+            self.image = pygame.image.load(f"imagem/background/{nome}.png")            .convert_alpha()
             self.x_pos = x_pos
             self.y_pos = y_pos
             self.monstro = 0
@@ -46,7 +48,7 @@ skl_button = Button("skl_button", 885, 650)
 skl_button.image = pygame.transform.scale_by(skl_button.image, 1.2)
 skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button.y_pos))
 
-hud0_img = pygame.image.load("imagem/background/hud0.png")
+hud0_img = pygame.image.load("imagem/background/hud0.png").convert_alpha()
 
 t_start_button = Button("start_button", 675, 360)
 t_start_button.image = pygame.transform.scale_by(t_start_button.image, 1.2)
@@ -140,6 +142,10 @@ main_card_button26= Button("cardframe", 550, 2500)
 main_card_button26.carta = carta26
 main_card_button27= Button("cardframe", 120, 2790)
 main_card_button27.carta = carta27
+main_card_button28= Button("cardframe", 340, 2790)
+main_card_button28.carta = carta28
+main_card_button29= Button("cardframe", 550, 2790)
+main_card_button29.carta = carta29
 
 main_go_button = Button("go_button", 1150, 650)
 monstro_button = Button("monstro_button", 760, 650)
@@ -207,6 +213,8 @@ card_buttons.append(main_card_button24)
 card_buttons.append(main_card_button25)
 card_buttons.append(main_card_button26)
 card_buttons.append(main_card_button27)
+card_buttons.append(main_card_button28)
+card_buttons.append(main_card_button29)
 
 menu_buttons = []
 
@@ -260,13 +268,13 @@ def selecionarPersonagem(grupo, position):
       for botao in grupo:
             if botao.checkForInput(position) and botao.nome == "cardframe":
                   if botao.selected == False and len(equipe) != 3 and med.rubis >= botao.monstro.custo:
-                        botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        
+                        botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        .convert_alpha()
                         equipe.append(botao.monstro)
                         j.event_perdeuRubi = True
                         med.valor = botao.monstro.custo
                         botao.selected = True
                   elif botao.selected == True:
-                        botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        
+                        botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        .convert_alpha()
                         equipe.remove(botao.monstro)
                         botao.selected = False
 
@@ -275,14 +283,14 @@ def selecionarCarta(grupo, position):
       for botao in grupo:
             if botao.checkForInput(position) and botao.nome == "cardframe":
                   if botao.selected == False and med.rubis >= botao.carta.preco:
-                        botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        
+                        botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        .convert_alpha()
                         deck.append(botao.carta)
                         j.event_perdeuRubi = True
                         med.valor = botao.carta.preco
                         botao.selected = True
                         return True
                   elif botao.selected == True and len(deck) > 4:
-                        botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        
+                        botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        .convert_alpha()
                         deck.remove(botao.carta)
                         botao.selected = False
                         return True
@@ -290,7 +298,7 @@ def selecionarCarta(grupo, position):
                         return False
       return True
 
-img_rubi = pygame.image.load("imagem/medidor/rubi.png")
+img_rubi = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
 
 def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
 
@@ -298,17 +306,17 @@ def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
             if botao.nome == "cardframe" and botao.destacar(posicao):
 
                   cor = retornaCor(botao.monstro.magia)
-                  txtNome = fonte2.render(f"{botao.monstro.nome}", True, "white")
-                  txtVida = fonte.render(f"Vida: {botao.monstro.vidamax}", True, "white")
-                  # txtDescricao = fonte.render(botao.monstro.descricao, True, "white")
-                  txtCusto = fonte2.render(f"{int(botao.monstro.custo)}", True, "crimson")
-                  txtAtaque = fonte.render(f"Ataque: {int(botao.monstro.ataque)}", True, "white")
-                  txtDefesa = fonte.render(f"Defesa: {int(botao.monstro.defesa)}", True, "white")
-                  txtSorte = fonte.render(f"Sorte: {int(botao.monstro.sorte)}", True, "white")  
-                  txtMagia = fonte.render(f"Tipo de ataque:", True, cor)
-                  txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(botao.monstro.fraqueza))
-                  txtCustoSkill = fonte.render(f"Custo da Skill: {botao.monstro.skill.custo}", True, "yellow")
-                  txtSkill = fonte.render(f"Skill: {botao.monstro.skill.nome} - {botao.monstro.skill.descricao}", True, "gray")
+                  txtNome = fonte2.render(f"{botao.monstro.nome}", True, "white").convert_alpha()
+                  txtVida = fonte.render(f"Vida: {botao.monstro.vidamax}", True, "white").convert_alpha()
+                  # txtDescricao = fonte.render(botao.monstro.descricao, True, "white").convert_alpha()
+                  txtCusto = fonte2.render(f"{int(botao.monstro.custo)}", True, "crimson").convert_alpha()
+                  txtAtaque = fonte.render(f"Ataque: {int(botao.monstro.ataque)}", True, "white").convert_alpha()
+                  txtDefesa = fonte.render(f"Defesa: {int(botao.monstro.defesa)}", True, "white").convert_alpha()
+                  txtSorte = fonte.render(f"Sorte: {int(botao.monstro.sorte)}", True, "white")  .convert_alpha()
+                  txtMagia = fonte.render(f"Tipo de ataque:", True, cor).convert_alpha()
+                  txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(botao.monstro.fraqueza)).convert_alpha()
+                  txtCustoSkill = fonte.render(f"Custo da Skill: {botao.monstro.skill.custo}", True, "yellow").convert_alpha()
+                  txtSkill = fonte.render(f"Skill: {botao.monstro.skill.nome} - {botao.monstro.skill.descricao}", True, "gray").convert_alpha()
                   rect = botao.monstro.image.get_rect(center=(800, 180))
                   rect1 = txtNome.get_rect(center=(800, 250))
                   janela.blit(botao.monstro.image, rect)
@@ -334,12 +342,12 @@ def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
             if botao.nome == "cardframe" and botao.destacar(posicao):
 
                   rect = botao.carta.entalho.get_rect(center=(810, 190))
-                  txtCusto = fonte.render(f"{botao.carta.preco}", True, "crimson")
-                  txtDescricao = fonte.render(f"{botao.carta.descricao}", True, "white")
-                  txtCusto2 = fonte.render(f"Custo: {botao.carta.custo} energia", True, "yellow")
-                  txtNome = fonte2.render(f"{botao.carta.nome}", True, "white")
+                  txtCusto = fonte.render(f"{botao.carta.preco}", True, "crimson").convert_alpha()
+                  txtDescricao = fonte.render(f"{botao.carta.descricao}", True, "white").convert_alpha()
+                  txtCusto2 = fonte.render(f"Custo: {botao.carta.custo} energia", True, "yellow").convert_alpha()
+                  txtNome = fonte2.render(f"{botao.carta.nome}", True, "white").convert_alpha()
                   rect1 = txtNome.get_rect(center=(810, 300))
-                  txtDeck = fonte.render(f"No deck", True, "white")
+                  txtDeck = fonte.render(f"No deck", True, "white").convert_alpha()
                   janela.blit(botao.carta.entalho, rect)
                   janela.blit(txtNome, rect1)
                   janela.blit(txtDescricao, (890, 180))
@@ -350,7 +358,7 @@ def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
                   janela.blit(txtCusto, (1220, 130))
 
 def draw_aviso(janela, fonte):
-    texto = fonte.render("Você não selecionou 3 personagens", True, "white")
+    texto = fonte.render("Você não selecionou 3 personagens", True, "white").convert_alpha()
     texto_rect = texto.get_rect(center=(750, 650))
     janela.blit(texto, texto_rect)
 
@@ -359,16 +367,16 @@ def atualizaBotoes():
       trocou = False
       if (not j.event_vezJogador or j.event_standby) and not j.botoesOff:
 
-            atk_button.image = pygame.image.load("imagem/background/atk_button_off.png")            
-            skl_button.image = pygame.image.load("imagem/background/skl_button_off.png")            
-            com_button.image = pygame.image.load("imagem/background/com_button_off.png")            
+            atk_button.image = pygame.image.load("imagem/background/atk_button_off.png")            .convert_alpha()
+            skl_button.image = pygame.image.load("imagem/background/skl_button_off.png")            .convert_alpha()
+            com_button.image = pygame.image.load("imagem/background/com_button_off.png")            .convert_alpha()
             j.botoesOff = True
             trocou = True
       
       elif j.event_vezJogador and not j.event_standby and j.botoesOff:
-            atk_button.image = pygame.image.load("imagem/background/atk_button.png")            
-            skl_button.image = pygame.image.load("imagem/background/skl_button.png")            
-            com_button.image = pygame.image.load("imagem/background/com_button.png")            
+            atk_button.image = pygame.image.load("imagem/background/atk_button.png")            .convert_alpha()
+            skl_button.image = pygame.image.load("imagem/background/skl_button.png")            .convert_alpha()
+            com_button.image = pygame.image.load("imagem/background/com_button.png")            .convert_alpha()
             j.botoesOff = False
             trocou = True
 

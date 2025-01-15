@@ -7,11 +7,12 @@ from ataque import *
 from eventos import j
 
 pygame.init()
+pygame.display.set_mode((1,1), pygame.NOFRAME)
 
 class Card():
     def __init__(self, nome, custo, preco, descricao):
-        self.image = pygame.image.load("imagem/card/cardframe.png")        
-        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")     
+        self.image = pygame.image.load("imagem/card/cardframe.png")        .convert_alpha()
+        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")     .convert_alpha()
         self.nome = nome
         self.custo = custo
         self.preco = preco
@@ -51,6 +52,7 @@ class Card():
                     monstro.vida -= 25
                     DefineTextoDano(25, monstro, j.txt_grupo, "gray20", 7)
                     DefineAnimacaoAtaque(monstro, 7)
+                    monstro.machucado()
 
         if self.nome == 'Louco':
             if not j.event_bossBattle:
@@ -252,7 +254,7 @@ class Card():
             for monstro in equipeInim:
                 if monstro.vivo:
                     monstro.vida -= dano
-                    alvo.machucado()
+                    monstro.machucado()
                     DefineTextoDano(dano, monstro, j.txt_grupo, "gray20", 7)
                     DefineAnimacaoAtaque(monstro, 4)
         
@@ -280,7 +282,7 @@ class Card():
                 monstro.vida -= med.energia - self.custo
                 DefineTextoDano(f"{med.energia - self.custo}", monstro, j.txt_grupo, "gray20", 5)
                 DefineAnimacaoAtaque(monstro, 5)
-                alvo.machucado()
+                monstro.machucado()
             
             med.energia = 0
             med.valorE = med.energiaMax
@@ -433,8 +435,41 @@ class Card():
             alvo.updateStatus()
             alvo.CounterDef = 0
             DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 13)
+        
+        if self.nome == 'Sol':
+            alvo = monsVez
+            alvo.safe = True
+            DefineTextoStatus("       SAFE", alvo, j.txt_grupo, "black", 16)
+        
+        if self.nome == 'Lua':
+            if not j.event_bossBattle:
+                while 1:
+                    alvo = random.choice(equipeInim)
+                    if alvo.vivo:
+                        break
+                
+                if alvo in colecaoInimigos:
+                    colecao = colecaoInimigos
+                if alvo in colecaoInimigos2:
+                    colecao = colecaoInimigos2
+                if alvo in colecaoInimigos3:
+                    colecao = colecaoInimigos3
+
+                while 1:
+                    alvo2 = random.choice(colecao)
+                    print(f"2 nome: {alvo2.nome}")
+                    if alvo2.custo >= alvo.custo and alvo2 not in equipeInim:
+                        break
+                        
+                alvo2.ativar(alvo.x_pos, alvo.y_pos)
+                alvo2.vida = alvo2.vidamax
+                equipeInim.remove(alvo)
+                equipeInim.append(alvo2)
+                DefineAnimacaoAtaque(alvo2, 9)
+            else:
+                DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
                     
-descricao_img = pygame.image.load("imagem/background/descricao.png")
+descricao_img = pygame.image.load("imagem/background/descricao.png").convert_alpha()
 descricao_img.set_alpha(200)
 
 carta  = Card("Avareza", 20, 5, "+10 rubis")
@@ -449,7 +484,7 @@ carta8 = Card("Resistencia", 20, 5, "+DEF para o aliado da vez")
 carta9 = Card("Cafeina", 30, 10,"+1 acao")
 carta10 = Card("Milagre", 25, 10,"1/4 de cura ao aliado com menos vida")
 carta11 = Card("Enamorados", 40, 15, "Fortalece 1 inimigo e 1 aliado")
-carta12 = Card("Mundo", 65, 25, "Troca um aliado por um de custo + ou =")
+carta12 = Card("Mundo", 65, 45, "Troca um aliado por um de custo >=")
 carta13 = Card("Mago", 35, 10, "Status negativo aleatorio a um inimigo")
 carta14 = Card("Estrela", 70, 30, "+ATQ para o aliado da vez (perma)")
 carta15 = Card("Fortuna", 70, 25, "+SRT para o aliado da vez (perma)")
@@ -465,6 +500,8 @@ carta24 = Card("Justica", 60, 35, "Cura a equipe com menos vida")
 carta25 = Card("Morte", 30, 20, "Troca a fraqueza de um inimigo")
 carta26 = Card("Fraqueza", 30, 15, "-ATQ para um inimigo")
 carta27 = Card("Vulneravel", 30, 15, "-DEF para um inimigo")
+carta28 = Card("Sol", 35, 20, "O aliado da vez não morre esse round")
+carta29 = Card("Lua", 45, 25, "Troca o inimigo por um de custo >=")
 
 investimento = Card("Investimento", 0, 0, "Ganha 20% mais rubis")
 promocao = Card("Promocao", 0, 0, "Os monstros na loja custam 20% menos")
@@ -551,23 +588,23 @@ def desenhaDescricao(janela, fonte):
     posicao = pygame.mouse.get_pos()
     for cards in mao:
         if cards.destacar(posicao):
-            txtDescricao = fonte.render(cards.descricao, True, "white")
-            txtNome = fonte.render(f"{cards.nome}", True, "white")
-            txtCusto = fonte.render(f"Custo: {cards.custo}", True, "yellow")
+            txtDescricao = fonte.render(cards.descricao, True, "white").convert_alpha()
+            txtNome = fonte.render(f"{cards.nome}", True, "white").convert_alpha()
+            txtCusto = fonte.render(f"Custo: {cards.custo}", True, "yellow").convert_alpha()
             janela.blit(descricao_img, (posicao[0], posicao[1] - 100))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 95))
             janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
             janela.blit(txtCusto, (posicao[0] + 10, posicao[1] - 55))
             return True
-rubiImagem = pygame.image.load("imagem/medidor/rubi.png")
+rubiImagem = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
 
 def desenhaPrecoCompra(janela, fonte):
 
     janela.blit(rubiImagem, (1225, 560))
     if med.rubis >= med.custoComprar:
-        txtPreco = fonte.render(f"{med.custoComprar}", True, "crimson")
+        txtPreco = fonte.render(f"{med.custoComprar}", True, "crimson").convert_alpha()
     else:
-        txtPreco = fonte.render(f"{med.custoComprar}", True, "gray")
+        txtPreco = fonte.render(f"{med.custoComprar}", True, "gray").convert_alpha()
     janela.blit(txtPreco, (1275, 565))
 
 def sorteiaAprimoramentos():
@@ -577,10 +614,10 @@ def sorteiaAprimoramentos():
     leque.extend(amostra)
 
 def cliqueAprimoramento(posicao):
-     
+    monsVez = 0
     for cartas in leque:
         if cartas.checkForInput(posicao):
-            cartas.ativarEfeito(equipeInim, equipe, equipeAtivos)
+            cartas.ativarEfeito(equipeInim, equipe, equipeAtivos, monsVez)
             cartas.selecionado = True
             j.selecionou = True
             aprimoramentos.remove(cartas)
@@ -606,7 +643,7 @@ def desenhaAprimoramentos(janela, fonte, leque):
         cards.x_pos = x_axis
         cards.y_pos = y_axis
         cards.rect = cards.image.get_rect(center=(cards.x_pos, cards.y_pos))
-        desc = fonte.render(f"{cards.descricao}", True, cor)
+        desc = fonte.render(f"{cards.descricao}", True, cor).convert_alpha()
         descRect = desc.get_rect(center=(x_axis, y_axis + 120))
         x_axis += offset
         cards.desenhaCards(janela)

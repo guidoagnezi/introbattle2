@@ -2,14 +2,14 @@ import pygame
 from infotext import *
 
 pygame.init()
-
-rubyFrame = pygame.image.load("imagem/background/rubiFrame.png")
-rubyFrameMP = pygame.image.load("imagem/background/rubiFrameMP.png")
+pygame.display.set_mode((1,1), pygame.NOFRAME)
+rubyFrame = pygame.image.load("imagem/background/rubiFrame.png").convert_alpha()
+rubyFrameMP = pygame.image.load("imagem/background/rubiFrameMP.png").convert_alpha()
 
 class Medidor():
     def __init__(self, rubis, energia):
         self.rubis = rubis
-        self.rubiImagem = pygame.image.load("imagem/medidor/rubi.png")
+        self.rubiImagem = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
         self.energia = energia
         self.energiaMax = 100
         self.custoComprar = 5
@@ -25,9 +25,9 @@ class Medidor():
         barraAlt = 25
         janela.blit(rubyFrame, (30, 12))
         janela.blit(self.rubiImagem, (55, 35))
-        rubiNumero = fonte.render(f"{self.rubis}", True, "white")
+        rubiNumero = fonte.render(f"{self.rubis}", True, "white").convert_alpha()
         janela.blit(rubiNumero, (100, 45))
-        txtEnergia = fonte.render(f"Energia   {self.energiaMax}/{self.energia}", True, "black")
+        txtEnergia = fonte.render(f"Energia   {self.energiaMax}/{self.energia}", True, "black").convert_alpha()
         ratio = self.energia / self.energiaMax
         pygame.draw.rect(janela, "gray", (730, 500, barraLar, barraAlt))
         pygame.draw.rect(janela, self.corEnergia, (730, 500, barraLar * ratio, barraAlt))
@@ -37,7 +37,7 @@ class Medidor():
 
         janela.blit(rubyFrameMP, (700, 2))
         janela.blit(self.rubiImagem, (730, 15))
-        rubiNumero = fonte.render(f"{self.rubis}", True, "white")
+        rubiNumero = fonte.render(f"{self.rubis}", True, "white").convert_alpha()
         janela.blit(rubiNumero, (775, 25))
 
     def rendaRubi(self, renda):
@@ -60,12 +60,12 @@ class Medidor():
             
 med = Medidor(60, 50)
 
-agua = pygame.image.load("imagem/medidor/agua.png")
-raio = pygame.image.load("imagem/medidor/raio.png")
-fogo = pygame.image.load("imagem/medidor/fogo.png")
-soco = pygame.image.load("imagem/medidor/soco.png")
-magica = pygame.image.load("imagem/medidor/magica.png")
-corte = pygame.image.load("imagem/medidor/coracao.png")
+agua = pygame.image.load("imagem/medidor/agua.png").convert_alpha()
+raio = pygame.image.load("imagem/medidor/raio.png").convert_alpha()
+fogo = pygame.image.load("imagem/medidor/fogo.png").convert_alpha()
+soco = pygame.image.load("imagem/medidor/soco.png").convert_alpha()
+magica = pygame.image.load("imagem/medidor/magica.png").convert_alpha()
+corte = pygame.image.load("imagem/medidor/coracao.png").convert_alpha()
 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 def retornaImagem(tipo):
@@ -87,7 +87,7 @@ def retornaImagem(tipo):
 
     return img
 
-atk_up = pygame.image.load("imagem/medidor/atk_up.png")
-def_up = pygame.image.load("imagem/medidor/def_up.png")
-atk_down = pygame.image.load("imagem/medidor/atk_down.png")
-def_down = pygame.image.load("imagem/medidor/def_down.png")
+atk_up = pygame.image.load("imagem/medidor/atk_up.png").convert_alpha()
+def_up = pygame.image.load("imagem/medidor/def_up.png").convert_alpha()
+atk_down = pygame.image.load("imagem/medidor/atk_down.png").convert_alpha()
+def_down = pygame.image.load("imagem/medidor/def_down.png").convert_alpha()

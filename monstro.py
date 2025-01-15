@@ -8,6 +8,7 @@ from infotext import *
 from eventos import *
 
 pygame.init()
+pygame.display.set_mode((1,1), pygame.NOFRAME)
 
 class Monstro:
 
@@ -35,6 +36,7 @@ class Monstro:
         self.condicao = 0
         self.CounterCon = 0
         self.gauge = 0
+        self.safe = False
         self.danoAcumulado = 0
         self.player = False
         self.magia = magia
@@ -47,7 +49,7 @@ class Monstro:
         self.revelouFraqueza = False
         self.revelouVida = False
         self.skill = skill
-        self.image = pygame.image.load(f"imagem/lutador/{self.nome}/0.png")
+        self.image = pygame.image.load(f"imagem/lutador/{self.nome}/0.png").convert_alpha()
         self.animation_cooldown = 100
         self.update_time = pygame.time.get_ticks()
         self.animationtam = animationtam
@@ -58,13 +60,13 @@ class Monstro:
         self.freezeTime = 0
         temp_list = []
         for i in range(self.animationtam):
-            img = pygame.image.load(f"imagem/lutador/{self.nome}/{i}.png")
+            img = pygame.image.load(f"imagem/lutador/{self.nome}/{i}.png").convert_alpha()
             
             temp_list.append(img)
         self.animation_list.append(temp_list)
         temp_list = []
         for i in range(7, 5, -1):
-            img = pygame.image.load(f'imagem/lutador/{self.nome}/{i}.png')
+            img = pygame.image.load(f'imagem/lutador/{self.nome}/{i}.png').convert_alpha()
             
             temp_list.append(img)
         self.animation_list.append(temp_list)
@@ -391,44 +393,44 @@ demonio = Monstro   ("Demonio",  200,  50, 20, 3, analisar, 40, 8, 0, 6)
 odiburoi = Monstro  ("Odiburoi", 180,  30, 55, 3, corre,    40, 7, 6, 4)
 
 parceiro = Monstro  ("Parceiro", 190,  35, 55, 6, wekapeople,  0, 8, 0, 6)
-azuliu = Monstro    ("Azuliu",   210,  30, 60, 4, saraivada,     0, 6, 0, 6)
-ediburei = Monstro  ("Ediburei", 200,  40, 55, 6, focar,     0, 4, 0, 6)
+azuliu = Monstro    ("Azuliu",   210,  30, 60, 4, saraivada,   0, 6, 0, 6)
+ediburei = Monstro  ("Ediburei", 200,  40, 55, 6, focar,       0, 4, 0, 6)
 
 #INIMIGOS --- /// # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
-inim1 = Monstro     ("Amigo",    100, 20, 35, 3, wekapipo,  10, 8, 0, 6)
-inim2 = Monstro     ("Filho",    100, 25, 25, 3, cura,      10, 5, 7, 6)
-inim3 = Monstro     ("Linguico", 100, 20, 25, 3, surra,     10, 4, 3, 6)
-inim4 = Monstro     ("Ico",      120, 20, 30, 3, explosao,  15, 5, 6, 6)
-inim5 = Monstro     ("Gelo",     110, 20, 25, 3, congelar,  10, 6, 4, 6)
-inim6 = Monstro     ("Xamilo",   110, 25, 30, 3, cortar,    10, 3, 5, 6)
-inim7 = Monstro     ("Adiburai", 110, 20, 35, 3, treinar,   15, 4, 4, 6)
+inim1 = Monstro     ("Amigo",    120, 20, 35, 3, wekapipo,  10, 8, 0, 6)
+inim2 = Monstro     ("Filho",    120, 25, 25, 3, cura,      10, 5, 7, 6)
+inim3 = Monstro     ("Linguico", 120, 20, 25, 3, surra,     15, 4, 3, 6)
+inim4 = Monstro     ("Ico",      140, 20, 30, 3, explosao,  20, 5, 6, 6)
+inim5 = Monstro     ("Gelo",     130, 20, 25, 3, congelar,  20, 6, 4, 6)
+inim6 = Monstro     ("Xamilo",   130, 25, 30, 3, cortar,    20, 3, 5, 6)
+inim7 = Monstro     ("Adiburai", 130, 20, 35, 3, treinar,   20, 4, 4, 6)
 
-inim8 = Monstro     ("Demonio",  160, 50, 20, 3, wekapipo,  10, 8, 0, 6)
-inim9 = Monstro     ("Bombinha", 135, 30, 35, 3, devolver,  10, 5, 3, 6)
-inim10 = Monstro    ("Linguico", 120, 30, 40, 4, surra,     10, 4, 7, 6)
-inim11 = Monstro    ("Ico",      140, 30, 35, 3, explosao,  10, 5, 7, 6)
-inim12 = Monstro    ("Gelo",     120, 35, 30, 3, congelar,  10, 6, 5, 6)
-inim13 = Monstro    ("Xamilo",   130, 35, 45, 5, cortar,    10, 3, 0, 6)
-inim14 = Monstro    ("Adiburai", 130, 30, 45, 5, treinar,   10, 4, 6, 6)
+inim8 = Monstro     ("Demonio",  190, 50, 20, 3, wekapipo,  25, 8, 0, 6)
+inim9 = Monstro     ("Bombinha", 155, 30, 35, 3, devolver,  25, 5, 3, 6)
+inim10 = Monstro    ("Linguico", 150, 30, 40, 4, surra,     30, 4, 7, 6)
+inim11 = Monstro    ("Ico",      170, 30, 35, 3, explosao,  35, 5, 7, 6)
+inim12 = Monstro    ("Gelo",     150, 35, 30, 3, congelar,  35, 6, 5, 6)
+inim13 = Monstro    ("Xamilo",   160, 35, 45, 5, cortar,    35, 3, 0, 6)
+inim14 = Monstro    ("Adiburai", 160, 30, 45, 5, treinar,   35, 4, 6, 6)
 
-inim15 = Monstro    ("Demonio",  210, 55, 20, 3, wekapipo,  10, 8, 0, 6)
-inim16 = Monstro    ("Bombinha", 170, 40, 45, 4, devolver,  10, 6, 6, 6)
-inim17 = Monstro    ("Kamirider",140, 30, 70, 5, surra,     10, 3, 3, 4)
-inim18 = Monstro    ("Odiburoi", 160, 30, 55, 4, corre,     10, 7, 6, 4)
-inim19 = Monstro    ("Monge",    150, 35, 45, 3, saraivada,  10, 6, 4, 1)
-inim20 = Monstro    ("Camboja",  180, 45, 35, 5, eletroterapia,    10, 3, 5, 3)
-inim21 = Monstro    ("Adiburai", 180, 40, 65, 5, treinar,   10, 4, 7, 6)
+inim15 = Monstro    ("Demonio",  230, 55, 20, 3, wekapipo,  40, 8, 0, 6)
+inim16 = Monstro    ("Bombinha", 200, 40, 45, 4, devolver,  40, 6, 6, 6)
+inim17 = Monstro    ("Kamirider",170, 30, 70, 5, surra,     40, 3, 3, 4)
+inim18 = Monstro    ("Odiburoi", 190, 30, 55, 4, corre,     45, 7, 6, 4)
+inim19 = Monstro    ("Monge",    180, 35, 45, 3, saraivada,  45, 6, 4, 1)
+inim20 = Monstro    ("Camboja",  210, 45, 35, 5, eletroterapia,45, 3, 5, 3)
+inim21 = Monstro    ("Adiburai", 210, 40, 65, 5, treinar,   45, 4, 7, 6)
 #BOSS --- ///
 
-pepeteco = Monstro  ("Pepeteco", 1200, 30, 40, 4, sabotar, 90, 3, 0, 6)
-pepeteco.bg = pygame.image.load("imagem/background/bg2.png")
-mestre = Monstro    ("Mestre", 800, 35, 45, 5, focar, 90, 4, 0, 6)
-mestre.bg = pygame.image.load("imagem/background/bg3.png")
-mago = Monstro      ("Mago", 1000, 30, 30, 3, mudar, 90, 8, 0, 6)
-mago.bg = pygame.image.load("imagem/background/bg0.png")
+pepeteco = Monstro  ("Pepeteco", 1200, 35, 40, 4, sabotar, 90, 3, 0, 6)
+pepeteco.bg = pygame.image.load("imagem/background/bg2.png").convert_alpha()
+mestre = Monstro    ("Mestre", 900, 40, 45, 5, focar, 90, 4, 0, 6)
+mestre.bg = pygame.image.load("imagem/background/bg3.png").convert_alpha()
+mago = Monstro      ("Mago", 1000, 35, 35, 3, mudar, 90, 8, 0, 6)
+mago.bg = pygame.image.load("imagem/background/bg0.png").convert_alpha()
 bobonauta = Monstro ("Bobonauta", 1100, 30, 45, 4, debilitar, 90, 6, 0, 6)
-bobonauta.bg = pygame.image.load("imagem/background/bg4.png")
+bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert_alpha()
 bobonauta.animation_cooldown = 200
 
 selecao = []
@@ -488,7 +490,7 @@ colecaoInimigos3.append(inim21)
 
 equipeInim  = []
 
-loja0_img = pygame.image.load("imagem/background/loja0.png")
+loja0_img = pygame.image.load("imagem/background/loja0.png").convert_alpha()
 
 colecaoBoss = []
 
@@ -575,9 +577,14 @@ def contarVivos(grupo):
     count = 0
     for monstro in grupo:
         if monstro.vida <= 0 and monstro.vivo:
-            monstro.vivo = False
-            DefineAnimacaoAtaque(monstro, 9)
-            monstro.vida = 0
+            if monstro.safe == False:
+                monstro.vivo = False
+                DefineAnimacaoAtaque(monstro, 9)
+                monstro.vida = 0
+            elif monstro.safe:
+                DefineTextoStatus("       SAFE", monstro, j.txt_grupo, "black", 16)
+                monstro.vida = int(monstro.vidamax / 10)
+                count += 1
         elif monstro.vivo:
             count += 1
 
@@ -607,7 +614,7 @@ def contarVivosInimigos(grupo):
 
     return count
 
-img_battlebox = pygame.image.load("imagem/background/battle_box.png")
+img_battlebox = pygame.image.load("imagem/background/battle_box.png").convert_alpha()
 
 img_battlebox.set_alpha(100)
 
@@ -625,7 +632,7 @@ def inimigoEscolheAlvo(equipeAlvo):
     else:
         return -1
 
-descricao_img = pygame.image.load("imagem/background/descricao.png")
+descricao_img = pygame.image.load("imagem/background/descricao.png").convert_alpha()
 
 descricao_img = pygame.transform.scale(descricao_img, (380, 240))
 descricao_img.set_alpha(200)
@@ -636,16 +643,16 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
         if monstro.destacar(posicao):
 
             cor = retornaCor(monstro.magia)
-            txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
-            txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
-            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")           
-            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")            
-            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")            
-            txtMagia = fonte.render(f"Ataque:", True, cor)
-            txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))         
-            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")            
-            txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white")
-            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white")
+            txtNome = fonteNome.render(f"{monstro.nome}", True, "white").convert_alpha()
+            txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white").convert_alpha()
+            txtCusto = fonte.render(f"Custo de compra: {int(monstro.custo)}", True, "crimson")           .convert_alpha()
+            txtAtaque = fonte.render(f"Atq: {int(monstro.ataque)}", True, "white")            .convert_alpha()
+            txtDefesa = fonte.render(f"Def: {int(monstro.defesa)}", True, "white")            .convert_alpha()
+            txtMagia = fonte.render(f"Ataque:", True, cor).convert_alpha()
+            txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))         .convert_alpha()
+            txtCustoSkill = fonte.render(f"Custo da Skill: {monstro.skill.custo}", True, "yellow")            .convert_alpha()
+            txtSkill = fonte.render(f"Skill: {monstro.skill.nome}", True, "white").convert_alpha()
+            txtSorte = fonte.render(f"Srt: {int(monstro.sorte)}", True, "white").convert_alpha()
           
             janela.blit(descricao_img, (posicao[0], posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 235))
@@ -679,7 +686,7 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
 
             return True
 
-descricaoInim_img = pygame.image.load("imagem/background/descricao.png")
+descricaoInim_img = pygame.image.load("imagem/background/descricao.png").convert_alpha()
 
 descricaoInim_img = pygame.transform.scale(descricao_img, (300, 240))
 descricaoInim_img.set_alpha(200)
@@ -690,21 +697,21 @@ def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
         if monstro.destacar(posicao) and monstro.vivo:
 
             cor = retornaCor(monstro.magia)
-            txtNome = fonteNome.render(f"{monstro.nome}", True, "white")
+            txtNome = fonteNome.render(f"{monstro.nome}", True, "white").convert_alpha()
             if monstro.revelouVida:
-                txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white")
-                txtCusto = fonte.render(f"Recompensa: {int(monstro.custo)}", True, "crimson") 
+                txtVida = fonte.render(f"Vida: {monstro.vidamax}/{int(monstro.vida)}", True, "white").convert_alpha()
+                txtCusto = fonte.render(f"Recompensa: {int(monstro.custo)}", True, "crimson") .convert_alpha()
             else:
-                txtVida = fonte.render(f"Vida: ???/???", True, "white")
-                txtCusto = fonte.render(f"Recompensa: ???", True, "crimson")
+                txtVida = fonte.render(f"Vida: ???/???", True, "white").convert_alpha()
+                txtCusto = fonte.render(f"Recompensa: ???", True, "crimson").convert_alpha()
             if monstro.revelouMagia:
-                txtMagia = fonte.render(f"Ataque:", True, cor)
+                txtMagia = fonte.render(f"Ataque:", True, cor).convert_alpha()
             else:
-                txtMagia = fonte.render(f"Ataque:", True, "white")
+                txtMagia = fonte.render(f"Ataque:", True, "white").convert_alpha()
             if monstro.revelouFraqueza or monstro.fraqueza == 0:
-                txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza))
+                txtFraqueza = fonte.render(f"Fraqueza:", True, retornaCor(monstro.fraqueza)).convert_alpha()
             else:
-                txtFraqueza = fonte.render(f"Fraqueza:", True, "white")                
+                txtFraqueza = fonte.render(f"Fraqueza:", True, "white")                .convert_alpha()
             janela.blit(descricaoInim_img, (posicao[0] - 300, posicao[1] - 240))
             janela.blit(txtNome, (posicao[0] - 290, posicao[1] - 235))
             janela.blit(txtMagia, (posicao[0] - 290, posicao[1] - 205))

@@ -2,13 +2,13 @@ import pygame
 from eventos import *
 import random
 pygame.init()
-
+pygame.display.set_mode((1,1), pygame.NOFRAME)
 class Ataque(pygame.sprite.Sprite):
 
     def __init__(self, x, y, nome):
         pygame.sprite.Sprite.__init__(self)
         self.nome = nome
-        self.image = pygame.image.load(f"imagem/ataque/{self.nome}/0.png")
+        self.image = pygame.image.load(f"imagem/ataque/{self.nome}/0.png").convert_alpha()
         self.rect = self.image.get_rect(center=(x + 60 + random.randint(0, 70), y + 40 + random.randint(0, 70)))
         self.counter = 0
         self.animation_cooldown = 100
@@ -19,7 +19,7 @@ class Ataque(pygame.sprite.Sprite):
         self.action = 0
         temp_list = []
         for i in range(5):
-            img = pygame.image.load(f"imagem/ataque/{self.nome}/{i}.png")
+            img = pygame.image.load(f"imagem/ataque/{self.nome}/{i}.png").convert_alpha()
             temp_list.append(img)
         self.animation_list.append(temp_list)
         self.image = self.animation_list[self.action][self.index]

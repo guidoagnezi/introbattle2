@@ -21,7 +21,7 @@ fps = 70
 largura = 1360
 altura = 720
 
-flags = DOUBLEBUF
+flags = DOUBLEBUF | OPENGL
 janela = pygame.display.set_mode((largura, altura), DOUBLEBUF)
 pygame.display.set_caption("Chabude bude")
 
@@ -62,25 +62,25 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
     if j.textoAtualizou:
         
         if j.event_realizouAtaque:
-            j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}!", True, "white")
+            j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}!", True, "white").convert_alpha()
             if j.event_acertouCritico:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}! Ataque critico!", True, "red")
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} atacou {alvo.nome}! Ataque critico!", True, "red").convert_alpha()
         elif j.event_realizouSkill:
-            j.textoGuia = fonte3.render(f"{MonsVez.nome} usou sua skill {MonsVez.skill.nome}!", True, "yellow")
+            j.textoGuia = fonte3.render(f"{MonsVez.nome} usou sua skill {MonsVez.skill.nome}!", True, "yellow").convert_alpha()
             if MonsVez == mago:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} trocou seu tipo de ataque para {retornaNome(MonsVez.magia)}!", True, retornaCor(MonsVez.magia))
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} trocou seu tipo de ataque para {retornaNome(MonsVez.magia)}!", True, retornaCor(MonsVez.magia)).convert_alpha()
             if MonsVez == mestre:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} está focado! Cuidado!", True, "red")
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} está focado! Cuidado!", True, "red").convert_alpha()
             if MonsVez == pepeteco:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} sabotou o grupo!", True, "yellow")
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} sabotou o grupo!", True, "yellow").convert_alpha()
             if MonsVez == bobonauta:
-                j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow")
+                j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow").convert_alpha()
         elif j.event_primeiroTurno:
-            j.textoGuia = fonte3.render(f"GAME!   START!", True, "white")
+            j.textoGuia = fonte3.render(f"GAME!   START!", True, "white").convert_alpha()
         elif j.event_vezJogador:
-            j.textoGuia = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white")
+            j.textoGuia = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white").convert_alpha()
         elif not j.event_vezJogador:
-            j.textoGuia = fonte3.render(f"O inimigo {MonsVez.nome} vai atacar!", True, "white")
+            j.textoGuia = fonte3.render(f"O inimigo {MonsVez.nome} vai atacar!", True, "white").convert_alpha()
         j.textoAtualizou = False
 
     janela.blit(j.textoGuia, (740, 40))
@@ -110,9 +110,9 @@ def desenhaCursor(posicao):
 
 def draw_aviso(janela, fonte, flag):
     if flag == 1:
-        texto = fonte.render("Nenhum personagem selecionado", True, "yellow")
+        texto = fonte.render("Nenhum personagem selecionado", True, "yellow").convert_alpha()
     else:
-        texto = fonte.render("Deck nao pode ter menos que 4 cartas", True, "yellow")
+        texto = fonte.render("Deck nao pode ter menos que 4 cartas", True, "yellow").convert_alpha()
     texto_rect = texto.get_rect(center=(1010, 565))
     janela.blit(texto, texto_rect)
 
@@ -189,7 +189,7 @@ def desenhaMembros():
 
 img_descricaoBox = pygame.image.load("imagem/background/description_box.png").convert_alpha()
 def menuPrincipal():
-    txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson")
+    txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson").convert_alpha()
     for botao in card_buttons:
         if botao.nome == 'cardframe':
             if botao.carta not in deck:
@@ -394,6 +394,9 @@ def batalha():
                         DefineTextoStatus("UP", monsVez, j.txt_grupo, "black", 11)
                     monsVez.updateStatus()
                     monsVez.updateCondicao()
+                    if monsVez.safe:
+                        monsVez.safe = False
+                        DefineTextoStatus("       OFF", monsVez, j.txt_grupo, "black", 11)
                     monsVezGuia = monsVez
                     if j.event_primeiroTurno:
                         j.event_primeiroTurno = False
@@ -811,8 +814,8 @@ def reset():
 
 def desenhaGameover(janela):
 
-    txtEquipe = fonte3.render("Equipe", True, "white")
-    txtAprimoramentos = fonte3.render("Aprimoramentos", True, "white")
+    txtEquipe = fonte3.render("Equipe", True, "white").convert_alpha()
+    txtAprimoramentos = fonte3.render("Aprimoramentos", True, "white").convert_alpha()
     espacamento = 200
     x = largura / 3
     y = 90
@@ -925,7 +928,7 @@ def continuar():
     img_bg_gameover.set_alpha(20)
     transparencia = 40
     clicou = False
-    txtContinue = fonte4.render("Round completo! Continue lutando!!", True, "white")
+    txtContinue = fonte4.render("Round completo! Continue lutando!!", True, "white").convert_alpha()
     txtContinue_rect = txtContinue.get_rect(center=(680, 420))
     j.event_realizouAtaque = False
     j.event_realizouSkill = False
@@ -976,9 +979,9 @@ def gameOver(jogo):
     img_bg_gameover.set_alpha(20)
     transparencia = 40
     clicou = False
-    txtFim = fonte4.render("Todos os lutadores PERECERAM, aceite seu fim.", True, "white")
+    txtFim = fonte4.render("Todos os lutadores PERECERAM, aceite seu fim.", True, "white").convert_alpha()
     if j.round == 12:
-        txtFim = fonte4.render("Parabéns! Você concluiu os 12 rounds", True, "white")
+        txtFim = fonte4.render("Parabéns! Você concluiu os 12 rounds", True, "white").convert_alpha()
     txtFim_rect = txtFim.get_rect(center=(680, 420))
     while(1):
 

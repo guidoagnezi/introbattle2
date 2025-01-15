@@ -1,6 +1,6 @@
 import pygame
 pygame.init()
-
+pygame.display.set_mode((1,1), pygame.NOFRAME)
 class Jogo():
     def __init__(self):
         self.event_comprouCarta = False
