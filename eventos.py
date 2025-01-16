@@ -36,6 +36,7 @@ class Jogo():
         self.textoGuia = ""
         self.buttonPosOffset = 0
         self.round = 1
+        self.turno = 0
         self.comandoPassado = -1
         self.emitir = False
         self.particula = 0

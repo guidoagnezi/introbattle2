@@ -197,7 +197,7 @@ class Monstro:
                         alvo.gauge += int(dano * 0.8)
 
         if self.skill.nome == 'Correr':
-            if j.acoesEquipe != 5:
+            if j.acoesEquipe < 4.5:
                 j.acoesEquipe += 2
             else:
                 DefineTextoMedidor("MAX", False, False, (self.x_pos, self.y_pos - 80), j.txt_grupo)
@@ -370,63 +370,85 @@ class Monstro:
                     alvo.updateStatus()
                     DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 12)
                     DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 13)
+
+        if self.skill.nome == 'Nevasca':
+            dano = self.skill.dano * self.MODatk
+            for alvo in grupo1:
+                if random.randint(1, 4) == 5:
+                    alvo.condicao = 2
+                    alvo.CounterCon = 0
+                    alvo.updateCondicao()
+                alvo.vida -= dano
+                alvo.machucado()
+                DefineTextoDano(dano, alvo, j.txt_dano, "black", 6)
+                DefineAnimacaoAtaque(alvo, 6)
+        
+        if self.skill.nome == 'Bencao':
+            for alvo in grupo2:
+                cura = int(alvo.vidamax / 4)
+                alvo.vida += cura
+                if alvo.vida > alvo.vidamax:
+                    alvo.vida = alvo.vidamax
+                DefineTextoStatus(cura, alvo, j.txt_grupo, "green", 16)
+                DefineAnimacaoAtaque(alvo, 11)
 #JOGAVEIS --- /// 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
                     #nome        vda def atq srt  skl     cst mga fqz animationtam                                
-ico = Monstro       ("Ico"     , 100,  35, 25, 3, explosao, 10, 5, 6, 6)
-linguico = Monstro  ("Linguico", 100,  25, 25, 3, surra,    10, 4, 3, 6)
-amigo = Monstro     ("Amigo"   , 100,  20, 30, 4, wekapipo, 15, 8, 0, 6)
-filho = Monstro     ("Filho",    120,  25, 40, 6, cura,     20, 8, 4, 6)
-gelo = Monstro      ("Gelo",     130,  30, 40, 4, congelar, 20, 6, 5, 6)
-horroroso = Monstro ("Xamilo",   145,  25, 45, 3, cortar,   25, 3, 4, 6)
-bombinha = Monstro  ("Bombinha", 140,  30, 45, 4, devolver, 30, 5, 7, 6)
-camboja = Monstro   ("Camboja",  150,  35, 40, 3, eletroterapia, 30, 7, 5, 3)
-monge = Monstro     ("Monge",    160,  25, 40, 5, rezar,    30, 4, 8, 1)
+ico = Monstro       ("Ico"     , 100,  35, 25, 6,  explosao, 10, 5, 6, 6)
+linguico = Monstro  ("Linguico", 100,  25, 25, 6,  surra,    10, 4, 3, 6)
+amigo = Monstro     ("Amigo"   , 100,  20, 30, 8,  wekapipo, 15, 8, 0, 6)
+filho = Monstro     ("Filho",    120,  25, 40, 12, cura,     20, 8, 4, 6)
+gelo = Monstro      ("Gelo",     130,  30, 40, 8,  congelar, 20, 6, 5, 6)
+horroroso = Monstro ("Xamilo",   145,  25, 45, 6,  cortar,   25, 3, 4, 6)
+bombinha = Monstro  ("Bombinha", 140,  30, 45, 8,  devolver, 30, 5, 7, 6)
+camboja = Monstro   ("Camboja",  150,  35, 40, 6,  eletroterapia, 30, 7, 5, 3)
+monge = Monstro     ("Monge",    160,  25, 40, 10, rezar,   30, 4, 8, 1)
 camboja.animation_cooldown = 200
-adiburai = Monstro  ("Adiburai", 180,  35, 50, 6, treinar,  40, 4, 4, 6)
-kamirider = Monstro ("Kamirider",160,  30, 45, 6, comer,    40, 3, 3, 4)
-demonio = Monstro   ("Demonio",  200,  50, 20, 3, analisar, 40, 8, 0, 6)
-odiburoi = Monstro  ("Odiburoi", 180,  30, 55, 3, corre,    40, 7, 6, 4)
-
-parceiro = Monstro  ("Parceiro", 190,  35, 55, 6, wekapeople,  0, 8, 0, 6)
-azuliu = Monstro    ("Azuliu",   210,  30, 60, 4, saraivada,   0, 6, 0, 6)
-ediburei = Monstro  ("Ediburei", 200,  40, 55, 6, focar,       0, 4, 0, 6)
+bireco = Monstro    ("Birecos",  190,  30, 30, 15, bencao,  35, 8, 0, 1)
+adiburai = Monstro  ("Adiburai", 180,  35, 50, 12, treinar, 40, 4, 4, 6)
+kamirider = Monstro ("Kamirider",160,  30, 45, 12, comer,   40, 3, 3, 4)
+demonio = Monstro   ("Demonio",  200,  50, 20, 6,  analisar,40, 8, 0, 6)
+odiburoi = Monstro  ("Odiburoi", 180,  30, 55, 6,  corre,   40, 7, 6, 4)
+ 
+parceiro = Monstro  ("Parceiro", 190,  35, 55, 12, wekapeople, 0, 8, 0, 6)
+azuliu = Monstro    ("Azuliu",   210,  30, 60, 8,  saraivada,  0, 6, 0, 6)
+ediburei = Monstro  ("Ediburei", 200,  40, 55, 12, focar,      0, 4, 0, 6)
 
 #INIMIGOS --- /// # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 
-inim1 = Monstro     ("Amigo",    120, 20, 35, 3, wekapipo,  10, 8, 0, 6)
-inim2 = Monstro     ("Filho",    120, 25, 25, 3, cura,      10, 5, 7, 6)
-inim3 = Monstro     ("Linguico", 120, 20, 25, 3, surra,     15, 4, 3, 6)
-inim4 = Monstro     ("Ico",      140, 20, 30, 3, explosao,  20, 5, 6, 6)
-inim5 = Monstro     ("Gelo",     130, 20, 25, 3, congelar,  20, 6, 4, 6)
-inim6 = Monstro     ("Xamilo",   130, 25, 30, 3, cortar,    20, 3, 5, 6)
-inim7 = Monstro     ("Adiburai", 130, 20, 35, 3, treinar,   20, 4, 4, 6)
+inim1 = Monstro     ("Amigo",    120, 20, 35, 6, wekapipo,  15, 8, 0, 6)
+inim2 = Monstro     ("Filho",    120, 25, 25, 6, cura,      15, 5, 7, 6)
+inim3 = Monstro     ("Linguico", 120, 20, 25, 6, surra,     20, 4, 3, 6)
+inim4 = Monstro     ("Ico",      140, 20, 30, 6, explosao,  25, 5, 6, 6)
+inim5 = Monstro     ("Gelo",     130, 20, 25, 6, congelar,  25, 6, 4, 6)
+inim6 = Monstro     ("Xamilo",   130, 25, 30, 6, cortar,    25, 3, 5, 6)
+inim7 = Monstro     ("Adiburai", 130, 20, 35, 6, treinar,   25, 4, 4, 6)
 
-inim8 = Monstro     ("Demonio",  190, 50, 20, 3, wekapipo,  25, 8, 0, 6)
-inim9 = Monstro     ("Bombinha", 155, 30, 35, 3, devolver,  25, 5, 3, 6)
-inim10 = Monstro    ("Linguico", 150, 30, 40, 4, surra,     30, 4, 7, 6)
-inim11 = Monstro    ("Ico",      170, 30, 35, 3, explosao,  35, 5, 7, 6)
-inim12 = Monstro    ("Gelo",     150, 35, 30, 3, congelar,  35, 6, 5, 6)
-inim13 = Monstro    ("Xamilo",   160, 35, 45, 5, cortar,    35, 3, 0, 6)
-inim14 = Monstro    ("Adiburai", 160, 30, 45, 5, treinar,   35, 4, 6, 6)
+inim8 = Monstro     ("Demonio",  190, 50, 20, 6, wekapipo,  30, 8, 0, 6)
+inim9 = Monstro     ("Bombinha", 155, 30, 35, 6, devolver,  30, 5, 3, 6)
+inim10 = Monstro    ("Linguico", 150, 30, 40, 8, surra,     35, 4, 7, 6)
+inim11 = Monstro    ("Ico",      170, 30, 35, 6, explosao,  40, 5, 7, 6)
+inim12 = Monstro    ("Gelo",     150, 35, 30, 6, nevasca,   40, 6, 5, 6)
+inim13 = Monstro    ("Xamilo",   160, 35, 45, 10,cortar,    40, 3, 0, 6)
+inim14 = Monstro    ("Adiburai", 160, 30, 45, 10,treinar,   40, 4, 6, 6)
 
-inim15 = Monstro    ("Demonio",  230, 55, 20, 3, wekapipo,  40, 8, 0, 6)
-inim16 = Monstro    ("Bombinha", 200, 40, 45, 4, devolver,  40, 6, 6, 6)
-inim17 = Monstro    ("Kamirider",170, 30, 70, 5, surra,     40, 3, 3, 4)
-inim18 = Monstro    ("Odiburoi", 190, 30, 55, 4, corre,     45, 7, 6, 4)
-inim19 = Monstro    ("Monge",    180, 35, 45, 3, saraivada,  45, 6, 4, 1)
-inim20 = Monstro    ("Camboja",  210, 45, 35, 5, eletroterapia,45, 3, 5, 3)
-inim21 = Monstro    ("Adiburai", 210, 40, 65, 5, treinar,   45, 4, 7, 6)
+inim15 = Monstro    ("Demonio",  230, 55, 20, 6, nevasca,   45, 8, 0, 6)
+inim16 = Monstro    ("Bombinha", 200, 40, 45, 8, devolver,  45, 6, 6, 6)
+inim17 = Monstro    ("Kamirider",170, 30, 70, 10,surra,     45, 3, 3, 4)
+inim18 = Monstro    ("Odiburoi", 190, 30, 55, 8, corre,     55, 7, 6, 4)
+inim19 = Monstro    ("Monge",    180, 35, 45, 6, saraivada, 55, 6, 4, 1)
+inim20 = Monstro    ("Camboja",  210, 45, 35, 10,eletroterapia,55, 3, 5, 3)
+inim21 = Monstro    ("Adiburai", 210, 40, 65, 10,treinar,   55, 4, 7, 6)
 #BOSS --- ///
 
-pepeteco = Monstro  ("Pepeteco", 1200, 35, 40, 4, sabotar, 90, 3, 0, 6)
+pepeteco = Monstro  ("Pepeteco", 1200, 35, 40, 8, sabotar, 90, 3, 0, 6)
 pepeteco.bg = pygame.image.load("imagem/background/bg2.png").convert()
-mestre = Monstro    ("Mestre", 900, 40, 45, 5, focar, 90, 4, 0, 6)
+mestre = Monstro    ("Mestre", 900, 40, 45, 10, focar, 90, 4, 0, 6)
 mestre.bg = pygame.image.load("imagem/background/bg3.png").convert()
-mago = Monstro      ("Mago", 1000, 35, 35, 3, mudar, 90, 8, 0, 6)
+mago = Monstro      ("Mago", 1000, 35, 35, 6, mudar, 90, 8, 0, 6)
 mago.bg = pygame.image.load("imagem/background/bg0.png").convert()
-bobonauta = Monstro ("Bobonauta", 1100, 30, 45, 4, debilitar, 90, 6, 0, 6)
+bobonauta = Monstro ("Bobonaut", 1100, 30, 45, 8, debilitar, 90, 6, 0, 6)
 bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert()
 bobonauta.animation_cooldown = 200
 
@@ -448,6 +470,7 @@ selecao.append(azuliu)
 selecao.append(parceiro)
 selecao.append(camboja)
 selecao.append(monge)
+selecao.append(bireco)
 
 
 equipe = []
@@ -490,9 +513,9 @@ equipeInim  = []
 colecaoBoss = []
 
 colecaoBoss.append(pepeteco)
-# colecaoBoss.append(mestre)
-# colecaoBoss.append(mago)
-# colecaoBoss.append(bobonauta)
+colecaoBoss.append(mestre)
+colecaoBoss.append(mago)
+colecaoBoss.append(bobonauta)
 
 
 #FUNCOES --- ///

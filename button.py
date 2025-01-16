@@ -79,13 +79,15 @@ main_char_button7.monstro = camboja
 main_char_button8 = Button("cardframe", 550, 760)
 main_char_button8.monstro = monge
 main_char_button9 = Button("cardframe", 130, 1050)
-main_char_button9.monstro = kamirider
+main_char_button9.monstro = bireco
 main_char_button10 = Button("cardframe", 340, 1050)
 main_char_button10.monstro = adiburai
 main_char_button11 = Button("cardframe", 550, 1050)
 main_char_button11.monstro = demonio
 main_char_button12 = Button("cardframe", 340, 1340)
 main_char_button12.monstro = odiburoi
+main_char_button13 = Button("cardframe", 130, 1340)
+main_char_button13.monstro = kamirider
 
 
 main_card_button = Button("cardframe", 130, 180)
@@ -142,12 +144,16 @@ main_card_button25= Button("cardframe", 340, 2500)
 main_card_button25.carta = carta25
 main_card_button26= Button("cardframe", 550, 2500)
 main_card_button26.carta = carta26
-main_card_button27= Button("cardframe", 120, 2790)
+main_card_button27= Button("cardframe", 130, 2790)
 main_card_button27.carta = carta27
 main_card_button28= Button("cardframe", 340, 2790)
 main_card_button28.carta = carta28
 main_card_button29= Button("cardframe", 550, 2790)
 main_card_button29.carta = carta29
+main_card_button30= Button("cardframe", 130, 3080)
+main_card_button30.carta = carta30
+main_card_button31= Button("cardframe", 340, 3080)
+main_card_button31.carta = carta31
 
 main_go_button = Button("go_button", 1150, 650)
 monstro_button = Button("monstro_button", 760, 650)
@@ -185,6 +191,7 @@ char_buttons.append(main_char_button9)
 char_buttons.append(main_char_button10)
 char_buttons.append(main_char_button11)
 char_buttons.append(main_char_button12)
+char_buttons.append(main_char_button13)
 
 card_buttons = []
 
@@ -218,6 +225,8 @@ card_buttons.append(main_card_button26)
 card_buttons.append(main_card_button27)
 card_buttons.append(main_card_button28)
 card_buttons.append(main_card_button29)
+card_buttons.append(main_card_button30)
+card_buttons.append(main_card_button31)
 
 menu_buttons = []
 
@@ -394,3 +403,9 @@ def atualizaBotoes():
             skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button.y_pos))
             pas_button.image = pygame.transform.scale_by(pas_button.image, 1.2).convert()
             pas_button.rect = pas_button.image.get_rect(center=(pas_button.x_pos, pas_button.y_pos))
+
+def animacaoSelected():
+
+      for botao in char_buttons:
+            if botao.selected:
+                  botao.monstro.update_animation()

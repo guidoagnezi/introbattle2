@@ -46,12 +46,12 @@ class Skill():
         self.benigno = benigno
         self.descricao = descricao
 
-explosao = Skill("Explosao", 50, 25, 10, False, False, "50 de dano a um inimigo", "")
+explosao = Skill("Explosao", 40, 35, 10, False, False, "40 de dano a um inimigo", "")
 cura = Skill("Cura", 0, 30, 10, False, True, "Cura 1/3 da vida de um aliado", "")
 treinar = Skill("Treinar", 0, 20, 10, True, True, "O proximo ataque dará muito mais dano", "")
-surra = Skill("Surra", 30, 35, 4, False, False, "Saraivada de porrada a todos os inimigos", "")
-corre = Skill("Correr", 0, 35, 10, True, True, "Dá +1 ação no turno", "")
-wekapipo = Skill("Wekapipo", 35, 35, 8, False, False, "Dano mágico a todos os inimigos", "")
+surra = Skill("Surra", 30, 35, 4, True, False, "Saraivada de porrada a todos os inimigos", "")
+corre = Skill("Correr", 0, 45, 10, True, True, "Dá +1 ação no turno", "")
+wekapipo = Skill("Wekapipo", 35, 35, 8, True, False, "Dano mágico a todos os inimigos", "")
 cortar = Skill("Cortar", 20, 20, 3, False, False, "Causa sangramento a um inimigo", "")
 congelar = Skill("Congelar", 20, 20, 6, False, False, "Causa congelamento a um inimigo", "")
 mudar = Skill("Trocar", 0, 0, 0, True, True, "O ataque se torna a fraqueza de um inimigo", "")
@@ -65,6 +65,8 @@ wekapeople = Skill("Wekapeople", 45, 55, 8, False, False, "Dano mágico superior
 saraivada = Skill("Saraivada", 45, 55, 4, False, False, "Saraivada de tiro a todos os inimigos", "")
 eletroterapia = Skill("Eletroterapia", 0, 45, 4, False, True, "Aumenta os stats de um aliado (estc)", "")
 debilitar = Skill("Debilitar", 0, 0, 10, False, False, "Chance de aflingir condicao ou baixar os status aos inimigos", "")
+nevasca = Skill("Nevasca", 15, 50, 6, True, False, "Chance de congelar todos os inimigos", "")
+bencao = Skill("Bencao", 0, 40, 16, True, True, "Cura 1/4 da vida de toda a equipe", "")
 
 skills = []
 

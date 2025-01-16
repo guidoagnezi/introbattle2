@@ -132,11 +132,11 @@ def atacar(atacante, alvo):
     mod2 = 1
     mod = 1
 
-    if random.randint(1, 15) >= 11 - (atacante.sorte * (4/10)):
+    if random.randint(1, 100) <= atacante.sorte:
         j.event_acertouCritico = True
         mod2 = 1.5
         if j.event_oneMore:
-            if j.event_vezJogador and j.acoesEquipe < 5:
+            if j.event_vezJogador and j.acoesEquipe < 4.5:
                 j.acoesEquipe += 1
         
     if atacante.magia == alvo.fraqueza:
@@ -267,7 +267,7 @@ def menuPrincipal():
             if j.catalogoMonstro:
                 scrollBotoes(char_buttons, wheelUp, -730)
             else:
-                scrollBotoes(card_buttons, wheelUp, -2230)
+                scrollBotoes(card_buttons, wheelUp, -2530)
             scrollou = False
         
         if j.event_ganhouRubi:
@@ -300,6 +300,7 @@ def menuPrincipal():
             draw_aviso(janela, fonte, j.flag)
         desenhaCursor(posMouse)
         desenhaTexto(j.txt_grupo, janela)
+        animacaoSelected()
         janela.blit(txtRounds, (1050, 15))
         pygame.display.flip()
 
@@ -308,7 +309,7 @@ def batalha():
     #VARIAVEIS DE VERIFICACAO --- //
     j.event_bossBattle = False
     j.selecionou = False
-    i = random.randint(0, 4)
+    i = random.randint(0, 5)
     bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
     if j.round == 4 or j.round == 8 or j.round == 12:
         bg0_img = gerarBoss(j.round)
@@ -324,7 +325,7 @@ def batalha():
     alvoGuia = alvo
     monsVezGuia = monsVez
     posMouse = pygame.mouse.get_pos()
-    turno = 0
+    j.turno = 0
     j.acoesEquipeInimiga = 0
     cd_acaoInimiga = 0
     tempoEspera_acaoInimiga = 80
@@ -389,12 +390,12 @@ def batalha():
 
             if j.event_novoTurno and vivos > 0:
                 if j.cdStandby > j.cdMaxStandby:
-                    turno += 1
+                    j.turno += 1
                     while 1:
-                        monsVez = equipe[turno % tamEquipe]
+                        monsVez = equipe[abs(j.turno) % tamEquipe]
                         if monsVez.vivo:
                             break
-                        turno += 1
+                        j.turno += 1
                     if j.event_mano and vivos == 1:
                         monsVez.MODdef = 1.8
                         monsVez.MODatk = 1.5
@@ -526,12 +527,12 @@ def batalha():
         if not j.event_vezJogador:
             if j.event_novoTurno and vivosInim > 0:
                 if j.cdStandby > j.cdMaxStandby:
-                    turno += 1
+                    j.turno += 1
                     while 1:
-                        monsVez = equipeInim[turno % tamEquipeInim]
+                        monsVez = equipeInim[j.turno % tamEquipeInim]
                         if monsVez.vivo:
                             break
-                        turno += 1
+                        j.turno += 1
                     monsVez.updateStatus()
                     monsVez.updateCondicao()
                     monsVezGuia = monsVez
@@ -956,6 +957,10 @@ def continuar():
     if j.event_bossBattle:
         sorteiaAprimoramentos()
 
+    med.rubis = int(med.rubis * 1.3)
+    diferenca = int(med.rubis - (med.rubis / 1.3))
+    med.valor += diferenca
+    
     while(1):
 
         posMouse = pygame.mouse.get_pos()
