@@ -64,37 +64,37 @@ class Icone(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.tipo = tipo
         if self.tipo == 1:
-            self.image = pygame.image.load("imagem/medidor/rubi.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
         elif self.tipo == 2:
-            self.image = pygame.image.load("imagem/medidor/energia.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/energia.png").convert_alpha()
         elif self.tipo == 3:
-            self.image = pygame.image.load("imagem/medidor/coracao.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/coracao.png").convert_alpha()
         elif self.tipo == 4:
-            self.image = pygame.image.load("imagem/medidor/soco.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/soco.png").convert_alpha()
         elif self.tipo == 5:
-            self.image = pygame.image.load("imagem/medidor/fogo.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/fogo.png").convert_alpha()
         elif self.tipo == 6:
-            self.image = pygame.image.load("imagem/medidor/agua.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/agua.png").convert_alpha()
         elif self.tipo == 7:
-            self.image = pygame.image.load("imagem/medidor/raio.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/raio.png").convert_alpha()
         elif self.tipo == 8:
-            self.image = pygame.image.load("imagem/medidor/magica.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/magica.png").convert_alpha()
         elif self.tipo == 10:
-            self.image = pygame.image.load("imagem/medidor/atk_up.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/atk_up.png").convert_alpha()
         elif self.tipo == 11:
-            self.image = pygame.image.load("imagem/medidor/def_up.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/def_up.png").convert_alpha()
         elif self.tipo == 12:
-            self.image = pygame.image.load("imagem/medidor/atk_down.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/atk_down.png").convert_alpha()
         elif self.tipo == 13:
-            self.image = pygame.image.load("imagem/medidor/def_down.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/def_down.png").convert_alpha()
         elif self.tipo == 14:
-            self.image = pygame.image.load("imagem/medidor/atk_normal.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/atk_normal.png").convert_alpha()
         elif self.tipo == 15:
-            self.image = pygame.image.load("imagem/medidor/def_normal.png")            .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/def_normal.png").convert_alpha()
         elif self.tipo == 16:
             self.image = pygame.image.load("imagem/medidor/cura.png").convert_alpha()
         if self.tipo == 17:
-            self.image = pygame.image.load("imagem/medidor/card.png")           .convert_alpha()
+            self.image = pygame.image.load("imagem/medidor/card.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.vel_y = -5
         self.vel_x = 2

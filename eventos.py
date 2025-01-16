@@ -18,6 +18,7 @@ class Jogo():
         self.event_standby = False
         self.event_realizouAtaque = False
         self.event_realizouSkill = False
+        self.event_passou = False
         self.event_trocouTime = False
         self.event_acertouCritico = False
         self.event_bossBattle = False
@@ -34,7 +35,7 @@ class Jogo():
         self.selecionou = False
         self.textoGuia = ""
         self.buttonPosOffset = 0
-        self.round = 4
+        self.round = 1
         self.comandoPassado = -1
         self.emitir = False
         self.particula = 0

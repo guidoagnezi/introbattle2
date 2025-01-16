@@ -106,7 +106,6 @@ class Monstro:
     
     def checkForInputBatalha(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
-                print(f"Button Press! Monstro: {self.nome}")
                 return True
 
     def destacar(self, position):
@@ -141,8 +140,6 @@ class Monstro:
         
         self.ataque = self.ataqueNormal * self.MODatk
         self.defesa = self.defesaNormal * self.MODdef
-
-        print(f"Nome: {self.nome}, Ataque: {self.ataque}, Defesa: {self.defesa}")
         
     def updateCondicao(self):
 
@@ -256,7 +253,6 @@ class Monstro:
 
             while 1:
                 alvo = random.choice(equipe)
-                print(f"1 nome: {alvo.nome}")
                 if alvo.vivo:
                     break
             
@@ -288,6 +284,7 @@ class Monstro:
             self.danoAcumulado += dano
             alvo.machucado()
             DefineTextoDano(dano, alvo, j.txt_dano, "black", 3)
+            DefineAnimacaoAtaque(alvo, 10)
             self.gauge = 0
             DefineTextoStatus("       RESET", self, j.txt_grupo, "black", 15)
 
@@ -595,7 +592,6 @@ def contarVivosInimigos(grupo):
         if monstro.vida <= 0 and monstro.vivo:
             med.valor += monstro.custo
             DefineAnimacaoAtaque(monstro, 9)
-            print(f"Valor: {med.valor}")
             monstro.revelouVida = True
             j.event_ganhouRubi = True
             monstro.vivo = False
@@ -632,7 +628,7 @@ def inimigoEscolheAlvo(equipeAlvo):
 
 descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 
-descricao_img = pygame.transform.scale(descricao_img, (380, 240))
+descricao_img = pygame.transform.scale(descricao_img, (380, 240)).convert()
 descricao_img.set_alpha(200)
 
 def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
@@ -686,7 +682,7 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
 
 descricaoInim_img = pygame.image.load("imagem/background/descricao.png").convert()
 
-descricaoInim_img = pygame.transform.scale(descricao_img, (300, 240))
+descricaoInim_img = pygame.transform.scale(descricao_img, (300, 240)).convert()
 descricaoInim_img.set_alpha(200)
 
 def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):

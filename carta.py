@@ -31,7 +31,6 @@ class Card():
 
     def checkForInput(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom + 75):
-                print("Button Press!")
                 return True
             
 
@@ -90,14 +89,12 @@ class Card():
                 for monstro in equipe:
                     if monstro.vivo:
                         monstro.vida = int(monstro.vida / 2)
-                        print(f"{monstro.nome}: {monstro.vida}")
                         DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
                         DefineAnimacaoAtaque(monstro, 5)
 
                 for monstro in equipeInim:
                     if monstro.vivo:
                         monstro.vida = int(monstro.vida / 2)
-                        print(f"{monstro.nome}: {monstro.vida}")
                         DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
                         DefineAnimacaoAtaque(monstro, 5)
             else:
@@ -163,12 +160,10 @@ class Card():
         if self.nome == 'Mundo':
             while 1:
                 alvo = random.choice(equipe)
-                print(f"1 nome: {alvo.nome}")
                 if alvo.vivo:
                     break
             while 1:
                 alvo2 = random.choice(selecao)
-                print(f"2 nome: {alvo2.nome}")
                 if alvo2.custo >= alvo.custo and alvo2 not in equipe:
                     break
                     
@@ -176,14 +171,12 @@ class Card():
             alvo2.vida = alvo2.vidamax
             equipe.remove(alvo)
             equipe.append(alvo2)
-            print(equipe)
             DefineAnimacaoAtaque(alvo2, 9)
 
         if self.nome == 'Mago':
             condicao = random.randint(1, 2)
             while 1:
                 alvo = random.choice(equipeInim)
-                print(f"1 nome: {alvo.nome}")
                 if alvo.vivo:
                     break
             if alvo.condicao == 0:
@@ -331,7 +324,6 @@ class Card():
                     azuliu.vida = azuliu.vidamax
                     bombinha.vida = 0
                     equipe.append(azuliu)
-                    print(equipe)
                     DefineAnimacaoAtaque(linguico, 9)
                     DefineAnimacaoAtaque(bombinha, 9)
                     j.event_novoTurno = True
@@ -342,7 +334,6 @@ class Card():
                     ediburei.vida = ediburei.vidamax
                     odiburoi.vida = 0
                     equipe.append(ediburei)
-                    print(equipe)
                     DefineAnimacaoAtaque(adiburai, 9)
                     DefineAnimacaoAtaque(odiburoi, 9)
                     j.event_novoTurno = True
@@ -457,7 +448,6 @@ class Card():
 
                 while 1:
                     alvo2 = random.choice(colecao)
-                    print(f"2 nome: {alvo2.nome}")
                     if alvo2.custo >= alvo.custo and alvo2 not in equipeInim:
                         break
                         
@@ -468,6 +458,9 @@ class Card():
                 DefineAnimacaoAtaque(alvo2, 9)
             else:
                 DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
+
+        if self.nome == 'Dealer':
+            med.custoComprar = 3
                     
 descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 descricao_img.set_alpha(200)
@@ -484,7 +477,7 @@ carta8 = Card("Resistencia", 20, 5, "+DEF para o aliado da vez")
 carta9 = Card("Cafeina", 30, 10,"+1 acao")
 carta10 = Card("Milagre", 25, 10,"1/4 de cura ao aliado com menos vida")
 carta11 = Card("Enamorados", 40, 15, "Fortalece 1 inimigo e 1 aliado")
-carta12 = Card("Mundo", 65, 45, "Troca um aliado por um de custo >=")
+carta12 = Card("Mundo", 75, 45, "Troca um aliado por um de custo >=")
 carta13 = Card("Mago", 35, 10, "Status negativo aleatorio a um inimigo")
 carta14 = Card("Estrela", 70, 30, "+ATQ para o aliado da vez (perma)")
 carta15 = Card("Fortuna", 70, 25, "+SRT para o aliado da vez (perma)")
@@ -513,6 +506,7 @@ chance = Card("Chance", 0, 0, "Ataques criticos concedem + uma ação")
 carroagem = Card("Carroagem", 0, 0, "Derrotar alguem pode dropar uma carta")
 mano = Card("Mano", 0, 0, "O ultimo aliado vivo ganha buffs")
 hierofante = Card("Hierofante", 0, 0, "Diminui o custo das skills em 20%")
+dealer = Card("Dealer", 0, 0, "Reduz o custo de compra de carta")
 
 aprimoramentos = []
 
@@ -528,6 +522,7 @@ aprimoramentos.append(aumento)
 aprimoramentos.append(subiu)
 aprimoramentos.append(mano)
 aprimoramentos.append(hierofante)
+aprimoramentos.append(dealer)
 
 
 deck = []

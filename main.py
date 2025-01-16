@@ -21,35 +21,41 @@ fps = 60
 largura = 1360
 altura = 720
 
-flags = DOUBLEBUF 
+flags = DOUBLEBUF
 janela = pygame.display.set_mode((largura, altura), flags, 16)
 pygame.display.set_caption("Chabude bude")
-janela.set_alpha(None)
 
 #fontes
 fonte = pygame.font.Font("fonts/pixel.ttf", 18)
 fonte1 = pygame.font.Font("fonts/pixel.ttf", 20)
-fonte2 = pygame.font.Font("fonts/pixel1.ttf", 20)
 fonte3 = pygame.font.Font("fonts/pixel.ttf", 24)
 fonte4 = pygame.font.Font("fonts/pixel.ttf", 35)
 
 #imagens
-i = random.randint(0, 2)
-bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
 action_img = pygame.image.load("imagem/background/action.png").convert_alpha()
+half_action_img = pygame.image.load("imagem/background/action.png").convert_alpha()
+half_action_img.set_alpha(150)
 actionE_img = pygame.image.load("imagem/background/action_enemy.png").convert_alpha()
 
 #spritegroup
 j.txt_grupo = pygame.sprite.Group()
 
 def desenhaAcoes(vivos, acoes, vezPlayer):
-    
+    half = False
     vezes = acoes
+    if vezes - int(vezes) > 0:
+        vezes += 1
+        half = True
+        
     x = 200
     y = 20
-    for vez in range(vezes):
+
+    for vez in range(int(vezes)):
         if vezPlayer:
-            janela.blit(action_img, (x, y))
+            if vez == int(vezes) - 1 and half:
+                janela.blit(half_action_img, (x, y))
+            else:
+                janela.blit(action_img, (x, y))
         else:
             janela.blit(actionE_img, (x, y))
         x += 90
@@ -78,6 +84,8 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
                 j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow")
         elif j.event_primeiroTurno:
             j.textoGuia = fonte3.render(f"GAME!   START!", True, "white")
+        elif j.event_passou:
+            j.textoGuia = fonte3.render(f"{MonsVez.nome} passou a vez!", True, "white")
         elif j.event_vezJogador:
             j.textoGuia = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white")
         elif not j.event_vezJogador:
@@ -91,11 +99,11 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
 #cursor
 pygame.mouse.set_visible(False)
 cursor0_img = pygame.image.load("imagem/background/cursor_normal.png").convert_alpha()
-cursor0_img = pygame.transform.scale_by(cursor0_img, 1.3)
+cursor0_img = pygame.transform.scale_by(cursor0_img, 1.3).convert_alpha()
 cursor1_img = pygame.image.load("imagem/background/cursor_atk.png").convert_alpha()
-cursor1_img = pygame.transform.scale_by(cursor1_img, 1.3)
+cursor1_img = pygame.transform.scale_by(cursor1_img, 1.3).convert_alpha()
 cursor2_img = pygame.image.load("imagem/background/cursor_info.png").convert_alpha()
-cursor2_img = pygame.transform.scale_by(cursor2_img, 1.3)
+cursor2_img = pygame.transform.scale_by(cursor2_img, 1.3).convert_alpha()
 cursor3_img = pygame.image.load("imagem/background/cursor_skill.png").convert_alpha()
 cursor3_img = pygame.transform.scale_by(cursor3_img, 1.3)
 
@@ -304,6 +312,7 @@ def batalha():
     bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
     if j.round == 4 or j.round == 8 or j.round == 12:
         bg0_img = gerarBoss(j.round)
+        bg0_img.convert()
         j.event_bossBattle = True
     else:
         gerarInimigos(j.round)
@@ -404,6 +413,7 @@ def batalha():
                     j.event_novoTurno = False
                     j.event_realizouSkill = False
                     j.event_realizouAtaque = False
+                    j.event_passou = False
                     j.event_atacar = False
                     j.event_usarSkill = False
                     j.textoAtualizou = True
@@ -456,10 +466,19 @@ def batalha():
                                 j.event_usarSkill = False
                                 j.event_realizouSkill = True
                                 j.acoesEquipe -= 1
+                                monsVezGuia = monsVez
                             j.event_atacar = False
                             j.event_comprouCarta = False
                         else:
                             med.corEnergia = "red"
+                    elif pas_button.checkForInput(posMouse):
+                        j.event_novoTurno = True
+                        j.acoesEquipe -= 0.5
+                        monsVezGuia = monsVez
+                        j.textoAtualizou = True
+                        j.event_passou = True
+                        j.event_ganhouEnergia = True
+                        med.valorE = 12
                 
                 if j.event_atacar:
                     monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
@@ -622,7 +641,7 @@ def batalha():
         
         atualizaBotoes()
         monsVezGuia = monsVez
-        #REN
+        #RENDER
         janela.blit(bg0_img, (0,0))
         if vivos != 0 and not j.event_standby and not  (not j.event_vezJogador and j.event_bossBattle):
             desenharMonsVez(janela, monsVez)
@@ -654,7 +673,7 @@ def reset():
     
     med.energiaMax = 100
     med.energia = 50
-    med.rubis = 40
+    med.rubis = 30
     med.custoComprar = 5
 
     j.event_primeiroTurno = True
