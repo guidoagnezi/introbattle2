@@ -157,6 +157,7 @@ class Monstro:
             DefineTextoStatus("       BLEED", self, j.txt_grupo, "crimson", 3)
             self.vida -= dano
             self.machucado()
+            j.dano += dano
 
         if self.condicao == 2:
             DefineTextoStatus("       FREEZE", self, j.txt_grupo, "blue", 6)
@@ -171,6 +172,7 @@ class Monstro:
             DefineAnimacaoAtaque(alvo, self.skill.tipo)
             if alvo.skill.nome == "Devolver":
                     alvo.gauge += int(dano * 0.8)
+            j.dano += dano
 
         if self.skill.nome == 'Cura':
             cura = int(alvo.vidamax / 3)
@@ -179,6 +181,7 @@ class Monstro:
                 alvo.vida = alvo.vidamax
             DefineTextoStatus(cura, alvo, j.txt_grupo, "green", 16)
             DefineAnimacaoAtaque(alvo, 11)
+            j.cura += cura
         
         if self.skill.nome == 'Treinar':
             self.MODatk2 = 2.5
@@ -195,6 +198,7 @@ class Monstro:
                     self.danoAcumulado += dano
                     if alvo.skill.nome == "Devolver":
                         alvo.gauge += int(dano * 0.8)
+                    j.dano += dano
 
         if self.skill.nome == 'Correr':
             if j.acoesEquipe < 4.5:
@@ -214,6 +218,7 @@ class Monstro:
                     self.danoAcumulado += dano
                     if alvo.skill.nome == "Devolver":
                         alvo.gauge += int(dano * 0.8)
+                    j.dano += dano
         
         if self.skill.nome == 'Cortar':
             dano = self.skill.dano * self.MODatk
@@ -229,6 +234,7 @@ class Monstro:
                 self.danoAcumulado += dano
                 if alvo.skill.nome == "Devolver":
                     alvo.gauge += int(dano * 0.8)
+                j.dano += dano
             else:
                 DefineTextoStatus("       FALHOU", self, j.txt_grupo, "crimson", 3)
         
@@ -246,6 +252,7 @@ class Monstro:
                 self.danoAcumulado += dano
                 if alvo.skill.nome == "Devolver":
                     alvo.gauge += int(dano * 0.8)
+                j.dano += dano
             else:
                 DefineTextoStatus("        FALHOU", self, j.txt_grupo, "blue", 6)
         
@@ -287,6 +294,7 @@ class Monstro:
             DefineAnimacaoAtaque(alvo, 10)
             self.gauge = 0
             DefineTextoStatus("       RESET", self, j.txt_grupo, "black", 15)
+            j.dano += dano
 
         if self.skill.nome == "Comer":
             dano = self.skill.dano * self.MODatk
@@ -297,7 +305,8 @@ class Monstro:
                 j.event_perdeuEnergia = False
                 j.event_ganhouEnergia = True
                 med.valorE = 20
-        
+            j.dano += dano
+
         if self.skill.nome == "Rezar":
             j.event_perdeuEnergia = False
             j.event_ganhouEnergia = True
@@ -306,6 +315,7 @@ class Monstro:
             DefineTextoDano(15, self, j.txt_dano, "black", 3)
             DefineAnimacaoAtaque(self, 8)
             med.valorE = 30
+            j.dano += 15
         
         if self.skill.nome == "Sabotar":
             num = random.randint(1, 2)
@@ -323,6 +333,7 @@ class Monstro:
                         self.danoAcumulado += dano
                         if alvo.skill.nome == "Devolver":
                             alvo.gauge += int(dano * 0.8)
+                        j.dano += dano
         
         if self.skill.nome == 'Saraivada':
             for alvo in grupo1:
@@ -335,6 +346,7 @@ class Monstro:
                     self.danoAcumulado += dano
                     if alvo.skill.nome == "Devolver":
                         alvo.gauge += int(dano * 0.8)
+                    j.dano += dano
 
         if self.skill.nome == 'Wekapeople':
             for alvo in grupo1:
@@ -347,6 +359,7 @@ class Monstro:
                     self.danoAcumulado += dano
                     if alvo.skill.nome == "Devolver":
                         alvo.gauge += int(dano * 0.8)
+                    j.dano += dano
         
         if self.skill.nome == 'Eletroterapia':
             alvo.MODatk *= 1.5
@@ -382,6 +395,7 @@ class Monstro:
                 alvo.machucado()
                 DefineTextoDano(dano, alvo, j.txt_dano, "black", 6)
                 DefineAnimacaoAtaque(alvo, 6)
+                j.dano += dano
         
         if self.skill.nome == 'Bencao':
             for alvo in grupo2:
@@ -391,6 +405,7 @@ class Monstro:
                     alvo.vida = alvo.vidamax
                 DefineTextoStatus(cura, alvo, j.txt_grupo, "green", 16)
                 DefineAnimacaoAtaque(alvo, 11)
+                j.cura += cura
 #JOGAVEIS --- /// 
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 

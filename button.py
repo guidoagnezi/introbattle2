@@ -158,6 +158,7 @@ main_card_button31.carta = carta31
 main_go_button = Button("go_button", 1150, 650)
 monstro_button = Button("monstro_button", 760, 650)
 carta_button = Button("carta_button", 860, 650)
+ranking_button = Button("ranking_button", 960, 650)
 
 gameover_reset = Button("voltar_button", 680, 600)
 
@@ -233,6 +234,7 @@ menu_buttons = []
 menu_buttons.append(main_go_button)
 menu_buttons.append(monstro_button)
 menu_buttons.append(carta_button)
+menu_buttons.append(ranking_button)
 
 gameover_buttons = []
 
@@ -276,27 +278,30 @@ def scrollBotoes(grupo, wheelUp, limite):
             botao.rect = botao.image.get_rect(center=(botao.x_pos, botao.y_pos + j.buttonPosOffset))
 
 def selecionarPersonagem(grupo, position):
-      
+      j.monstroComprados = 0
       for botao in grupo:
             if botao.checkForInput(position) and botao.nome == "cardframe":
                   if botao.selected == False and len(equipe) != 3 and med.rubis >= botao.monstro.custo:
                         botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        .convert_alpha()
                         equipe.append(botao.monstro)
+                        j.monstroComprados = 1
                         j.event_perdeuRubi = True
                         med.valor = botao.monstro.custo
                         botao.selected = True
                   elif botao.selected == True:
                         botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        .convert_alpha()
                         equipe.remove(botao.monstro)
+                        j.monstroComprados = 0
                         botao.selected = False
 
 def selecionarCarta(grupo, position):
-      
+      j.cartasCompradas = 0
       for botao in grupo:
             if botao.checkForInput(position) and botao.nome == "cardframe":
                   if botao.selected == False and med.rubis >= botao.carta.preco:
                         botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                        .convert_alpha()
                         deck.append(botao.carta)
+                        j.cartasCompradas = 1
                         j.event_perdeuRubi = True
                         med.valor = botao.carta.preco
                         botao.selected = True
@@ -304,6 +309,7 @@ def selecionarCarta(grupo, position):
                   elif botao.selected == True and len(deck) > 4:
                         botao.image = pygame.image.load(f"imagem/background/{botao.nome}.png")                        .convert_alpha()
                         deck.remove(botao.carta)
+                        j.cartasCompradas = 0
                         botao.selected = False
                         return True
                   elif len(deck) == 4:

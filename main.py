@@ -9,6 +9,33 @@ from infotext import *
 from eventos import *
 from ataque import *
 from pygame.locals import *
+import json
+
+
+data = {
+
+    'tentativas': 0,
+    'dano': 0,
+    'cura': 0,
+    'gastos': 0,
+    'cartascompradas': 0,
+    'monstroscomprados': 0,
+    'comproudeck': 0,
+    #melhor tentativa
+    'equipe': "",
+    'danotentativa': 0,
+    'curatentativa': 0,
+    'rounds': 0
+}
+
+
+try:
+    with open('data.txt') as load_file:
+        data = json.load(load_file)
+except: 
+    # create the file and store initial values 
+    with open('data.txt', 'w') as store_file: 
+        json.dump(data, store_file)
 
 
 pygame.init()
@@ -126,36 +153,41 @@ def draw_aviso(janela, fonte, flag):
     janela.blit(texto, texto_rect)
 
 def atacar(atacante, alvo):
-
     j.event_acertouCritico = False
-
-    mod2 = 1
-    mod = 1
-
-    if random.randint(1, 100) <= atacante.sorte:
-        j.event_acertouCritico = True
-        mod2 = 1.5
-        if j.event_oneMore:
-            if j.event_vezJogador and j.acoesEquipe < 4.5:
-                j.acoesEquipe += 1
-        
-    if atacante.magia == alvo.fraqueza:
-        mod = 1.5
-        alvo.revelouFraqueza = True
+    if random.randint(1, 100) > alvo.sorte * 1.1:
         
 
-    atacante.revelouMagia = True
-    
-    dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2
-    atacante.danoAcumulado += dano
-    if atacante.MODatk2 != 1:
-        atacante.MODatk2 = 1
-    alvo.vida -= dano
-    alvo.machucado()
+        mod2 = 1
+        mod = 1
 
-    if alvo.skill.nome == "Devolver":
-        alvo.gauge += int(dano * 0.8)
-                
+        if random.randint(1, 100) <= atacante.sorte:
+            j.event_acertouCritico = True
+            mod2 = 1.5
+            if j.event_oneMore:
+                if j.event_vezJogador and j.acoesEquipe < 4.5:
+                    j.acoesEquipe += 1
+            
+        if atacante.magia == alvo.fraqueza:
+            mod = 1.5
+            alvo.revelouFraqueza = True
+            
+
+        atacante.revelouMagia = True
+        
+        dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2
+        atacante.danoAcumulado += dano
+        if atacante.MODatk2 != 1:
+            atacante.MODatk2 = 1
+        alvo.vida -= dano
+        alvo.machucado()
+
+        if alvo.skill.nome == "Devolver":
+            alvo.gauge += int(dano * 0.8)
+        
+        j.dano += dano
+
+    else:
+        dano = -1
     return dano
 
 img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png").convert()
@@ -196,6 +228,33 @@ def desenhaMembros():
         janela.blit(monstro.image, rect)
         x += espacamento
 
+def desenhaRanking():
+    txtTentativas = fonte2.render(f"Tentativas: {data["tentativas"]}", True, "black")
+    txtDano = fonte.render(f"Dano acumulado global: {int(data["dano"])}", True, "black")
+    txtCura = fonte.render(f"Cura acumulada global: {int(data["cura"])}", True, "black")
+    txtCartasCompradas = fonte.render(f"Vezes que comprou cartas na loja: {data["cartascompradas"]}", True, "black")
+    txtMonstrosComprados = fonte.render(f"Vezes que comprou monstros na loja: {data["monstroscomprados"]}", True, "black")
+    txtGasto = fonte.render(f"Gasto total: {int(data["gastos"])} rubis", True, "black")
+    if data["equipe"] != "":
+        txtMelhorTentativa = fonte2.render("Melhor tentativa", True, "black")
+        txtEquipe = fonte.render(f"Equipe: {data["equipe"]}", True, "black")
+        txtRoundMaximo = fonte.render(f"Round maximo: {data["rounds"]}", True, "black")
+        txtDanoTentativa = fonte.render(f"Dano acumulado na tentativa: {int(data["danotentativa"])}", True, "black")
+        txtCuraTentativa = fonte.render(f"Cura acumulada na tentativa: {int(data["curatentativa"])}", True, "black")
+    
+    janela.blit(txtTentativas, (50, 50))
+    janela.blit(txtDano, (50, 90))
+    janela.blit(txtCura, (50, 130))
+    janela.blit(txtCartasCompradas, (50, 170))
+    janela.blit(txtMonstrosComprados, (50, 210))
+    janela.blit(txtGasto, (50, 250))
+    if data["equipe"] != "":
+        janela.blit(txtMelhorTentativa, (50, 310))
+        janela.blit(txtEquipe, (50, 350))
+        janela.blit(txtRoundMaximo, (50, 390))
+        janela.blit(txtDanoTentativa, (50, 430))
+        janela.blit(txtCuraTentativa, (50, 470))
+
 img_descricaoBox = pygame.image.load("imagem/background/description_box.png").convert_alpha()
 def menuPrincipal():
     txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson")
@@ -219,6 +278,8 @@ def menuPrincipal():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                with open('data.txt', 'w') as store_data: 
+                    json.dump(data, store_data)
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -238,8 +299,10 @@ def menuPrincipal():
             j.mensagem = False
             if j.catalogoMonstro:
                 selecionarPersonagem(char_buttons, posMouse)
+                data['monstroscomprados'] += j.monstroComprados
             else:
                 j.mensagem = not selecionarCarta(card_buttons, posMouse)
+                data['cartascompradas'] += j.cartasCompradas
                 j.flag = 2
                 
             if main_go_button.checkForInput(posMouse) and len(equipe) != 0:
@@ -251,16 +314,26 @@ def menuPrincipal():
                 j.flag = 1
             
             if monstro_button.checkForInput(posMouse):
+                j.ranking = False
                 if not j.catalogoMonstro:
                     j.catalogoMonstro = True
                     j.buttonPosOffset = 0
                     scrollou = True
             
             if carta_button.checkForInput(posMouse):
+                j.ranking = False
                 if j.catalogoMonstro:
                     j.catalogoMonstro = False
                     j.buttonPosOffset = 0
                     scrollou = True
+
+            if ranking_button.checkForInput(posMouse):
+                j.ranking = True
+                j.catalogoMonstro = False
+                j.buttonPosOffset = 0
+                scrollou = True
+
+
             clicou = False
             
         if scrollou:
@@ -279,22 +352,27 @@ def menuPrincipal():
         if j.event_perdeuRubi:
             med.prejuizoRubi(med.valor)
             DefineTextoMedidor(-med.valor, False, True, (900, 35), j.txt_grupo)
+            data['gastos'] += med.valor
             med.valor = 0
             j.event_perdeuRubi = False
 
 
         janela.fill("white")
         janela.blit(img_descricaoBox, (680, 70))
-        if j.catalogoMonstro:
-            desenhaBotoes(janela, char_buttons)
+        if not j.ranking:
+            if j.catalogoMonstro:
+                desenhaBotoes(janela, char_buttons)
+            else:
+                desenhaBotoes(janela, card_buttons)
         else:
-            desenhaBotoes(janela, card_buttons)
+            desenhaRanking()
         desenhaBotoes(janela, menu_buttons)
         desenhaMembros()
-        if j.catalogoMonstro:
-            desenhaDescricaoMenu(janela, char_buttons, posMouse, fonte, fonte3, equipe)
-        else:
-            desenhaDescricaoMenuCarta(janela, card_buttons, posMouse, fonte, fonte3, equipe)
+        if not j.ranking:
+            if j.catalogoMonstro:
+                desenhaDescricaoMenu(janela, char_buttons, posMouse, fonte, fonte3, equipe)
+            else:
+                desenhaDescricaoMenuCarta(janela, card_buttons, posMouse, fonte, fonte3, equipe)
         med.desenhaRubisMP(janela, fonte)
         if j.mensagem:
             draw_aviso(janela, fonte, j.flag)
@@ -348,7 +426,10 @@ def batalha():
         for event in pygame.event.get():
             
             if event.type == pygame.QUIT:
+                with open('data.txt', 'w') as store_data: 
+                    json.dump(data, store_data)
                 pygame.quit()
+                
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
                     j.event_comprouCarta = True
@@ -489,16 +570,20 @@ def batalha():
                         monsVezGuia = monsVez
                         alvoGuia =  monsAlvo
                         med.valorE = med.ganhoEnergia
-                        if not j.event_acertouCritico:
-                            DefineTextoDano(dano, monsAlvo, j.txt_grupo, "gray20", monsVez.magia)
+                        if dano != -1:
+                            if not j.event_acertouCritico:
+                                DefineTextoDano(dano, monsAlvo, j.txt_grupo, "gray20", monsVez.magia)
+                            else:
+                                DefineTextoDano(dano, monsAlvo, j.txt_grupo, "red", monsVez.magia)
+                            if j.event_vampirismo:
+                                curaV = int(dano / 4)
+                                DefineTextoStatus(curaV, monsVez, j.txt_grupo, "gray20", 16)
+                                monsVez.vida += curaV
+                                if monsVez.vida > monsVez.vidamax:
+                                    monsVez.vida = monsVez.vidamax
+                                j.cura += curaV
                         else:
-                            DefineTextoDano(dano, monsAlvo, j.txt_grupo, "red", monsVez.magia)
-                        if j.event_vampirismo:
-                            curaV = int(dano / 4)
-                            DefineTextoStatus(curaV, monsVez, j.txt_grupo, "gray20", 16)
-                            monsVez.vida += curaV
-                            if monsVez.vida > monsVez.vidamax:
-                                monsVez.vida = monsVez.vidamax
+                            DefineTextoStatus("       MISS", monsAlvo, j.txt_grupo, "black", 11)
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
                         j.event_novoTurno = True
                         j.event_atacar = False
@@ -571,11 +656,14 @@ def batalha():
                         if contador >= 12:
                             gameOver(j)
                     dano = atacar(monsVez, alvo)
-                    if not j.event_acertouCritico:
-                        DefineTextoDano(dano, alvo, j.txt_grupo, "gray20", monsVez.magia)
+                    if dano != -1:
+                        if not j.event_acertouCritico:
+                            DefineTextoDano(dano, alvo, j.txt_grupo, "gray20", monsVez.magia)
+                        else:
+                            DefineTextoDano(dano, alvo, j.txt_grupo, "red", monsVez.magia)
+                        DefineAnimacaoAtaque(alvo, monsVez.magia)
                     else:
-                        DefineTextoDano(dano, alvo, j.txt_grupo, "red", monsVez.magia)
-                    DefineAnimacaoAtaque(alvo, monsVez.magia)
+                        DefineTextoStatus("       MISS", alvo, j.txt_grupo, "black", 11)
                     monsVezGuia = monsVez
                     alvoGuia = alvo
                     j.event_novoTurno = True
@@ -624,6 +712,7 @@ def batalha():
         if j.event_perdeuRubi:
             med.prejuizoRubi(med.valor)
             DefineTextoMedidor(-med.valor, True, False, (120, 165), j.txt_grupo)
+            data['gastos'] += med.valor
             med.valor = 0
             j.event_perdeuRubi = False
         
@@ -967,6 +1056,8 @@ def continuar():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                with open('data.txt', 'w') as store_data: 
+                    json.dump(data, store_data)
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -999,7 +1090,24 @@ def continuar():
         transparencia += 2
 
 
-def gameOver(jogo):
+def gameOver(jogo): 
+
+    if j.round >= data["rounds"]:
+        nome = ""
+        for monstro in equipe:
+            nome += f"{monstro.nome} "
+        data["rounds"] = j.round
+        data["equipe"] = nome
+        data["danotentativa"] = j.dano
+        data["curatentativa"] = j.cura
+
+    data["tentativas"] += 1
+    data["dano"] += j.dano
+    data["cura"] += j.cura
+    with open('data.txt', 'w') as store_data: 
+        json.dump(data, store_data)
+    j.dano = 0
+    j.cura = 0
 
     img_bg_gameover.set_alpha(20)
     transparencia = 40
@@ -1014,6 +1122,8 @@ def gameOver(jogo):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                with open('data.txt', 'w') as store_data: 
+                    json.dump(data, store_data)
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:

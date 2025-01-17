@@ -30,6 +30,7 @@ class Jogo():
         self.flag = 0
         self.catalogoMonstro = True
         self.catalogoCarta = False
+        self.ranking = False
         self.botoesOff = False
         self.textoAtualizou = False
         self.selecionou = False
@@ -37,6 +38,11 @@ class Jogo():
         self.buttonPosOffset = 0
         self.round = 1
         self.turno = 0
+        self.cura = 0
+        self.dano = 0
+        self.cartasCompradas = 0
+        self.monstroComprados = 0
+        self.gasto = 0
         self.comandoPassado = -1
         self.emitir = False
         self.particula = 0

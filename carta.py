@@ -51,9 +51,10 @@ class Card():
                     monstro.vida -= 25
                     DefineTextoDano(25, monstro, j.txt_grupo, "gray20", 7)
                     DefineAnimacaoAtaque(monstro, 7)
+                    j.dano += 25
                     monstro.machucado()
                     if monstro.skill.nome == "Devolver":
-                        monstro.gauge += dano
+                        monstro.gauge += 25
 
         if self.nome == 'Louco':
             if not j.event_bossBattle:
@@ -94,7 +95,8 @@ class Card():
                         DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
                         DefineAnimacaoAtaque(monstro, 5)
                         if monstro.skill.nome == "Devolver":
-                            monstro.gauge += dano
+                            monstro.gauge += int(monstro.vida / 2)
+                        j.dano += int(monstro.vida / 2)
 
                 for monstro in equipeInim:
                     if monstro.vivo:
@@ -102,7 +104,8 @@ class Card():
                         DefineTextoDano(int(monstro.vida), monstro, j.txt_grupo, "gray20", 3)
                         DefineAnimacaoAtaque(monstro, 5)
                         if monstro.skill.nome == "Devolver":
-                            monstro.gauge += dano
+                            monstro.gauge += int(monstro.vida / 2)
+                        j.dano += int(monstro.vida / 2)
             else:
                 DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
 
@@ -138,6 +141,7 @@ class Card():
                 alvo.vida = alvo.vidamax
             DefineTextoStatus(f"{cura}", alvo, j.txt_grupo, "black", 16)
             DefineAnimacaoAtaque(alvo, 11)
+            j.cura += cura
         
         if self.nome == 'Enamorados':
             while 1:
@@ -258,6 +262,7 @@ class Card():
                     DefineAnimacaoAtaque(monstro, 4)
                     if monstro.skill.nome == "Devolver":
                         monstro.gauge += dano
+                    j.dano += dano
         
         if self.nome == 'Julgamento':
 
@@ -272,10 +277,12 @@ class Card():
                     alvo = monstro
                     base = monstro.danoAcumulado
 
+
             alvo.vida -= 60
             alvo.machucado()
+            j.dano += 60
             if alvo.skill.nome == "Devolver":
-                    alvo.gauge += dano
+                    alvo.gauge += 60
             DefineTextoDano("60", alvo, j.txt_dano, "black", 7)
             DefineAnimacaoAtaque(alvo, 8)
         
@@ -287,7 +294,8 @@ class Card():
                 DefineAnimacaoAtaque(monstro, 5)
                 monstro.machucado()
                 if monstro.skill.nome == "Devolver":
-                    monstro.gauge += dano
+                    monstro.gauge += med.energia - self.custo
+                j.dano += med.energia - self.custo
             
             med.energia = 0
             med.valorE = med.energiaMax
@@ -327,7 +335,7 @@ class Card():
                 alvo.gauge += dano
             DefineTextoDano(f"{dano}", alvo, j.txt_dano, "black", 3)
             DefineAnimacaoAtaque(alvo, 3)
-
+            j.dano += dano
         if self.nome == 'Polimerizacao':
 
             vivos = contarVivos(equipe)
@@ -391,11 +399,13 @@ class Card():
                     monstro.vida = monstro.vidamax
                     DefineTextoStatus(f"{int(monstro.vidamax)}", monstro, j.txt_grupo, "black", 16)
                     DefineAnimacaoAtaque(monstro, 11)
+                    j.cura += monstro.vidamax
             else:
                 for monstro in equipeInim:
                     monstro.vida = monstro.vidamax
                     DefineTextoStatus(f"{int(monstro.vidamax)}", monstro, j.txt_grupo, "black", 16)
                     DefineAnimacaoAtaque(monstro, 11)
+                    j.cura += monstro.vidamax
                     
         if self.nome == 'Temperanca':
 
@@ -491,6 +501,7 @@ class Card():
             monstro1.vida = 0
             DefineAnimacaoAtaque(monstro1, 9)
             j.event_novoTurno = True
+            j.dano = monstro1.vida * 1.5
 
         if self.nome == 'Volta':
             j.turno -= 2
@@ -530,7 +541,7 @@ carta27 = Card("Vulneravel", 30, 15, "-DEF para um inimigo")
 carta28 = Card("Sol", 35, 20, "O aliado da vez não morre esse round")
 carta29 = Card("Lua", 25, 25, "Troca o inimigo por um de custo >=")
 carta30 = Card("Gambito", 25, 20, "Dano pela vida do aliado da vez")
-carta31 = Card("Volta", 15, 20, "Volta a vez pro aliado anterior")
+carta31 = Card("Volta", 25, 20, "Volta a vez pro aliado anterior")
 
 investimento = Card("Investimento", 0, 0, "Ganha 20% mais rubis")
 promocao = Card("Promocao", 0, 0, "Os monstros na loja custam 20% menos")
