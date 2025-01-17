@@ -9,37 +9,49 @@ from eventos import j
 pygame.init()
 pygame.display.set_mode((1,1), pygame.NOFRAME)
 
+# Metodos que alteram a situacao das cartas do jogo
+# Card - objeto que recebe uma serie de parametros que regem o custo e balanceamento das cartas.
+# define os efeitos das cartas em batalha
+
+frame = pygame.image.load("imagem/card/cardframe.png").convert_alpha()
+
 class Card():
     def __init__(self, nome, custo, preco, descricao):
-        self.image = pygame.image.load("imagem/card/cardframe.png")        .convert_alpha()
-        self.entalho = pygame.image.load(f"imagem/card/{nome}.png")     .convert_alpha()
+        self.image =  frame                             # imagem de quadro da carta
+        self.entalho = pygame.image.load(f"imagem/card/{nome}.png").convert_alpha() # desenho da carda
         self.nome = nome
-        self.custo = custo
-        self.preco = preco
+        self.custo = custo  # custo para ativar o efeito
+        self.preco = preco  # preco de compra na loha
         self.descricao = descricao
         self.selecionado = False
         self.x_pos = 0
         self.y_pos = 0
-        self.recem = True
+        self.recem = True # se a carta foi recem comprada, ativa uma animacao de descida ate a posicao x y
         self.y_recem = 30
         self.recemCooldown = 20
         self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
     
-    def desenhaCards(self, janela):
+    def desenhaCards(self, janela): # desenha uma carta individual
         janela.blit(self.image, self.rect)
         janela.blit(self.entalho, self.rect)
+
+    # checkForInput - recebe uma posicao em tupla (coordenadas) para checar se um clique aconteceu dentro do retangulo
+    # da carta
 
     def checkForInput(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom + 75):
                 return True
             
-
+    # destacar - recebe uma posicao em tupla (coordenadas) para checar se a posicao do mouse se encontra dentro do retangulo
+    # da carta
     def destacar(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom + 75):
                 return True
             else:
                 return False
-            
+    
+    # ativarEfeito - localiza e ativa o efeito da carta a partir do nome
+
     def ativarEfeito(self, equipeInim, equipe, equipeAtivos, monsVez):
         if self.nome == 'Avareza':
             j.event_ganhouRubi = True
@@ -510,6 +522,8 @@ class Card():
 descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 descricao_img.set_alpha(200)
 
+# criacao das cartas
+
 carta  = Card("Avareza", 20, 5, "+10 rubis")
 carta1 = Card("Raio", 20, 5,"25 de dano a todos os inimigos")
 carta2 = Card("Louco", 100, 140,"Mata um inimigo aleatorio")
@@ -543,6 +557,9 @@ carta29 = Card("Lua", 25, 25, "Troca o inimigo por um de custo >=")
 carta30 = Card("Gambito", 25, 20, "Dano pela vida do aliado da vez")
 carta31 = Card("Volta", 25, 20, "Volta a vez pro aliado anterior")
 
+# criacao dos aprimoramentos
+# aprimoramentos sao um tipo de carta que nao sao incluidas num deck e tem efeito permanente
+
 investimento = Card("Investimento", 0, 0, "Ganha 20% mais rubis")
 promocao = Card("Promocao", 0, 0, "Os monstros na loja custam 20% menos")
 vampiro = Card("Vampiro", 0, 0, "Atacar dará vida ao atacante aliado")
@@ -555,9 +572,15 @@ mano = Card("Mano", 0, 0, "O ultimo aliado vivo ganha buffs")
 hierofante = Card("Hierofante", 0, 0, "Diminui o custo das skills em 20%")
 dealer = Card("Dealer", 0, 0, "Reduz o custo de compra de carta")
 
+# lista que armazena os aprimoramentos
+
 aprimoramentos = []
 
+# conjunto de 3 aprimoramentos que serao selecionados aleatoriamente para serem escolhidos pelo player
+
 leque = []
+
+# colecao de aprimoramentos ativos
 
 escolhidos = []
 
@@ -571,8 +594,11 @@ aprimoramentos.append(mano)
 aprimoramentos.append(hierofante)
 aprimoramentos.append(dealer)
 
+# deck - conjunto de cartas ordinarias que foram compradas na loja e incluidas no deck
 
 deck = []
+
+# cartas iniciais que ja comecam incluidas no deck
 
 deck.append(carta)
 deck.append(carta4)
@@ -580,7 +606,13 @@ deck.append(carta7)
 deck.append(carta8)
 deck.append(carta1)
 
+# mao- conjunto cartas que foram compradas do deck e estao em espera na mao.
+# o maximo de cartas numa mao é 4.
+# as cartas sao desenhadas a partir da mao
+
 mao = []
+
+# adicionaCarta - metodo que move uma carta aleatoria do deck para a mao
 
 def adicionaCarta(deck, mao):
     nCartas = len(mao)
@@ -588,72 +620,37 @@ def adicionaCarta(deck, mao):
         numero = random.randint(0, len(deck) - 1)
         mao.append(deck.pop(numero))
 
+# cliqueCarta - detecta se uma carta na mao teve um input de clique
+# ativa o efeito da carta e a retorna da mao pro deck
+# recebe parametros que serao usados no metodo de ativar efeito das cartas
+
 def cliqueCarta(mao, deck, posicao, equipeInim, equipe, equipeAtivos, monsVez):
      
     for cartas in mao:
         if cartas.checkForInput(posicao):
-            if cartas.custo <= med.energia:
+            if cartas.custo <= med.energia: # verifica se há energia o suficiente para ativar a carta
                 med.valorE = cartas.custo
                 j.event_perdeuEnergia = True
-                cartas.ativarEfeito(equipeInim, equipe, equipeAtivos, monsVez)
+                cartas.ativarEfeito(equipeInim, equipe, equipeAtivos, monsVez) # ativa o efeito da carta
                 mao.remove(cartas)
                 deck.append(cartas)
             else:
-                med.corEnergia = "red"
+                med.corEnergia = "red" # se nao há energia o suficiente, muda a cor da barra de energia de amarelo para vermelho
             
 
-def desenhaMao(mao, largura, altura, janela, fonte):
-
-    posicao = pygame.mouse.get_pos()
-    y_axis = altura - 100
-    x_axis = 110
-    destacado = False
-    nCartas = len(mao)
-    if nCartas != 0:
-        for i, cards in enumerate(mao):
-            if cards.destacar(posicao):
-                cards.y_pos = y_axis - 75
-            else:
-                cards.y_pos = y_axis
-            if cards.recem:
-                cards.y_pos -= cards.y_recem
-                cards.y_recem -= 5
-                if cards.y_recem <= 0:
-                    cards.recem = False
-
-            cards.x_pos = x_axis + 170 * i
-            cards.rect = cards.image.get_rect(center=(cards.x_pos, cards.y_pos))
-            cards.desenhaCards(janela)
-
-def desenhaDescricao(janela, fonte):
-
-    posicao = pygame.mouse.get_pos()
-    for cards in mao:
-        if cards.destacar(posicao):
-            txtDescricao = fonte.render(cards.descricao, True, "white")
-            txtNome = fonte.render(f"{cards.nome}", True, "white")
-            txtCusto = fonte.render(f"Custo: {cards.custo}", True, "yellow")
-            janela.blit(descricao_img, (posicao[0], posicao[1] - 100))
-            janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 95))
-            janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
-            janela.blit(txtCusto, (posicao[0] + 10, posicao[1] - 55))
-            return True
 rubiImagem = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
 
-def desenhaPrecoCompra(janela, fonte):
-
-    janela.blit(rubiImagem, (1225, 560))
-    if med.rubis >= med.custoComprar:
-        txtPreco = fonte.render(f"{med.custoComprar}", True, "crimson")
-    else:
-        txtPreco = fonte.render(f"{med.custoComprar}", True, "gray")
-    janela.blit(txtPreco, (1275, 565))
+# sorteiaAprimoramentos - retira uma amostra de 3 aprimoramentos da lista e as adiciona no leque de escolhas
 
 def sorteiaAprimoramentos():
 
     leque.clear()
     amostra = random.sample(aprimoramentos, 3)
     leque.extend(amostra)
+
+# cliqueAprimoramento - detecta se um input de clique foi acionado num aprimoramento e ativa seu efeito
+# adiciona o aprimoramento a lista de escolhidos e remove ele da lista de aprimoramentos para que nao possa
+# ser sorteado novamente no futuro
 
 def cliqueAprimoramento(posicao):
     monsVez = 0
@@ -666,6 +663,10 @@ def cliqueAprimoramento(posicao):
             escolhidos.append(cartas)
             return True
     return False
+
+# desenhaAprimoramentos - desenha os tres aprimoramentos sorteados no leque
+# indica se um aprimoramento ja foi selecionado para impedir que os outros possam ser selecionados tambem
+# altera a cor do texto dos aprimoramentos caso um tenha sido selecionado
 
 def desenhaAprimoramentos(janela, fonte, leque):
 
@@ -690,3 +691,59 @@ def desenhaAprimoramentos(janela, fonte, leque):
         x_axis += offset
         cards.desenhaCards(janela)
         janela.blit(desc, descRect)
+    
+# desenhaPrecoCompra - desenha o preco de compra do deck ao lado do botao de comprar
+# a cor do texto é vermelha se possui dinheiro suficiente, cinza se nao
+
+def desenhaPrecoCompra(janela, fonte):
+
+    janela.blit(rubiImagem, (1225, 560))
+    if med.rubis >= med.custoComprar:
+        txtPreco = fonte.render(f"{med.custoComprar}", True, "crimson")
+    else:
+        txtPreco = fonte.render(f"{med.custoComprar}", True, "gray")
+    janela.blit(txtPreco, (1275, 565))
+
+# desenhaDescricao - exibe um retangulo flutuante baseado na posicao do mouse
+# para descrever o nome e o efeito da carta, bem como seu custo de energia
+
+def desenhaDescricao(janela, fonte):
+
+    posicao = pygame.mouse.get_pos()
+    for cards in mao:
+        if cards.destacar(posicao):
+            txtDescricao = fonte.render(cards.descricao, True, "white")
+            txtNome = fonte.render(f"{cards.nome}", True, "white")
+            txtCusto = fonte.render(f"Custo: {cards.custo}", True, "yellow")
+            janela.blit(descricao_img, (posicao[0], posicao[1] - 100))
+            janela.blit(txtNome, (posicao[0] + 10, posicao[1] - 95))
+            janela.blit(txtDescricao, (posicao[0] + 10, posicao[1] - 75))
+            janela.blit(txtCusto, (posicao[0] + 10, posicao[1] - 55))
+            return True
+
+# desenhaMao - desenha as cartas contidas numa mao no canto inferior esquerdo da tela
+# sao organizadas horizontamente
+
+def desenhaMao(mao, largura, altura, janela, fonte):
+
+    posicao = pygame.mouse.get_pos()
+    y_axis = altura - 100
+    x_axis = 110
+    destacado = False
+    nCartas = len(mao)
+    if nCartas != 0:
+        for i, cards in enumerate(mao):
+            if cards.destacar(posicao):     # se a carta estiver com o mouse sobre ela,
+                                            # altera suua posicao y para se destacar e indicar qual carta sera usada
+                cards.y_pos = y_axis - 75
+            else:
+                cards.y_pos = y_axis
+            if cards.recem: # se a carta foi recem comprada, ativa uma animacao de descida ate a posicao x y
+                cards.y_pos -= cards.y_recem
+                cards.y_recem -= 5
+                if cards.y_recem <= 0:
+                    cards.recem = False
+
+            cards.x_pos = x_axis + 170 * i
+            cards.rect = cards.image.get_rect(center=(cards.x_pos, cards.y_pos))
+            cards.desenhaCards(janela) # desenha a carta da iteracao

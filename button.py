@@ -4,6 +4,9 @@ from monstro import *
 from carta import *
 pygame.init()
 
+# Metodos que criam e verificam as situacoes dos botoes ordinarios do jogo
+# Button - objeto que define retangulos, a posicao do retangulo na tela e verifica os inputs
+
 pygame.display.set_mode((1,1), pygame.NOFRAME)
 class Button():
         
@@ -14,11 +17,15 @@ class Button():
             self.y_pos = y_pos
             self.monstro = 0
             self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
-            self.selected = False
+            self.selected = False # definir se o botao do tipo "cardframe" esta selecionado
+
+      # desenhaBotao - desenha o botao na janela
 
     def desenhaBotao(self, janela):
             janela.blit(self.image, self.rect)
       
+      # desenhaEstampa - se for um botao do tipo "cardframe", desenha a estampa da carta ou monstro que armazena
+
     def desenhaEstampa(self, janela):
           if self.monstro != 0:
             rect = self.monstro.image.get_rect(center=(self.x_pos, self.y_pos + j.buttonPosOffset))
@@ -27,16 +34,23 @@ class Button():
             rect = self.carta.entalho.get_rect(center=(self.x_pos, self.y_pos + j.buttonPosOffset))
             janela.blit(self.carta.entalho, rect)    
 
+      # checkForInput - recebe uma posicao em tupla (coordenadas) para checar se um clique aconteceu dentro do retangulo
+      # do botao
+
     def checkForInput(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
                 return True
-            
+      # destacar - recebe uma posicao em tupla (coordenadas) para checar se a posicao do mouse se encontra dentro do retangulo
+      # do botao
+
     def destacar(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom): 
                 return True
             else:
                 return False
-            
+
+# inicializacao dos botoes da batalha
+
 atk_button = Button("atk_button", 885, 580)
 atk_button.image = pygame.transform.scale_by(atk_button.image, 1.2).convert()
 atk_button.rect = atk_button.image.get_rect(center=(atk_button.x_pos, atk_button.y_pos))
@@ -52,6 +66,8 @@ pas_button.rect = pas_button.image.get_rect(center=(pas_button.x_pos, pas_button
 
 hud0_img = pygame.image.load("imagem/background/hud0.png").convert()
 
+# inicializacao dos botoes do menu inicial
+
 t_start_button = Button("start_button", 675, 360)
 t_start_button.image = pygame.transform.scale_by(t_start_button.image, 1.2).convert()
 t_start_button.rect = t_start_button.image.get_rect(center=(t_start_button.x_pos, t_start_button.y_pos))
@@ -59,6 +75,8 @@ t_start_button.rect = t_start_button.image.get_rect(center=(t_start_button.x_pos
 t_quit_button = Button("sair_button", 675, 440)
 t_quit_button.image = pygame.transform.scale_by(t_quit_button.image, 1.2).convert()
 t_quit_button.rect = t_quit_button.image.get_rect(center=(t_quit_button.x_pos,t_quit_button.y_pos))
+
+# inicializacao dos botoes "cardframe" que armazenam monstros
 
 main_char_button = Button("cardframe", 130, 180)
 main_char_button.monstro = ico
@@ -89,6 +107,7 @@ main_char_button12.monstro = odiburoi
 main_char_button13 = Button("cardframe", 130, 1340)
 main_char_button13.monstro = kamirider
 
+# inicializacao dos botoes "cardframe" que armazenam cartas
 
 main_card_button = Button("cardframe", 130, 180)
 main_card_button.carta = carta
@@ -155,15 +174,22 @@ main_card_button30.carta = carta30
 main_card_button31= Button("cardframe", 340, 3080)
 main_card_button31.carta = carta31
 
+# inicializacao dos botoes do Menu Principal
 main_go_button = Button("go_button", 1150, 650)
 monstro_button = Button("monstro_button", 760, 650)
 carta_button = Button("carta_button", 860, 650)
 ranking_button = Button("ranking_button", 960, 650)
 
+# inicializacao dos botoes da tela de gameover
+
 gameover_reset = Button("voltar_button", 680, 600)
+
+# inicializacao dos botos da tela de continue
 
 continue_button = Button("continue_button", 680, 500)
 return_button = Button("return_button", 680, 600)
+
+# lista de botoes da hud de batalha
 
 hud_buttons = []
 
@@ -172,10 +198,14 @@ hud_buttons.append(com_button)
 hud_buttons.append(skl_button)
 hud_buttons.append(pas_button)
 
+# lista de botoes do menu inicial
+
 titulo_buttons = []
 
 titulo_buttons.append(t_start_button)
 titulo_buttons.append(t_quit_button)
+
+# lista de botoes "cardframe" que armazenam monstros
 
 char_buttons = []
 
@@ -193,6 +223,8 @@ char_buttons.append(main_char_button10)
 char_buttons.append(main_char_button11)
 char_buttons.append(main_char_button12)
 char_buttons.append(main_char_button13)
+
+# lista de botoes "cardframe" que armazenam cartas
 
 card_buttons = []
 
@@ -229,6 +261,8 @@ card_buttons.append(main_card_button29)
 card_buttons.append(main_card_button30)
 card_buttons.append(main_card_button31)
 
+# lista de botoes ordinarios do Menu Principal
+
 menu_buttons = []
 
 menu_buttons.append(main_go_button)
@@ -236,14 +270,20 @@ menu_buttons.append(monstro_button)
 menu_buttons.append(carta_button)
 menu_buttons.append(ranking_button)
 
+# lista de botoes da tela de gameover
+
 gameover_buttons = []
 
 gameover_buttons.append(gameover_reset)
+
+# lista de botoes da tela de continue
 
 continue_buttons = []
 
 continue_buttons.append(continue_button)
 continue_buttons.append(return_button)
+
+# desenharHud - desenha os botoes da hud de batalha
 
 def desenharHud(janela, grupo):
 
@@ -252,6 +292,8 @@ def desenharHud(janela, grupo):
     for button in grupo:
           button.desenhaBotao(janela)
 
+# desenhaBotoes - desenha botoes de uma lista genericamente
+
 def desenhaBotoes(janela, grupo):
       
       for button in grupo:
@@ -259,11 +301,15 @@ def desenhaBotoes(janela, grupo):
             if (grupo == char_buttons or grupo == card_buttons) and button.nome == "cardframe":
                   button.desenhaEstampa(janela)
 
+# cliqueBotao - verifica se aconteceu um input sobre um botao
 
 def cliqueBotao(grupo, posicao):
       
       for button in grupo:
             button.checkForInput(posicao)
+
+# scrollBotoes - altera o offset vertical do retangulo dos botoes quando o scroll do mouse é acionado.
+# muda a posicao do retangulo
 
 def scrollBotoes(grupo, wheelUp, limite):
 
@@ -276,6 +322,9 @@ def scrollBotoes(grupo, wheelUp, limite):
 
       for botao in grupo:
             botao.rect = botao.image.get_rect(center=(botao.x_pos, botao.y_pos + j.buttonPosOffset))
+
+# selecionarPersonagem - adiciona o monstro armazenado no botao "cardframe" a lista da equipe
+# se ja estiver selecionado, remove o monstro da lista da equipe
 
 def selecionarPersonagem(grupo, position):
       j.monstroComprados = 0
@@ -293,6 +342,9 @@ def selecionarPersonagem(grupo, position):
                         equipe.remove(botao.monstro)
                         j.monstroComprados = 0
                         botao.selected = False
+
+# selecionarCarta - adiciona a carta armazenado no botao "cardframe" ao deck
+# se ja estiver selecionado, remove a carta do deck
 
 def selecionarCarta(grupo, position):
       j.cartasCompradas = 0
@@ -317,6 +369,8 @@ def selecionarCarta(grupo, position):
       return True
 
 img_rubi = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
+
+# desenhaDescricaoMenu - desenha a descricao e parametros do monstro no menu principal
 
 def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
 
@@ -354,6 +408,8 @@ def desenhaDescricaoMenu(janela, grupo, posicao, fonte, fonte2, equipe):
                   janela.blit(img_rubi, (1170, 130))
                   janela.blit(txtCusto, (1220, 130))
 
+# desenhaDescricaoMenuCarta - desenha a descricao e parametros da carta no menu principal
+
 def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
       
       for botao in grupo:
@@ -375,10 +431,14 @@ def desenhaDescricaoMenuCarta(janela, grupo, posicao, fonte, fonte2, equipe):
                   janela.blit(img_rubi, (1170, 130))
                   janela.blit(txtCusto, (1220, 130))
 
+# draw_aviso - desenha a mensagem de aviso de equipe incompleta - nao usado
+
 def draw_aviso(janela, fonte):
     texto = fonte.render("Você não selecionou 3 personagens", True, "white")
     texto_rect = texto.get_rect(center=(750, 650))
     janela.blit(texto, texto_rect)
+
+# atualizaBotoes - altera a imagem dos botoes da hud em batalha para indicar se ele esta ou nao ativo
 
 def atualizaBotoes():
       
@@ -409,6 +469,8 @@ def atualizaBotoes():
             skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button.y_pos))
             pas_button.image = pygame.transform.scale_by(pas_button.image, 1.2).convert()
             pas_button.rect = pas_button.image.get_rect(center=(pas_button.x_pos, pas_button.y_pos))
+
+# animacaoSelected - ativa a atualizacao da imagem do monstro no menu principal se o botao que o armazena estivar selecionado
 
 def animacaoSelected():
 

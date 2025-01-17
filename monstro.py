@@ -10,6 +10,8 @@ from eventos import *
 pygame.init()
 pygame.display.set_mode((1,1), pygame.NOFRAME)
 
+# Monstro - status, paramentros e imagens de um lutador, rege todas as situacoes e informacoes de um lutador
+
 class Monstro:
 
     def __init__(self, nome, vida, defesa, ataque, sorte, skill, custo, magia, fraqueza, animationtam): 
@@ -48,7 +50,7 @@ class Monstro:
         self.revelouMagia = False
         self.revelouFraqueza = False
         self.revelouVida = False
-        self.skill = skill
+        self.skill = skill #skill do monstro
         self.image = pygame.image.load(f"imagem/lutador/{self.nome}/0.png").convert_alpha()
         self.animation_cooldown = 100
         self.update_time = pygame.time.get_ticks()
@@ -59,13 +61,13 @@ class Monstro:
         self.action = 0
         self.freezeTime = 0
         temp_list = []
-        for i in range(self.animationtam):
+        for i in range(self.animationtam): # armazena o sprite sheet do monstro numa lista # sprite sheet de idle
             img = pygame.image.load(f"imagem/lutador/{self.nome}/{i}.png").convert_alpha()
             
             temp_list.append(img)
         self.animation_list.append(temp_list)
         temp_list = []
-        for i in range(7, 5, -1):
+        for i in range(7, 5, -1): # sprite sheet de machucado
             img = pygame.image.load(f'imagem/lutador/{self.nome}/{i}.png').convert_alpha()
             
             temp_list.append(img)
@@ -73,16 +75,21 @@ class Monstro:
         self.image = self.animation_list[self.action][self.index]
         self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
     
+    # machucado - altera a acao da lista de animacao para triggar a animacao de estar machucado do monstro
+
     def machucado(self):
         #set variables to hurt animation
         self.action = 1
         self.index = 0
         self.update_time = pygame.time.get_ticks()
 
+    # idle - altera a acao da lista de animacao para triggar a animacao de idle do monstro
     def idle(self):
         self.action = 0
         self.index = 0
         self.update_time = pygame.time.get_ticks()
+
+    # update_animation - atualiza o index (ou acao) da lista de animacao para atualizar a imagem a ser exibida
 
     def update_animation(self):
         self.image = self.animation_list[self.action][self.index]
@@ -101,12 +108,18 @@ class Monstro:
                 self.freezeTime += 1
         return self.count
     
+    # desenhaMonstro - desenha o monstro individualmente na tela
+
     def desenhaMonstro(self, janela):
         janela.blit(self.image, self.rect)
-    
+
+    # checkForInputBatalha - verifica se houve um clique dentro do retangulo do monstro
+
     def checkForInputBatalha(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
                 return True
+
+    # destacar - verifica se o mouse esta sobre o retangulo do monstro
 
     def destacar(self, position):
             if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom): 
@@ -114,25 +127,31 @@ class Monstro:
             else:
                 return False
     
+    # ativar - define as coordenadas do monstro na tela de batalha
+
     def ativar(self, x, y):
         self.x_pos = x
         self.y_pos = y
         self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
         return True
     
+    # getCusto - retorna o custo do monstro
+
     def getCusto(self):
         return self.custo
     
+    # atualiza os status de ataque e defesa do monstro
+
     def updateStatus(self):
-        if self.MODdef != 1:
+        if self.MODdef != 1: #incrementa os contadores para indicar quantos turnos o monstro esta com o status alterados
             self.CounterDef += 1
         if self.MODatk != 1:
             self.CounterAtk += 1
 
-        if self.CounterAtk >= 4:
+        if self.CounterAtk >= 4: # reinicia os modificadores dos status caso o numero de turnos necessarios forem cumpridos
             self.MODatk = 1
             self.CounterAtk = 0
-            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 14)
+            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 14) # lanca um texto de status para indicar que os status foram normalizados
         if self.CounterDef >= 4:
             DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 15)
             self.MODdef = 1
@@ -140,18 +159,20 @@ class Monstro:
         
         self.ataque = self.ataqueNormal * self.MODatk
         self.defesa = self.defesaNormal * self.MODdef
-        
+
+    # updateCondicao - atualiza a condicao do monstro
+
     def updateCondicao(self):
 
-        if self.condicao != 0:
+        if self.condicao != 0: #incrementa os contadores para indicar quantos turnos o monstro esta com a condicao alterada
             self.CounterCon += 1
 
-        if self.CounterCon >= 3:
-            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 16)
-            self.condicao = 0
+        if self.CounterCon >= 3: # reinicia os modificadores de condicao caso o numero de turnos necessarios forem cumpridos
+            DefineTextoStatus("           NORMAL", self, j.txt_grupo, "green", 16) # lanca um texto de status para indicar que as condicoes foram normalizadas
+            self.condicao = 0 
             self.CounterCon = 0
         
-        if self.condicao == 1:
+        if self.condicao == 1: # condicao '1' - sangramento, da dano ao monstro quando esse metodo for chamado
             dano = self.vidamax / 10
             DefineTextoDano(dano, self, j.txt_grupo, "crimson", 8)
             DefineTextoStatus("       BLEED", self, j.txt_grupo, "crimson", 3)
@@ -159,9 +180,10 @@ class Monstro:
             self.machucado()
             j.dano += dano
 
-        if self.condicao == 2:
+        if self.condicao == 2:# condicao '2' - congelamento, pula o turno do monstro quando for a vez dele
             DefineTextoStatus("       FREEZE", self, j.txt_grupo, "blue", 6)
     
+    # ativarSkill - ativa os efeitos da skills armazenadas pelo monstro
     def ativarSkill(self, alvo, grupo1, grupo2):
         if self.skill.nome == "Explosao":
             dano = self.skill.dano * self.MODatk
@@ -455,6 +477,7 @@ inim18 = Monstro    ("Odiburoi", 190, 30, 55, 8, corre,     55, 7, 6, 4)
 inim19 = Monstro    ("Monge",    180, 35, 45, 6, saraivada, 55, 6, 4, 1)
 inim20 = Monstro    ("Camboja",  210, 45, 35, 10,eletroterapia,55, 3, 5, 3)
 inim21 = Monstro    ("Adiburai", 210, 40, 65, 10,treinar,   55, 4, 7, 6)
+
 #BOSS --- ///
 
 pepeteco = Monstro  ("Pepeteco", 1200, 35, 40, 8, sabotar, 90, 3, 0, 6)
@@ -467,6 +490,7 @@ bobonauta = Monstro ("Bobonaut", 1100, 30, 45, 8, debilitar, 90, 6, 0, 6)
 bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert()
 bobonauta.animation_cooldown = 200
 
+# lista que armazena os personagens jogaveis
 selecao = []
 
 selecao.append(ico)
@@ -487,11 +511,14 @@ selecao.append(camboja)
 selecao.append(monge)
 selecao.append(bireco)
 
+# equipe que foi selecionada e que sera usada para a batalha
 
 equipe = []
 
+# inativo
 equipeAtivos = []
 
+# colecao dos inimigos que aparecerao nos primeiros 3 turnos
 
 colecaoInimigos = []
 
@@ -503,6 +530,8 @@ colecaoInimigos.append(inim5)
 colecaoInimigos.append(inim6)
 colecaoInimigos.append(inim7)
 
+# colecao dos inimigos que aparecerao dos turnos 5 a 7
+
 colecaoInimigos2 = []
 
 colecaoInimigos2.append(inim8)
@@ -512,6 +541,8 @@ colecaoInimigos2.append(inim11)
 colecaoInimigos2.append(inim12)
 colecaoInimigos2.append(inim13)
 colecaoInimigos2.append(inim14)
+
+# colecao dos inimigos que aparecerao dos turnos 9 a 11
 
 colecaoInimigos3 = []
 
@@ -535,12 +566,16 @@ colecaoBoss.append(bobonauta)
 
 #FUNCOES --- ///
 
+# cliquecliqueMonstroBatalha - detecta se um monstro em batalha teve um input de clique na batalha
+# retorna o monstro em que o input é verdadeiro
+
 def cliqueMonstroBatalha(equipe, posicao):
     for monstro in equipe:
         if monstro.checkForInputBatalha(posicao) and monstro.vivo:
             return monstro
     return False
 
+# desenharMonstros - desenha os monstros numa equipe
 def desenharMonstros(janela, equipe): #A posicao de batalha dos monstros é definida pela main, diferente da posicao dos inimigos
 
     for monstro in equipe:
@@ -548,9 +583,8 @@ def desenharMonstros(janela, equipe): #A posicao de batalha dos monstros é defi
             monstro.desenhaMonstro(janela)
             monstro.update_animation()
 
-def contarAtivos(equipe):
-
-    return len(equipe)
+# gerarInimigos - gera os inimigos com base no round atual
+# sao selecionados em samples, nunca se repetem
 
 def gerarInimigos(round):
     
@@ -581,6 +615,9 @@ def gerarInimigos(round):
         yProx += espYProx
         xProx -= espXProx
 
+# gerarBoss - se for os rounds 4, 8 ou 12, adiciona um boss a equipe inimiga
+# nunca é selecionado o mesmo boss mais de uma vez numa run
+
 def gerarBoss(round):
 
     equipeInim.clear()
@@ -596,7 +633,8 @@ def gerarBoss(round):
 
     return boss.bg
     
-    
+# definirPosicao - ativa todos os monstros da equipe com base na ordem
+
 def DefinirPosicao(equipe):
     
     equipe[0].ativar(650, 330)
@@ -605,6 +643,9 @@ def DefinirPosicao(equipe):
     if len(equipe) == 3:
         equipe[2].ativar(515, 430)
         
+# contarVivos - conta quando monstros da equipe aliada estao vivos (vida > 0)
+# mata os que a vida < 0
+# ativa o efeito de safe do monstro
 
 def contarVivos(grupo):
     count = 0
@@ -622,6 +663,9 @@ def contarVivos(grupo):
             count += 1
 
     return count
+
+# contarVivosInimigos - conta quando monstros da equipe inimiga estao vivos (vida > 0)
+# ativa certos eventos que sao acionados a partir da morte de monstros inimigos
 
 def contarVivosInimigos(grupo):
     count = 0
@@ -650,11 +694,16 @@ img_battlebox = pygame.image.load("imagem/background/battle_box.png").convert_al
 
 img_battlebox.set_alpha(100)
 
+# desenharMonsVez - desenha um disco abaixo do monstro da vez
+
 def desenharMonsVez(janela, monstro):
     
     rect = img_battlebox.get_rect(center=(monstro.x_pos, monstro.y_pos + 40))
     janela.blit(img_battlebox, rect)
-    
+
+# inimigoEscolheAlvo - retorna um monstro aliado aleatorio para servir de alvo para os inimigos
+# so retorna monstros vivos
+
 def inimigoEscolheAlvo(equipeAlvo):
 
     alvo = random.choice(equipeAlvo)
@@ -668,6 +717,8 @@ descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 
 descricao_img = pygame.transform.scale(descricao_img, (380, 240)).convert()
 descricao_img.set_alpha(200)
+
+# desenhaDescricaoMonstro - exibe os specs do monstro num retangulo flutuante a partir da posicao do mouse
 
 def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
 
@@ -723,6 +774,9 @@ descricaoInim_img = pygame.image.load("imagem/background/descricao.png").convert
 descricaoInim_img = pygame.transform.scale(descricao_img, (300, 240)).convert()
 descricaoInim_img.set_alpha(200)
 
+# desenhaDescricaoMonstro - exibe os specs do monstro inimigo num retangulo flutuante a partir da posicao do mouse
+# so exibe informacoes ja descobertas pelo jogador
+
 def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
 
     for monstro in equipeInim:
@@ -774,7 +828,9 @@ def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
             janela.blit(txtVida, (posicao[0] - 180, posicao[1] - 205))
 
             return True
- 
+
+# retornaCor - retorna uma cor nomeada pelo pygame a partir de um tipo fixo
+
 def retornaCor(tipo):
 
     if tipo == 3:
@@ -793,6 +849,8 @@ def retornaCor(tipo):
         cor = "white"
 
     return cor
+
+# retornaNome - retorna um nome do tipo de ataque a partir de um numero arbitario
 
 def retornaNome(tipo):
 

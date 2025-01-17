@@ -11,6 +11,8 @@ from ataque import *
 from pygame.locals import *
 import json
 
+# informacoes que serao salvas para serem exibidas no jogo
+# sao guardadas quando se encerra o jogo
 
 data = {
 
@@ -28,6 +30,7 @@ data = {
     'rounds': 0
 }
 
+# cria ou atualiza o arquivo dos rankings
 
 try:
     with open('data.txt') as load_file:
@@ -40,6 +43,7 @@ except:
 
 pygame.init()
 pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
+
 #tempo
 clock = pygame.time.Clock()
 fps = 60
@@ -67,6 +71,7 @@ actionE_img = pygame.image.load("imagem/background/action_enemy.png").convert_al
 #spritegroup
 j.txt_grupo = pygame.sprite.Group()
 
+# desenhaAcoes - desenha o icone de acao da equipe atual
 def desenhaAcoes(vivos, acoes, vezPlayer):
     half = False
     vezes = acoes
@@ -88,6 +93,8 @@ def desenhaAcoes(vivos, acoes, vezPlayer):
         x += 90
 
 img_guia = pygame.image.load("imagem/background/img_guia.png").convert_alpha()
+
+# desenhaGuiaDeBatalha - desenha os textos que indicam o que esta acontecendo na batalha
 
 def desenhaGuiaDeBatalha(MonsVez, alvo):
 
@@ -111,7 +118,7 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
                 j.textoGuia = fonte3.render(f"{MonsVez.nome} enfraqueceu a todos!", True, "yellow")
         elif j.event_primeiroTurno:
             j.textoGuia = fonte3.render(f"GAME!   START!", True, "white")
-        elif j.event_passou:
+        elif j.event_passou and j.event_vezJogador:
             j.textoGuia = fonte3.render(f"{MonsVez.nome} passou a vez!", True, "white")
         elif j.event_vezJogador:
             j.textoGuia = fonte3.render(f"Vez de {MonsVez.nome}, o que você vai fazer?", True, "white")
@@ -124,6 +131,7 @@ def desenhaGuiaDeBatalha(MonsVez, alvo):
         
 
 #cursor
+# icone dos cursores
 pygame.mouse.set_visible(False)
 cursor0_img = pygame.image.load("imagem/background/cursor_normal.png").convert_alpha()
 cursor0_img = pygame.transform.scale_by(cursor0_img, 1.3).convert_alpha()
@@ -133,6 +141,9 @@ cursor2_img = pygame.image.load("imagem/background/cursor_info.png").convert_alp
 cursor2_img = pygame.transform.scale_by(cursor2_img, 1.3).convert_alpha()
 cursor3_img = pygame.image.load("imagem/background/cursor_skill.png").convert_alpha()
 cursor3_img = pygame.transform.scale_by(cursor3_img, 1.3)
+
+# desenhaCursor - desenha o cursor a partir da posicao do mouse
+# a imagem do cursor se da pelo evento atual do jogo
 
 def desenhaCursor(posicao):
     if j.event_info == True:
@@ -144,6 +155,10 @@ def desenhaCursor(posicao):
     else:
         janela.blit(cursor0_img, posicao)
 
+# draw_aviso - desenha um aviso indicando algo impossivel que foi realizado pelo jogador
+# 1 - personagem insuficiente
+# 2 - cartas insuficientes
+
 def draw_aviso(janela, fonte, flag):
     if flag == 1:
         texto = fonte.render("Nenhum personagem selecionado", True, "yellow")
@@ -152,39 +167,41 @@ def draw_aviso(janela, fonte, flag):
     texto_rect = texto.get_rect(center=(1010, 565))
     janela.blit(texto, texto_rect)
 
+# atacar - funcao de ataque utilizado pelos lutadores
+
 def atacar(atacante, alvo):
     j.event_acertouCritico = False
-    if random.randint(1, 100) > alvo.sorte * 1.1:
+    if random.randint(1, 100) > alvo.sorte * 1.1: # verifica se o atacante acertou a partir da sorte do alvo
         
 
         mod2 = 1
         mod = 1
 
-        if random.randint(1, 100) <= atacante.sorte:
+        if random.randint(1, 100) <= atacante.sorte: # verifica se o dano do atacante é critico
             j.event_acertouCritico = True
             mod2 = 1.5
             if j.event_oneMore:
                 if j.event_vezJogador and j.acoesEquipe < 4.5:
                     j.acoesEquipe += 1
             
-        if atacante.magia == alvo.fraqueza:
-            mod = 1.5
+        if atacante.magia == alvo.fraqueza: # verifica se o tipo de ataque do atacante é a fraqueza do alvo
+            mod = 1.5 # incrementa o modificador do dano
             alvo.revelouFraqueza = True
             
 
-        atacante.revelouMagia = True
+        atacante.revelouMagia = True # indica que o atacante revelou o tipo de ataque 
         
-        dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2
-        atacante.danoAcumulado += dano
-        if atacante.MODatk2 != 1:
+        dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2 # equacao de dano
+        atacante.danoAcumulado += dano # incrementa o dano acumulado do atacante
+        if atacante.MODatk2 != 1: # reinicia o modificador de ataque secundario
             atacante.MODatk2 = 1
-        alvo.vida -= dano
-        alvo.machucado()
+        alvo.vida -= dano # aplica o dano
+        alvo.machucado() # indica que o alvo foi machucado
 
-        if alvo.skill.nome == "Devolver":
+        if alvo.skill.nome == "Devolver": # se a skill do alvo for Devolver, incrementa a gauge interna
             alvo.gauge += int(dano * 0.8)
         
-        j.dano += dano
+        j.dano += dano # incrementa o dano acumulado da run
 
     else:
         dano = -1
@@ -192,11 +209,13 @@ def atacar(atacante, alvo):
 
 img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png").convert()
 
+# menuTitulo - tela inicial do jogo
+
 def menuTitulo():
 
     clicou = False
     while(1):
-
+        # input
         posMouse = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
@@ -214,9 +233,12 @@ def menuTitulo():
             clicou = False
 
         janela.blit(img_telaTiulo, (0,0))
+        #render
         desenhaBotoes(janela, titulo_buttons)
         desenhaCursor(posMouse)
         pygame.display.flip()
+
+# desenhaMembros - desenha a equipe selecionada no menu principal
 
 def desenhaMembros():
 
@@ -227,6 +249,9 @@ def desenhaMembros():
         rect = monstro.image.get_rect(center=(x, y))
         janela.blit(monstro.image, rect)
         x += espacamento
+
+# desenhaRanking - desenha os dados globais e o ranking de melhor run
+# se nao houver ranking, nao desenha
 
 def desenhaRanking():
     txtTentativas = fonte2.render(f"Tentativas: {data["tentativas"]}", True, "black")
@@ -256,9 +281,14 @@ def desenhaRanking():
         janela.blit(txtCuraTentativa, (50, 470))
 
 img_descricaoBox = pygame.image.load("imagem/background/description_box.png").convert_alpha()
+
+# menuPrincipal - tela de selecao de personagem e carta
+# define a equipe e deck
+# atualizacao dinamica
+
 def menuPrincipal():
-    txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson")
-    for botao in card_buttons:
+    txtRounds = fonte3.render(f"Rounds concluídos: {j.round - 1}", True, "crimson") 
+    for botao in card_buttons: # verifica se a carta contida no botao esta no deck para definir se estao selecionados
         if botao.nome == 'cardframe':
             if botao.carta not in deck:
                 botao.selected = False
@@ -274,6 +304,9 @@ def menuPrincipal():
     j.flag = 0
     while(1):
         clock.tick(120)
+
+        # input
+
         posMouse = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
@@ -291,10 +324,14 @@ def menuPrincipal():
                     wheelUp = False
                     scrollou = True
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_p:
                     j.event_ganhouRubi = True
                     med.valor = 100
-                
+                if event.key == pygame.K_r:
+                    gameOver(j)
+        
+        # atualizacoes
+
         if clicou:
             j.mensagem = False
             if j.catalogoMonstro:
@@ -356,6 +393,7 @@ def menuPrincipal():
             med.valor = 0
             j.event_perdeuRubi = False
 
+        # render
 
         janela.fill("white")
         janela.blit(img_descricaoBox, (680, 70))
@@ -382,28 +420,29 @@ def menuPrincipal():
         janela.blit(txtRounds, (1050, 15))
         pygame.display.flip()
 
+# batalha - tela de batalha, onde ocorre as atualizacoes dos monstros e cartas
+
 def batalha():
 
     #VARIAVEIS DE VERIFICACAO --- //
     j.event_bossBattle = False
     j.selecionou = False
-    i = random.randint(0, 5)
+    i = random.randint(0, 5) # define o background da tela de batalha
     bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
-    if j.round == 4 or j.round == 8 or j.round == 12:
+    if j.round == 4 or j.round == 8 or j.round == 12: # gera boss em rounds de boss
         bg0_img = gerarBoss(j.round)
         bg0_img.convert()
         j.event_bossBattle = True
     else:
-        gerarInimigos(j.round)
+        gerarInimigos(j.round) # gera inimigos ordinarios em rounds ordinarios
     clicou = False
-    monsVerif = 0
     monsAlvo = 0
-    monsVez = equipe[0]
-    alvo = equipeInim[0]
-    alvoGuia = alvo
+    monsVez = equipe[0] # inicializa o monstro da vez
+    alvo = equipeInim[0] # inicializa o alvo
+    alvoGuia = alvo # guia - monstros que serao usados no textos de guia
     monsVezGuia = monsVez
     posMouse = pygame.mouse.get_pos()
-    j.turno = 0
+    j.turno = 0 # contagem de turno
     j.acoesEquipeInimiga = 0
     cd_acaoInimiga = 0
     tempoEspera_acaoInimiga = 80
@@ -433,12 +472,14 @@ def batalha():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_c:
                     j.event_comprouCarta = True
-                if event.key == pygame.K_r:
+                if event.key == pygame.K_p:
                     j.event_ganhouRubi = True
                     med.valor = 20
                 if event.key == pygame.K_e:
                     j.event_ganhouEnergia = True
                     med.valorE = 20
+                if event.key == pygame.K_r: # reinicia a run
+                    gameOver(j)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     clicou = True
@@ -449,47 +490,47 @@ def batalha():
                     j.event_info = False
 
         #ATUALIZACOES --- //
-        vivos = contarVivos(equipe)
+        vivos = contarVivos(equipe) # contar os vivos das equipes
         vivosInim = contarVivosInimigos(equipeInim)
         
-        if vivosInim == 0:
+        if vivosInim == 0: # se nao houver inimigos vivos, avanca para o proximo round
             continuar()
         
-        if vivos != 0 and j.acoesEquipe <= 0 and j.event_vezJogador:
+        if vivos != 0 and j.acoesEquipe <= 0 and j.event_vezJogador: # troca a vez da equipe se acabou as acoes dos aliados
             j.event_vezJogador = False
-            j.acoesEquipeInimiga = contarVivosInimigos(equipeInim)
-            if j.event_bossBattle:
+            j.acoesEquipeInimiga = contarVivosInimigos(equipeInim) # define as acoes dos inimigos
+            if j.event_bossBattle: # define as acoes do boss
                 j.acoesEquipeInimiga = 2
             j.event_trocouTime = True
         
-        if vivosInim != 0 and j.acoesEquipeInimiga <= 0 and not j.event_vezJogador:
+        if vivosInim != 0 and j.acoesEquipeInimiga <= 0 and not j.event_vezJogador: # troca a vez da equipe se acabou as acoes dos inimigos
             j.event_vezJogador = True
-            j.acoesEquipe = contarVivos(equipe)
+            j.acoesEquipe = contarVivos(equipe)# define as acoes dos aliados
             j.event_trocouTime = True
         
         if j.event_vezJogador:
 
-            if j.event_novoTurno and vivos > 0:
-                if j.cdStandby > j.cdMaxStandby:
+            if j.event_novoTurno and vivos > 0: # atualiza o turno
+                if j.cdStandby > j.cdMaxStandby: # so ativa se o tempo de standby for cumprido
                     j.turno += 1
                     while 1:
-                        monsVez = equipe[abs(j.turno) % tamEquipe]
-                        if monsVez.vivo:
+                        monsVez = equipe[abs(j.turno) % tamEquipe] # aumenta o index da equipe para selecionar o monstro da vez - sequencial
+                        if monsVez.vivo: # so seleciona monstros vivos
                             break
                         j.turno += 1
-                    if j.event_mano and vivos == 1:
+                    if j.event_mano and vivos == 1: # ativa o aprimoramento Mano
                         monsVez.MODdef = 1.8
                         monsVez.MODatk = 1.5
                         monsVez.CounterAtk = 0
                         monsVez.CounterDef = 0
                         DefineTextoStatus("UP", monsVez, j.txt_grupo, "black", 10)
                         DefineTextoStatus("UP", monsVez, j.txt_grupo, "black", 11)
-                    monsVez.updateStatus()
-                    monsVez.updateCondicao()
-                    if monsVez.safe:
+                    monsVez.updateStatus() # atualiza os status
+                    monsVez.updateCondicao() # atualiza a condicao
+                    if monsVez.safe: # reseta o perk Safe
                         monsVez.safe = False
                         DefineTextoStatus("       OFF", monsVez, j.txt_grupo, "black", 11)
-                    monsVezGuia = monsVez
+                    monsVezGuia = monsVez # atualiza o monstro a ser usado no guia
                     if j.event_primeiroTurno:
                         j.event_primeiroTurno = False
                     j.event_novoTurno = False
@@ -503,18 +544,23 @@ def batalha():
                     j.event_standby = False
                     j.event_trocouTime = False
 
-                    if monsVez.condicao == 2:
+                    if monsVez.condicao == 2: # pula a vez se o monstro estiver congelado
                         j.event_novoTurno = True
                         j.acoesEquipe -= 1
+                    
+                    if monsVez.vida <= 0: # mata o monstro se ele estiver morto
+                        monsVez.vida = 0
+                        DefineAnimacaoAtaque(monsVez, 9)
+                        j.event_novoTurno
                 else:
-                    j.cdStandby += 1
+                    j.cdStandby += 1 # incrementa o cooldown do standby
                     j.event_standby = True
                     clicou = False
 
-            elif vivos == 0 and not j.event_primeiroTurno:
+            elif vivos == 0 and not j.event_primeiroTurno: # gameover se nao houver mais aliados vivos
                 gameOver(j)
             
-            if j.event_comprouCarta:
+            if j.event_comprouCarta: # aciona os metodos de comprar carta
                 if med.rubis >= med.custoComprar and len(mao) < 4:
                     adicionaCarta(deck, mao)
                     j.event_perdeuRubi = True
@@ -522,29 +568,29 @@ def batalha():
                 j.event_comprouCarta = False
             
             if clicou and not j.event_standby:
-                med.corEnergia = "yellow"
-                if vivos != 0:
-                    cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos, monsVez)                      #checagem ativacao de card
+                med.corEnergia = "yellow" # reseta a cor da barra de energia
+                if vivos != 0: 
+                    cliqueCarta(mao, deck, posMouse, equipeInim, equipe, equipeAtivos, monsVez)       #checagem ativacao de card
                 
-                    if atk_button.checkForInput(posMouse):
+                    if atk_button.checkForInput(posMouse): # ativa o evento de selecionar alvo para ataque
                         j.event_atacar = True
                         j.event_usarSkill = False
                         j.event_comprouCarta = False
 
-                    elif com_button.checkForInput(posMouse):
+                    elif com_button.checkForInput(posMouse): # ativa o evento de compra carta
                         j.event_comprouCarta = True
                         j.event_atacar = False
                         j.event_usarSkill = False
 
-                    elif skl_button.checkForInput(posMouse):
-                        if med.energia >= monsVez.skill.custo:
+                    elif skl_button.checkForInput(posMouse): # ativa os metodos de ativar skill ou o alvo da skill
+                        if med.energia >= monsVez.skill.custo: # ativa os metodos de selecionar alvo e ativar skill
                             if monsVez.skill.auto == False:
                                 j.event_usarSkill = True
                             else:
-                                j.event_perdeuEnergia = True
+                                j.event_perdeuEnergia = True  # se for skill automatica, pula a etapa de selecionar alvo
                                 med.valorE = monsVez.skill.custo
                                 monsVez.ativarSkill(monsVez, equipeInim, equipe)
-                                j.event_novoTurno = True
+                                j.event_novoTurno = True # avanca o turno 
                                 j.event_usarSkill = False
                                 j.event_realizouSkill = True
                                 j.acoesEquipe -= 1
@@ -552,17 +598,17 @@ def batalha():
                             j.event_atacar = False
                             j.event_comprouCarta = False
                         else:
-                            med.corEnergia = "red"
-                    elif pas_button.checkForInput(posMouse):
+                            med.corEnergia = "red" # indica que nao ha energia o suficiente
+                    elif pas_button.checkForInput(posMouse): # ativa o evento de passar a vez
                         j.event_novoTurno = True
-                        j.acoesEquipe -= 0.5
+                        j.acoesEquipe -= 0.5 # ganha energia por passar
                         monsVezGuia = monsVez
                         j.textoAtualizou = True
                         j.event_passou = True
                         j.event_ganhouEnergia = True
                         med.valorE = 12
                 
-                if j.event_atacar:
+                if j.event_atacar: # inicia metodos de escolher alvo e atacar
                     monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
                     if monsAlvo != False:
                         dano = atacar(monsVez, monsAlvo)
@@ -571,11 +617,11 @@ def batalha():
                         alvoGuia =  monsAlvo
                         med.valorE = med.ganhoEnergia
                         if dano != -1:
-                            if not j.event_acertouCritico:
+                            if not j.event_acertouCritico: # define os textos de dano
                                 DefineTextoDano(dano, monsAlvo, j.txt_grupo, "gray20", monsVez.magia)
                             else:
                                 DefineTextoDano(dano, monsAlvo, j.txt_grupo, "red", monsVez.magia)
-                            if j.event_vampirismo:
+                            if j.event_vampirismo: # ativa a perk de vampirismo, caso ativa
                                 curaV = int(dano / 4)
                                 DefineTextoStatus(curaV, monsVez, j.txt_grupo, "gray20", 16)
                                 monsVez.vida += curaV
@@ -583,16 +629,16 @@ def batalha():
                                     monsVez.vida = monsVez.vidamax
                                 j.cura += curaV
                         else:
-                            DefineTextoStatus("       MISS", monsAlvo, j.txt_grupo, "black", 11)
-                        DefineAnimacaoAtaque(monsAlvo, monsVez.magia)
+                            DefineTextoStatus("       MISS", monsAlvo, j.txt_grupo, "black", 11) # indica que o atacante errou 
+                        DefineAnimacaoAtaque(monsAlvo, monsVez.magia) # inicia a animacao de ataque
                         j.event_novoTurno = True
                         j.event_atacar = False
                         j.event_realizouAtaque = True
                         j.textoAtualizou = True
                         j.acoesEquipe -= 1
                 
-                if j.event_usarSkill:
-                    if not monsVez.skill.benigno:
+                if j.event_usarSkill: # metodos de escolher alvo e ativar skill
+                    if not monsVez.skill.benigno: # diz qual o grupo alvo da skill baseado no variavel 'benigno'
                         monsAlvo = cliqueMonstroBatalha(equipeInim, posMouse)
                     else:
                         monsAlvo = cliqueMonstroBatalha(equipe, posMouse)
@@ -609,16 +655,16 @@ def batalha():
 
                 clicou = False                             #reset
         
-        if not j.event_vezJogador:
+        if not j.event_vezJogador: # metodos de acao dos inimigos
             if j.event_novoTurno and vivosInim > 0:
-                if j.cdStandby > j.cdMaxStandby:
-                    j.turno += 1
+                if j.cdStandby > j.cdMaxStandby: # espera do tempo de cooldown do standby
+                    j.turno += 1 # incrementa o turno
                     while 1:
-                        monsVez = equipeInim[j.turno % tamEquipeInim]
+                        monsVez = equipeInim[j.turno % tamEquipeInim] # avanca para o proximo inimigo da lsita
                         if monsVez.vivo:
                             break
                         j.turno += 1
-                    monsVez.updateStatus()
+                    monsVez.updateStatus() # metodos de atualizacao de status e condicao
                     monsVez.updateCondicao()
                     monsVezGuia = monsVez
                     j.event_novoTurno = False
@@ -629,32 +675,37 @@ def batalha():
                     j.cdStandby = 0
                     j.event_standby = False
 
-                    if monsVez.condicao == 2:
+                    if monsVez.condicao == 2: # pula a vez caso tenha congelamento
                         j.event_novoTurno = True
                         j.acoesEquipeInimiga -= 1
+                    
+                    if monsVez.vida <= 0: # morre perdeu vida por sangramento
+                        monsVez.vida = 0
+                        DefineAnimacaoAtaque(monsVez, 9)
+                        j.event_novoTurno
                 else:
                     j.cdStandby += 1
                     j.event_standby = True
                     clicou = False
 
-            if cd_acaoInimiga > tempoEspera_acaoInimiga and not j.event_standby and monsVez.condicao != 2:
+            if cd_acaoInimiga > tempoEspera_acaoInimiga and not j.event_standby and monsVez.condicao != 2: # tempo de espera para o inimigo tomar uma acao
 
-                comando = random.randint(0, 8)
+                comando = random.randint(0, 8) # numero que ditara qual acao o inimigo vai tomar
 
-                if monsVez == mago:
+                if monsVez == mago: # especialidade do mago
                     if j.acoesEquipeInimiga == 1:
                         comando = 1
 
-                if monsVez.MODatk2 != 1:
+                if monsVez.MODatk2 != 1: # se o modificador secundario for diferente de um, o inimigo ataca
                     comando = 1
-                if comando < 7:
+                if comando < 7: # se o comando por menor que 7, realiza ataque
                     alvo = -1
                     contador = 0
                     while alvo == -1:
-                        alvo = inimigoEscolheAlvo(equipe)
+                        alvo = inimigoEscolheAlvo(equipe) # escolhe alvo do ataque
                         contador += 1
                         if contador >= 12:
-                            gameOver(j)
+                            gameOver(j) # gameover se nao conseguir achar alvo
                     dano = atacar(monsVez, alvo)
                     if dano != -1:
                         if not j.event_acertouCritico:
@@ -672,24 +723,24 @@ def batalha():
                     cd_acaoInimiga = 0
                     j.acoesEquipeInimiga -= 1
                 
-                if comando >= 7:
+                if comando >= 7: # usa skill se o comando for maior que 7
                     alvo = -1
                     contador = 0
                     if not monsVez.skill.auto:
                         if not monsVez.skill.benigno:
                             while alvo == -1:
-                                alvo = inimigoEscolheAlvo(equipe)
+                                alvo = inimigoEscolheAlvo(equipe) # seleciona alvo da equipe se nao for benigno
                                 contador += 1
                                 if contador >= 12:
                                     gameOver(j)
-                            monsVez.ativarSkill(alvo, equipe, equipeInim)
+                            monsVez.ativarSkill(alvo, equipe, equipeInim) # ativa skill
                         else:
                             while alvo == -1:
-                                alvo = inimigoEscolheAlvo(equipeInim)
+                                alvo = inimigoEscolheAlvo(equipeInim) # seleciona alvo da equipe inimiga se for benigno
 
-                            monsVez.ativarSkill(alvo, equipe, equipeInim)
+                            monsVez.ativarSkill(alvo, equipe, equipeInim) # ativa skill
                     else:
-                        monsVez.ativarSkill(monsVez, equipe, equipeInim)
+                        monsVez.ativarSkill(monsVez, equipe, equipeInim) # ativa skill se for automatica
         
                     j.event_novoTurno = True
                     monsVezGuia = monsVez
@@ -703,7 +754,7 @@ def batalha():
             elif not j.event_standby:
                 cd_acaoInimiga += 1
 
-        if j.event_ganhouRubi:
+        if j.event_ganhouRubi: # ativa metodos de ganhar ou perder rubis e energia
             med.rendaRubi(med.valor)
             DefineTextoMedidor(med.valor, True, False, (120, 165), j.txt_grupo)
             med.valor = 0
@@ -729,7 +780,7 @@ def batalha():
             j.event_perdeuEnergia = False
 
         
-        atualizaBotoes()
+        atualizaBotoes() # atualiza o estado dos botoes da hud de batalha
         monsVezGuia = monsVez
         #RENDER
         janela.blit(bg0_img, (0,0))
@@ -742,16 +793,20 @@ def batalha():
         desenharHud(janela, hud_buttons)
         desenhaPrecoCompra(janela, fonte1)
         desenhaGuiaDeBatalha(monsVezGuia, alvoGuia)
+        # desenha os icones de acao
         if j.event_vezJogador:
             desenhaAcoes(vivos, j.acoesEquipe, j.event_vezJogador)
         else:
             desenhaAcoes(vivosInim, j.acoesEquipeInimiga, j.event_vezJogador)
+        # desenha cursor
         desenhaCursor(posMouse)
+        # desenha as informacoes
         if j.event_info:
             if not desenhaDescricao(janela, fonte):
                 desenhaDescricaoMonstro(janela, fonte, fonte1, equipe, posMouse)
                 desenhaDescricaoMonstroInim(janela, fonte, fonte1, equipeInim, posMouse)
-            
+        
+        # desenha os sprites dos grupos de sprite
         desenhaTexto(j.txt_grupo, janela)
         desenhaAtaque(j.ataque_grupo, janela)
         desenhaTexto(j.txt_dano, janela)
@@ -759,6 +814,8 @@ def batalha():
 
 img_bg_gameover = pygame.image.load("imagem/background/bg_gameover.png").convert()
 
+# reset - ativa quando completa ou perde a run
+# reseta todos os parametros mutaveis do jogo em caso
 def reset():
     
     med.energiaMax = 100
@@ -922,6 +979,8 @@ def reset():
                 botao.selected = True
                 botao.image = pygame.image.load("imagem/background/cardframe_selected.png")                .convert_alpha()
 
+# desenhaGameover - desenha as informacoes da tela de gameover
+
 def desenhaGameover(janela):
 
     txtEquipe = fonte3.render("Equipe", True, "white")
@@ -946,6 +1005,8 @@ def desenhaGameover(janela):
     rect = txtEquipe.get_rect(center=(100, y))
     janela.blit(txtAprimoramentos, rect)
 
+# continuar - tela de continuar a run
+# nao reseta certos parametros mutaveis
 def continuar():
     if j.round == 12:
         gameOver(j)
@@ -1089,10 +1150,11 @@ def continuar():
         
         transparencia += 2
 
+# tela de gameover - reseta todos os mutaveis
 
 def gameOver(jogo): 
 
-    if j.round >= data["rounds"]:
+    if j.round >= data["rounds"]: # salva o ranking e outros dados no txt
         nome = ""
         for monstro in equipe:
             nome += f"{monstro.nome} "

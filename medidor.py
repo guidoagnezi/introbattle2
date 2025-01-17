@@ -6,6 +6,8 @@ pygame.display.set_mode((1,1), pygame.NOFRAME)
 rubyFrame = pygame.image.load("imagem/background/rubiFrame.png").convert_alpha()
 rubyFrameMP = pygame.image.load("imagem/background/rubiFrameMP.png").convert_alpha()
 
+# Medidor - classe que define as economias do jogo: dinheiro (rubis) e energia
+
 class Medidor():
     def __init__(self, rubis, energia):
         self.rubis = rubis
@@ -19,6 +21,8 @@ class Medidor():
         self.valorE = 0
         self.multiRubis = 1
         self.multiEnergia = 1
+    
+    # desenhaMedidores - desenha o icone e numero de rubi e a barra de energia na batalha
 
     def desenhaMedidores(self, janela, fonte):
         barraLar = 605
@@ -33,6 +37,8 @@ class Medidor():
         pygame.draw.rect(janela, self.corEnergia, (730, 500, barraLar * ratio, barraAlt))
         janela.blit(txtEnergia, (740, 497))
     
+    # desenhaRubiMP - desenha o icone e numero de rubis no Menu Principal
+    
     def desenhaRubisMP(self, janela, fonte):
 
         janela.blit(rubyFrameMP, (700, 2))
@@ -40,12 +46,19 @@ class Medidor():
         rubiNumero = fonte.render(f"{self.rubis}", True, "white")
         janela.blit(rubiNumero, (775, 25))
 
+    # rendaRubi - metodo que adiciona uma renda ao numero de rubis
+
     def rendaRubi(self, renda):
         med.valor = int(med.valor * self.multiRubis)
         self.rubis += med.valor  
 
+    # prejuizpRubi - metodo que adiciona um prejuizo ao numero de rubis
+
     def prejuizoRubi(self, prejuizo):
         self.rubis -= prejuizo
+
+    # rendaEnergia - adciona uma renda ao numero de energia
+    # prejuizoEnergia - adiciona um prejuizo ao numero de energia
 
     def rendaEnergia(self, renda):
         med.valorE = int(med.valorE * self.multiEnergia)
@@ -58,7 +71,9 @@ class Medidor():
         if self.energia <= 0:
             self.energia = 0
             
-med = Medidor(60, 50)
+med = Medidor(30, 50)
+
+# icones que representam os tipos de ataque dos personagens
 
 agua = pygame.image.load("imagem/medidor/agua.png").convert_alpha()
 raio = pygame.image.load("imagem/medidor/raio.png").convert_alpha()
@@ -66,7 +81,12 @@ fogo = pygame.image.load("imagem/medidor/fogo.png").convert_alpha()
 soco = pygame.image.load("imagem/medidor/soco.png").convert_alpha()
 magica = pygame.image.load("imagem/medidor/magica.png").convert_alpha()
 corte = pygame.image.load("imagem/medidor/coracao.png").convert_alpha()
+atk_up = pygame.image.load("imagem/medidor/atk_up.png").convert_alpha()
+def_up = pygame.image.load("imagem/medidor/def_up.png").convert_alpha()
+atk_down = pygame.image.load("imagem/medidor/atk_down.png").convert_alpha()
+def_down = pygame.image.load("imagem/medidor/def_down.png").convert_alpha()
 
+# retornaImagem - recebe um numero que representa um tipo de ataque, retorna o icone correspondente
 # 3 - corte, 4 - soco, 5 - fogo, 6 - agua, 7 - raio, 8 - neutro
 def retornaImagem(tipo):
 
@@ -86,8 +106,3 @@ def retornaImagem(tipo):
         img = magica
 
     return img
-
-atk_up = pygame.image.load("imagem/medidor/atk_up.png").convert_alpha()
-def_up = pygame.image.load("imagem/medidor/def_up.png").convert_alpha()
-atk_down = pygame.image.load("imagem/medidor/atk_down.png").convert_alpha()
-def_down = pygame.image.load("imagem/medidor/def_down.png").convert_alpha()

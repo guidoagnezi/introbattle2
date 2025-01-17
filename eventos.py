@@ -1,9 +1,12 @@
 import pygame
 pygame.init()
 
+# Jogo - Variaveis que sao chamadas e alteradas por referencia.
+# sao usadas para reger os parametros do jogo
+ 
 class Jogo():
     def __init__(self):
-        self.event_comprouCarta = False
+        self.event_comprouCarta = False     # variaveis que triggam certos eventos durante o jogo
         self.event_ganhouRubi = False
         self.event_perdeuRubi = False
         self.event_ganhouEnergia = False
@@ -21,14 +24,14 @@ class Jogo():
         self.event_passou = False
         self.event_trocouTime = False
         self.event_acertouCritico = False
-        self.event_bossBattle = False
+        self.event_bossBattle = False # parametros de aprimoramento
         self.event_vampirismo = False
         self.event_dropaCard = False
         self.event_oneMore = False
-        self.event_mano = False 
-        self.mensagem = False
-        self.flag = 0
-        self.catalogoMonstro = True
+        self.event_mano = False # #
+        self.mensagem = False #mensagem de aviso
+        self.flag = 0 #
+        self.catalogoMonstro = True 
         self.catalogoCarta = False
         self.ranking = False
         self.botoesOff = False
@@ -53,7 +56,7 @@ class Jogo():
         self.acoesEquipeInimiga = 0
         self.acoesEquipe = 3
         self.alvoPar = (0, 0)
-        self.txt_grupo = pygame.sprite.Group()
+        self.txt_grupo = pygame.sprite.Group() # grupos de sprites do infotext
         self.txt_dano = pygame.sprite.Group()
         self.ataque_grupo = pygame.sprite.Group()
 
