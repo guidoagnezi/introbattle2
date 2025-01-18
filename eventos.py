@@ -56,6 +56,7 @@ class Jogo():
         self.acoesEquipeInimiga = 0
         self.acoesEquipe = 3
         self.alvoPar = (0, 0)
+        self.i = 0
         self.txt_grupo = pygame.sprite.Group() # grupos de sprites do infotext
         self.txt_dano = pygame.sprite.Group()
         self.ataque_grupo = pygame.sprite.Group()

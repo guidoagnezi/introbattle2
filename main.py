@@ -427,12 +427,13 @@ def batalha():
     #VARIAVEIS DE VERIFICACAO --- //
     j.event_bossBattle = False
     j.selecionou = False
-    i = random.randint(0, 5) # define o background da tela de batalha
-    bg0_img = pygame.image.load(f"imagem/background/bg{i}.png").convert()
+    j.i = random.randint(0, 5) # define o background da tela de batalha
+    bg0_img = pygame.image.load(f"imagem/background/bg{j.i}.png").convert()
     if j.round == 4 or j.round == 8 or j.round == 12: # gera boss em rounds de boss
         bg0_img = gerarBoss(j.round)
         bg0_img.convert()
         j.event_bossBattle = True
+        j.i = 0
     else:
         gerarInimigos(j.round) # gera inimigos ordinarios em rounds ordinarios
     clicou = False

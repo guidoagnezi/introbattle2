@@ -164,6 +164,8 @@ def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
     offX = 90
     offY = -10
     offset = -40
+    if j.i == 5:
+        cor = "white"
     
     texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)  #inicializacao
 
@@ -172,7 +174,7 @@ def DefineTextoDano(dano, posicao, txt_grupo, cor, tipo):
         for sprite in j.txt_dano:
             if texto.rect.colliderect(sprite.rect):
                 offY += offset
-                texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", "gray20")
+                texto = DamageText(posicao.rect.x + offX, posicao.rect.y + offY, f"{str(int(dano))}", cor)
                 ok = False
         if ok:
             break
@@ -191,8 +193,11 @@ def DefineTextoStatus(nome, posicao, txt_grupo, cor, tipo):
     offX = 90
     offY = -10
     offset = -40
-    
-    texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", "gray20")
+    cor = "gray20"
+    if j.i == 5:
+        cor = "white"
+
+    texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
     icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
 
     while 1:
@@ -200,7 +205,7 @@ def DefineTextoStatus(nome, posicao, txt_grupo, cor, tipo):
         for sprite in txt_grupo:
             if texto.rect.colliderect(sprite.rect):
                 offY += offset
-                texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", "gray20")
+                texto = MedidorText(posicao.rect.x + offX, posicao.rect.y + offY, f"{nome}", cor)
                 icone = Icone(posicao.rect.x + offX - 50, posicao.rect.y + offY, tipo)
                 ok = False
         if ok:
