@@ -205,6 +205,10 @@ def atacar(atacante, alvo):
 
     else:
         dano = -1
+        if j.event_vezJogador:
+            j.acoesEquipe -= 1
+        else:
+            j.acoesEquipeInimiga -= 1
     return dano
 
 img_telaTiulo = pygame.image.load("imagem/background/telaTitulo.png").convert()
