@@ -11,6 +11,7 @@ rubyFrameMP = pygame.image.load("imagem/background/rubiFrameMP.png").convert_alp
 class Medidor():
     def __init__(self, rubis, energia):
         self.rubis = rubis
+        self.rubisMax = 900
         self.rubiImagem = pygame.image.load("imagem/medidor/rubi.png").convert_alpha()
         self.energia = energia
         self.energiaMax = 100
@@ -21,6 +22,7 @@ class Medidor():
         self.valorE = 0
         self.multiRubis = 1
         self.multiEnergia = 1
+        self.indice = 12
     
     # desenhaMedidores - desenha o icone e numero de rubi e a barra de energia na batalha
 
@@ -50,7 +52,9 @@ class Medidor():
 
     def rendaRubi(self, renda):
         med.valor = int(med.valor * self.multiRubis)
-        self.rubis += med.valor  
+        self.rubis += med.valor
+        if self.rubis > self.rubisMax:
+            self.rubis = self.rubisMax
 
     # prejuizpRubi - metodo que adiciona um prejuizo ao numero de rubis
 
@@ -70,6 +74,13 @@ class Medidor():
         self.energia -= prejuizo
         if self.energia <= 0:
             self.energia = 0
+    
+    # atualizaCusto - muda o custo de compra das cartas de acordo com a quantidade de rubis acumulado
+
+    def atualizaCusto(self):
+        self.custoComprar = int(self.rubis / self.indice)
+        if self.custoComprar == 0:
+            self.custoComprar = 1
             
 med = Medidor(30, 50)
 
@@ -81,6 +92,8 @@ fogo = pygame.image.load("imagem/medidor/fogo.png").convert_alpha()
 soco = pygame.image.load("imagem/medidor/soco.png").convert_alpha()
 magica = pygame.image.load("imagem/medidor/magica.png").convert_alpha()
 corte = pygame.image.load("imagem/medidor/coracao.png").convert_alpha()
+congelamento = pygame.image.load("imagem/medidor/gelo.png").convert_alpha()
+sangramento = pygame.image.load("imagem/medidor/sangramento.png").convert_alpha()
 atk_up = pygame.image.load("imagem/medidor/atk_up.png").convert_alpha()
 def_up = pygame.image.load("imagem/medidor/def_up.png").convert_alpha()
 atk_down = pygame.image.load("imagem/medidor/atk_down.png").convert_alpha()

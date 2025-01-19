@@ -187,8 +187,11 @@ def atacar(atacante, alvo):
         if atacante.magia == alvo.fraqueza: # verifica se o tipo de ataque do atacante é a fraqueza do alvo
             mod = 1.5 # incrementa o modificador do dano
             alvo.revelouFraqueza = True
-            
-
+            if j.event_vezJogador and not j.event_acertouCritico:
+                j.acoesEquipe += 0.5
+            elif not j.event_acertouCritico:
+                j.acoesEquipeInimiga += 0.5
+                
         atacante.revelouMagia = True # indica que o atacante revelou o tipo de ataque 
         
         dano = int((atacante.ataque * mod * (50 / (alvo.defesa + 50)) * (random.randint(8, 12) / 10)) * atacante.MODatk2) * mod2 # equacao de dano
@@ -338,13 +341,14 @@ def menuPrincipal():
 
         if clicou:
             j.mensagem = False
-            if j.catalogoMonstro:
-                selecionarPersonagem(char_buttons, posMouse)
-                data['monstroscomprados'] += j.monstroComprados
-            else:
-                j.mensagem = not selecionarCarta(card_buttons, posMouse)
-                data['cartascompradas'] += j.cartasCompradas
-                j.flag = 2
+            if not j.ranking:
+                if j.catalogoMonstro:
+                    selecionarPersonagem(char_buttons, posMouse)
+                    data['monstroscomprados'] += j.monstroComprados
+                else:
+                    j.mensagem = not selecionarCarta(card_buttons, posMouse)
+                    data['cartascompradas'] += j.cartasCompradas
+                    j.flag = 2
                 
             if main_go_button.checkForInput(posMouse) and len(equipe) != 0:
                 DefinirPosicao(equipe)
@@ -429,6 +433,7 @@ def menuPrincipal():
 def batalha():
 
     #VARIAVEIS DE VERIFICACAO --- //
+    med.atualizaCusto()
     j.event_bossBattle = False
     j.selecionou = False
     j.i = random.randint(0, 5) # define o background da tela de batalha
@@ -525,7 +530,7 @@ def batalha():
                         j.turno += 1
                     if j.event_mano and vivos == 1: # ativa o aprimoramento Mano
                         monsVez.MODdef = 1.8
-                        monsVez.MODatk = 1.5
+                        monsVez.MODatk = 2.2
                         monsVez.CounterAtk = 0
                         monsVez.CounterDef = 0
                         DefineTextoStatus("UP", monsVez, j.txt_grupo, "black", 10)

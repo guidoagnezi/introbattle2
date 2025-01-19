@@ -308,7 +308,7 @@ class Monstro:
             DefineTextoStatus("        INFO", alvo, j.txt_grupo, "black", 11)
         
         if self.skill.nome == "Devolver":
-            dano = self.gauge * self.MODatk
+            dano = self.gauge * 1.2 * self.MODatk
             alvo.vida -= dano
             self.danoAcumulado += dano
             alvo.machucado()
@@ -384,8 +384,8 @@ class Monstro:
                     j.dano += dano
         
         if self.skill.nome == 'Eletroterapia':
-            alvo.MODatk *= 1.5
-            alvo.MODatk2 *= 1.3
+            alvo.MODatk *= 1.3
+            alvo.MODdef *= 1.2
             alvo.CounterAtk = 0
             alvo.CounterDef = 0
             alvo.updateStatus()
@@ -444,9 +444,9 @@ monge = Monstro     ("Monge",    160,  25, 40, 10, rezar,   30, 4, 8, 1)
 camboja.animation_cooldown = 200
 bireco = Monstro    ("Birecos",  190,  30, 30, 15, bencao,  35, 8, 0, 1)
 adiburai = Monstro  ("Adiburai", 180,  35, 50, 12, treinar, 40, 4, 4, 6)
-kamirider = Monstro ("Kamirider",160,  30, 45, 12, comer,   40, 3, 3, 4)
+kamirider = Monstro ("Kamirider",175,  30, 55, 15, comer,   40, 3, 3, 4)
 demonio = Monstro   ("Demonio",  200,  50, 20, 6,  analisar,40, 8, 0, 6)
-odiburoi = Monstro  ("Odiburoi", 180,  30, 55, 6,  corre,   40, 7, 6, 4)
+odiburoi = Monstro  ("Odiburoi", 180,  30, 45, 6,  corre,   40, 7, 6, 4)
  
 parceiro = Monstro  ("Parceiro", 190,  35, 55, 12, wekapeople, 0, 8, 0, 6)
 azuliu = Monstro    ("Azuliu",   210,  30, 60, 8,  saraivada,  0, 6, 0, 6)
@@ -758,8 +758,12 @@ def desenhaDescricaoMonstro(janela, fonte, fonteNome, equipe, posicao):
                 janela.blit(atk_up, (posicao[0] + 310, posicao[1] - 55))
             if monstro.MODdef < 1:
                 janela.blit(def_down, (posicao[0] + 280, posicao[1] - 55))
-            if monstro.MODatk < 1:
+            if monstro.MODatk < 1 and monstro.MODatk2 == 1:
                 janela.blit(atk_down, (posicao[0] + 310, posicao[1] - 55))
+            if monstro.condicao == 2:
+                janela.blit(congelamento, (posicao[0] + 240, posicao[1] - 55))
+            elif monstro.condicao == 1:
+                janela.blit(sangramento, (posicao[0] + 240, posicao[1] - 55))
             barraLar = 130
             barraAlt = 25
             ratio = monstro.vida / monstro.vidamax
@@ -815,6 +819,10 @@ def desenhaDescricaoMonstroInim(janela, fonte, fonteNome, equipeInim, posicao):
                 janela.blit(def_down, (posicao[0] - 90, posicao[1] - 55))
             if monstro.MODatk < 1:
                 janela.blit(atk_down, (posicao[0] - 60, posicao[1] - 55))
+            if monstro.condicao == 2:
+                janela.blit(congelamento, (posicao[0] - 130, posicao[1] - 55))
+            elif monstro.condicao == 1:
+                janela.blit(sangramento, (posicao[0] - 130, posicao[1] - 55))
 
             barraLar = 130
             barraAlt = 25

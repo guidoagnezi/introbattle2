@@ -24,10 +24,11 @@ class Jogo():
         self.event_passou = False
         self.event_trocouTime = False
         self.event_acertouCritico = False
-        self.event_bossBattle = False # parametros de aprimoramento
-        self.event_vampirismo = False
+        self.event_bossBattle = False 
+        self.event_vampirismo = False # parametros de aprimoramento
         self.event_dropaCard = False
         self.event_oneMore = False
+        self.event_weak = False
         self.event_mano = False # #
         self.mensagem = False #mensagem de aviso
         self.flag = 0 #

@@ -144,7 +144,7 @@ class Card():
         if self.nome == 'Milagre':
             base = 1000
             for monstro in equipe:
-                if monstro.vida < base:
+                if monstro.vida < base and monstro.vivo:
                     alvo = monstro
                     base = monstro.vida
             cura = int(alvo.vidamax / 4)
@@ -496,7 +496,7 @@ class Card():
                 DefineTextoMedidor("FAIL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
 
         if self.nome == 'Dealer':
-            med.custoComprar = 3
+            med.indice = 16
         
         if self.nome == 'Gambito':
 
@@ -518,6 +518,9 @@ class Card():
         if self.nome == 'Volta':
             j.turno -= 2
             j.event_novoTurno = True
+        
+        if self.nome == 'Weak':
+            j.event_weak = True
                     
 descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 descricao_img.set_alpha(200)
@@ -565,12 +568,13 @@ promocao = Card("Promocao", 0, 0, "Os monstros na loja custam 20% menos")
 vampiro = Card("Vampiro", 0, 0, "Atacar dará vida ao atacante aliado")
 fluxo = Card("Fluxo", 0, 0, "Ataques concedem mais energia")
 aumento = Card("Aumento", 0, 0, "Aumenta a energia máxima em 50%")
-subiu = Card("Subiu", 0, 0, "A equipe ganha +5 de atq., def. e +1 de srt.")
+subiu = Card("Subiu", 0, 0, "A selecao ganha +5 de atq., def. e +2 de srt.")
 chance = Card("Chance", 0, 0, "Ataques criticos concedem + uma ação")
 carroagem = Card("Carroagem", 0, 0, "Derrotar alguem pode dropar uma carta")
 mano = Card("Mano", 0, 0, "O ultimo aliado vivo ganha buffs")
 hierofante = Card("Hierofante", 0, 0, "Diminui o custo das skills em 20%")
 dealer = Card("Dealer", 0, 0, "Reduz o custo de compra de carta")
+banco = Card("Banco", 0, 0, "Aumenta o maximo de rubis")
 
 # lista que armazena os aprimoramentos
 
@@ -590,9 +594,12 @@ aprimoramentos.append(vampiro)
 aprimoramentos.append(fluxo)
 aprimoramentos.append(aumento)
 aprimoramentos.append(subiu)
+aprimoramentos.append(chance)
 aprimoramentos.append(mano)
 aprimoramentos.append(hierofante)
 aprimoramentos.append(dealer)
+aprimoramentos.append(carroagem)
+aprimoramentos.append(banco)
 
 # deck - conjunto de cartas ordinarias que foram compradas na loja e incluidas no deck
 
