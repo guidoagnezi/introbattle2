@@ -64,6 +64,28 @@ pas_button = Button("pas_button", 1175, 650)
 pas_button.image = pygame.transform.scale_by(pas_button.image, 1.2).convert()
 pas_button.rect = pas_button.image.get_rect(center=(pas_button.x_pos, pas_button.y_pos))
 
+atk_button.image_on = atk_button.image
+atk_button.rect_on = atk_button.rect
+com_button.image_on = com_button.image
+com_button.rect_on = com_button.rect
+skl_button.image_on = skl_button.image
+skl_button.rect_on = skl_button.rect
+pas_button.image_on = pas_button.image
+pas_button.rect_on = pas_button.rect
+
+atk_button.image_off = pygame.image.load("imagem/background/atk_button_off.png").convert()
+skl_button.image_off = pygame.image.load("imagem/background/skl_button_off.png").convert()
+com_button.image_off = pygame.image.load("imagem/background/com_button_off.png").convert()
+pas_button.image_off = pygame.image.load("imagem/background/pas_button_off.png").convert()
+atk_button.image_off = pygame.transform.scale_by(atk_button.image_off, 1.2).convert()
+atk_button.rect_off = atk_button.image_off.get_rect(center=(atk_button.x_pos, atk_button.y_pos))
+com_button.image_off = pygame.transform.scale_by(com_button.image_off, 1.2).convert()
+com_button.rect_off = com_button.image_off.get_rect(center=(com_button.x_pos, com_button.y_pos))
+skl_button.image_off = pygame.transform.scale_by(skl_button.image_off, 1.2).convert()
+skl_button.rect_off = skl_button.image_off.get_rect(center=(skl_button.x_pos, skl_button.y_pos))
+pas_button.image_off = pygame.transform.scale_by(pas_button.image_off, 1.2).convert()
+pas_button.rect_off = pas_button.image_off.get_rect(center=(pas_button.x_pos, pas_button.y_pos))
+
 hud0_img = pygame.image.load("imagem/background/hud0.png").convert()
 
 # inicializacao dos botoes do menu inicial
@@ -442,33 +464,29 @@ def draw_aviso(janela, fonte):
 
 def atualizaBotoes():
       
-      trocou = False
       if (not j.event_vezJogador or j.event_standby) and not j.botoesOff:
 
-            atk_button.image = pygame.image.load("imagem/background/atk_button_off.png")            .convert()
-            skl_button.image = pygame.image.load("imagem/background/skl_button_off.png")            .convert()
-            com_button.image = pygame.image.load("imagem/background/com_button_off.png")            .convert()
-            pas_button.image = pygame.image.load("imagem/background/pas_button_off.png")            .convert()
+            atk_button.image = atk_button.image_off
+            skl_button.image = skl_button.image_off
+            com_button.image = com_button.image_off
+            pas_button.image = pas_button.image_off
+            atk_button.rect  = atk_button.rect_off
+            skl_button.rect  = skl_button.rect_off
+            com_button.rect  = com_button.rect_off
+            pas_button.rect  = pas_button.rect_off
             j.botoesOff = True
-            trocou = True
       
       elif j.event_vezJogador and not j.event_standby and j.botoesOff:
-            atk_button.image = pygame.image.load("imagem/background/atk_button.png")            .convert()
-            skl_button.image = pygame.image.load("imagem/background/skl_button.png")            .convert()
-            com_button.image = pygame.image.load("imagem/background/com_button.png")            .convert()
-            pas_button.image = pygame.image.load("imagem/background/pas_button.png")            .convert()
+            atk_button.image = atk_button.image_on
+            skl_button.image = skl_button.image_on
+            com_button.image = com_button.image_on
+            pas_button.image = pas_button.image_on
+            atk_button.rect  = atk_button.rect_on
+            skl_button.rect  = skl_button.rect_on
+            com_button.rect  = com_button.rect_on
+            pas_button.rect  = pas_button.rect_on
             j.botoesOff = False
-            trocou = True
-
-      if trocou:
-            atk_button.image = pygame.transform.scale_by(atk_button.image, 1.2).convert()
-            atk_button.rect = atk_button.image.get_rect(center=(atk_button.x_pos, atk_button.y_pos))
-            com_button.image = pygame.transform.scale_by(com_button.image, 1.2).convert()
-            com_button.rect = com_button.image.get_rect(center=(com_button.x_pos, com_button.y_pos))
-            skl_button.image = pygame.transform.scale_by(skl_button.image, 1.2).convert()
-            skl_button.rect = skl_button.image.get_rect(center=(skl_button.x_pos, skl_button.y_pos))
-            pas_button.image = pygame.transform.scale_by(pas_button.image, 1.2).convert()
-            pas_button.rect = pas_button.image.get_rect(center=(pas_button.x_pos, pas_button.y_pos))
+      
 
 # animacaoSelected - ativa a atualizacao da imagem do monstro no menu principal se o botao que o armazena estivar selecionado
 

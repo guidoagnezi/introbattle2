@@ -464,19 +464,19 @@ inim7 = Monstro     ("Adiburai", 130, 20, 35, 6, treinar,   25, 4, 4, 6)
 
 inim8 = Monstro     ("Demonio",  190, 50, 20, 6, wekapipo,  30, 8, 0, 6)
 inim9 = Monstro     ("Bombinha", 155, 30, 35, 6, devolver,  30, 5, 3, 6)
-inim10 = Monstro    ("Linguico", 150, 30, 40, 8, surra,     35, 4, 7, 6)
+inim10 = Monstro    ("Linguico", 150, 30, 40, 12,surra,     35, 4, 7, 6)
 inim11 = Monstro    ("Ico",      170, 30, 35, 6, explosao,  40, 5, 7, 6)
 inim12 = Monstro    ("Gelo",     150, 35, 30, 6, nevasca,   40, 6, 5, 6)
 inim13 = Monstro    ("Xamilo",   160, 35, 45, 10,cortar,    40, 3, 0, 6)
 inim14 = Monstro    ("Adiburai", 160, 30, 45, 10,treinar,   40, 4, 6, 6)
 
-inim15 = Monstro    ("Demonio",  230, 55, 20, 6, nevasca,   45, 8, 0, 6)
-inim16 = Monstro    ("Bombinha", 200, 40, 45, 8, devolver,  45, 6, 6, 6)
-inim17 = Monstro    ("Kamirider",170, 30, 70, 10,surra,     45, 3, 3, 4)
-inim18 = Monstro    ("Odiburoi", 190, 30, 55, 8, corre,     55, 7, 6, 4)
-inim19 = Monstro    ("Monge",    180, 35, 45, 6, saraivada, 55, 6, 4, 1)
-inim20 = Monstro    ("Camboja",  210, 45, 35, 10,eletroterapia,55, 3, 5, 3)
-inim21 = Monstro    ("Adiburai", 210, 40, 65, 10,treinar,   55, 4, 7, 6)
+inim15 = Monstro    ("Demonio",  250, 55, 20, 12,nevasca,   45, 8, 0, 6)
+inim16 = Monstro    ("Bombinha", 220, 40, 45, 8, devolver,  45, 6, 6, 6)
+inim17 = Monstro    ("Kamirider",190, 30, 70, 10,surra,     45, 3, 3, 4)
+inim18 = Monstro    ("Odiburoi", 210, 30, 55, 8, corre,     55, 7, 6, 4)
+inim19 = Monstro    ("Monge",    200, 35, 45, 15,saraivada, 55, 6, 4, 1)
+inim20 = Monstro    ("Camboja",  230, 45, 35, 10,eletroterapia,55, 3, 5, 3)
+inim21 = Monstro    ("Adiburai", 230, 40, 65, 10,treinar,   55, 4, 7, 6)
 
 #BOSS --- ///
 

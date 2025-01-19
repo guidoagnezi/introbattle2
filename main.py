@@ -400,6 +400,8 @@ def menuPrincipal():
             data['gastos'] += med.valor
             med.valor = 0
             j.event_perdeuRubi = False
+            if med.rubis < med.custoComprar:
+                j.botoesOff = True
 
         # render
 
@@ -1049,6 +1051,28 @@ def continuar():
         monstros.update_animation()
     
     for monstros in colecaoInimigos2:
+        monstros.vida = monstros.vidamax
+        monstros.MODdef = 1
+        monstros.MODatk = 1
+        monstros.CounterAtk = 0
+        monstros.CounterDef = 0
+        monstros.CounterCon = 0
+        monstros.condicao = 0
+        monstros.gauge = 0
+        monstros.danoAcumulado = 0
+        monstros.ataque = monstros.ataqueBase
+        monstros.ataqueNormal = monstros.ataqueBase
+        monstros.defesa = monstros.defesaBase
+        monstros.defesaNormal = monstros.ataqueNormal
+        monstros.sorte = monstros.sorteBase
+        monstros.vida = monstros.vidaBase
+        monstros.fraqueza = monstros.fraquezaBase
+        monstros.ativo = False
+        monstros.vivo = True
+        monstros.idle()
+        monstros.update_animation()
+    
+    for monstros in colecaoInimigos3:
         monstros.vida = monstros.vidamax
         monstros.MODdef = 1
         monstros.MODatk = 1
