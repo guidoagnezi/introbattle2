@@ -325,7 +325,7 @@ class Card():
         
         if self.nome == 'Gratis':
 
-            if len(deck) > 4:
+            if len(deck) >= 1:
                 numero = random.randint(0, len(deck) - 1)
                 mao.append(deck.pop(numero))
 
@@ -546,7 +546,7 @@ carta15 = Card("Fortuna", 70, 25, "+SRT para o aliado da vez (perma)")
 carta16 = Card("Julgamento", 40, 25, "60 de dano ao monstro que mais atacou") ###
 carta17 = Card("Final", 30, 25, "Dano aos inimigos igual a energia, zera")
 carta18 = Card("Visao", 20, 10, "Revela as informaçoes de um inimigo")
-carta19 = Card("Gratis", 10, 10, "Compra uma carta")
+carta19 = Card("Gratis", 5, 10, "Compra uma carta")
 carta20 = Card("Flush", 35, 35, "(20 x cartas na mao) de dano ao inimigo")
 carta21 = Card("Briga", 50, 30, "Dano ao inimigos baseado no atq da equipe")
 carta22 = Card("Polimerizacao", 90, 50, "Funde dois aliados")
