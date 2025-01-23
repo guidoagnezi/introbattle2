@@ -38,5 +38,6 @@ O jogo foi desenvolvido em intervalos curtos de uma hora diária por um _inician
 
 ## Ainda há muito a ser feito
 
-Um dos principais objetivos atuais é tornar o código o mais otimizado e leve possível (o jogo possui performance estável mas quedas na taxa de quadros podem acontecer)
+Um dos principais objetivos atuais é tornar o código o mais otimizado e leve possível (o jogo possui performance estável mas quedas na taxa de quadros podem acontecer).
+Efeitos sonoros estão completamente ausentes.
 
