@@ -67,6 +67,8 @@ action_img = pygame.image.load("imagem/background/action.png").convert_alpha()
 half_action_img = pygame.image.load("imagem/background/action.png").convert_alpha()
 half_action_img.set_alpha(150)
 actionE_img = pygame.image.load("imagem/background/action_enemy.png").convert_alpha()
+half_actionE_img = pygame.image.load("imagem/background/action_enemy.png").convert_alpha()
+half_actionE_img.set_alpha(150)
 
 #spritegroup
 j.txt_grupo = pygame.sprite.Group()
@@ -89,7 +91,10 @@ def desenhaAcoes(vivos, acoes, vezPlayer):
             else:
                 janela.blit(action_img, (x, y))
         else:
-            janela.blit(actionE_img, (x, y))
+            if vez == int(vezes) - 1 and half:
+                janela.blit(half_actionE_img, (x, y))
+            else:
+                janela.blit(actionE_img, (x, y))
         x += 90
 
 img_guia = pygame.image.load("imagem/background/img_guia.png").convert_alpha()
