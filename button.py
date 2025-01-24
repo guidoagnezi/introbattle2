@@ -195,6 +195,8 @@ main_card_button30= Button("cardframe", 130, 3080)
 main_card_button30.carta = carta30
 main_card_button31= Button("cardframe", 340, 3080)
 main_card_button31.carta = carta31
+main_card_button32= Button("cardframe", 550, 3080)
+main_card_button32.carta = carta32
 
 # inicializacao dos botoes do Menu Principal
 main_go_button = Button("go_button", 1150, 650)
@@ -282,6 +284,7 @@ card_buttons.append(main_card_button28)
 card_buttons.append(main_card_button29)
 card_buttons.append(main_card_button30)
 card_buttons.append(main_card_button31)
+card_buttons.append(main_card_button32)
 
 # lista de botoes ordinarios do Menu Principal
 

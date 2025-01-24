@@ -521,6 +521,27 @@ class Card():
         
         if self.nome == 'Weak':
             j.event_weak = True
+        
+        if self.nome == 'Papisa':
+            contador = 0
+            falhou = False
+            while True:
+                alvo = random.choice(equipe)
+                contador += 1
+                if contador >= 12:
+                    falhou = True
+                    break
+                    
+                if not alvo.vivo:
+                    break
+            
+            if falhou:
+                DefineTextoMedidor("IMPOSSIVEL", False, False, pygame.mouse.get_pos(), j.txt_grupo)
+            else:
+                alvo.vivo = True
+                alvo.vida = int(alvo.vidamax / 2)
+                DefineAnimacaoAtaque(alvo, 9)
+                
                     
 descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
 descricao_img.set_alpha(200)
@@ -559,6 +580,7 @@ carta28 = Card("Sol", 35, 20, "O aliado da vez não morre esse round")
 carta29 = Card("Lua", 25, 25, "Troca o inimigo por um de custo >=")
 carta30 = Card("Gambito", 25, 20, "Dano pela vida do aliado da vez")
 carta31 = Card("Volta", 25, 20, "Volta a vez pro aliado anterior")
+carta32 = Card("Papisa", 40, 40, "Revive um aliado")
 
 # criacao dos aprimoramentos
 # aprimoramentos sao um tipo de carta que nao sao incluidas num deck e tem efeito permanente
