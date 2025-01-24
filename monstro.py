@@ -164,6 +164,16 @@ class Monstro:
         
         self.ataque = self.ataqueNormal * self.MODatk
         self.defesa = self.defesaNormal * self.MODdef
+    
+    def updateInstant(self):
+
+        if self.MODatk > 2:
+            self.MODatk = 2
+        if self.MODdef > 2:
+            self.MODdef = 2
+
+        self.ataque = self.ataqueNormal * self.MODatk
+        self.defesa = self.defesaNormal * self.MODdef
 
     # updateCondicao - atualiza a condicao do monstro
 
@@ -184,6 +194,14 @@ class Monstro:
             self.vida -= dano
             self.machucado()
             j.dano += dano
+
+        if self.condicao == 2:# condicao '2' - congelamento, pula o turno do monstro quando for a vez dele
+            DefineTextoStatus("       FREEZE", self, j.txt_grupo, "blue", 6)
+        
+    def updateInstantCondicao(self):
+
+        if self.condicao == 1: # condicao '1' - sangramento, da dano ao monstro quando esse metodo for chamado
+            DefineTextoStatus("       BLEED", self, j.txt_grupo, "crimson", 3)
 
         if self.condicao == 2:# condicao '2' - congelamento, pula o turno do monstro quando for a vez dele
             DefineTextoStatus("       FREEZE", self, j.txt_grupo, "blue", 6)
@@ -257,7 +275,7 @@ class Monstro:
                 DefineAnimacaoAtaque(alvo, self.skill.tipo)
                 # DefineTextoStatus("    BLEED", alvo, j.txt_grupo, "crimson", 3)
                 alvo.machucado()
-                alvo.updateCondicao()
+                alvo.updateInstantCondicao()
                 self.danoAcumulado += dano
                 if alvo.skill.nome == "Devolver":
                     alvo.gauge += int(dano * 0.8)
@@ -275,7 +293,7 @@ class Monstro:
                 DefineAnimacaoAtaque(alvo, self.skill.tipo)
                 # DefineTextoStatus("     FREEZE", alvo, j.txt_grupo, "blue", 6)
                 alvo.machucado()
-                alvo.updateCondicao()
+                alvo.updateInstantCondicao()
                 self.danoAcumulado += dano
                 if alvo.skill.nome == "Devolver":
                     alvo.gauge += int(dano * 0.8)
@@ -393,7 +411,7 @@ class Monstro:
             alvo.MODdef *= 1.2
             alvo.CounterAtk = 0
             alvo.CounterDef = 0
-            alvo.updateStatus()
+            alvo.updateInstant()
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
         
@@ -403,11 +421,11 @@ class Monstro:
                 if random.randint(1, 2) == 1:
                     alvo.condicao = random.randint(1, 2)
                     alvo.CounterCon = 0
-                    alvo.updateCondicao()
+                    alvo.updateInstantCondicao()
                 else:
                     alvo.MODdef = 0.8
                     alvo.MODatk = 0.8
-                    alvo.updateStatus()
+                    alvo.updateInstant()
                     DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 12)
                     DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 13)
 
@@ -417,7 +435,7 @@ class Monstro:
                 if random.randint(1, 4) == 5:
                     alvo.condicao = 2
                     alvo.CounterCon = 0
-                    alvo.updateCondicao()
+                    alvo.updateInstantCondicao()
                 alvo.vida -= dano
                 alvo.machucado()
                 DefineTextoDano(dano, alvo, j.txt_dano, "black", 6)

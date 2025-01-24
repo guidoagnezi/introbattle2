@@ -132,14 +132,14 @@ class Card():
         if self.nome == 'Fisico':
             alvo = monsVez
             alvo.MODatk *= 1.2
-            alvo.updateStatus()
+            alvo.updateInstant()
             alvo.CounterAtk = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             
         if self.nome == 'Resistencia':
             alvo = monsVez
             alvo.MODdef *= 1.2
-            alvo.updateStatus()
+            alvo.updateInstant()
             alvo.CounterDef = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
 
@@ -180,8 +180,8 @@ class Card():
             alvo2.MODdef = 1.5
             alvo2.CounterDef = 0
             alvo2.CounterAtk = 0
-            alvo.updateStatus()
-            alvo2.updateStatus()
+            alvo.updateInstant()
+            alvo2.updateInstant()
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
             DefineTextoStatus("UP", alvo2, j.txt_grupo, "black", 10)
@@ -211,7 +211,7 @@ class Card():
                     break
             if alvo.condicao == 0:
                 alvo.condicao = condicao
-                alvo.updateCondicao()
+                alvo.updateInstantCondicao()
             elif condicao == 2:
                 DefineTextoStatus("       FALHOU", alvo, j.txt_grupo, "black", 6)
             elif condicao == 1:
@@ -457,7 +457,7 @@ class Card():
                 if alvo.vivo:
                     break
             alvo.MODatk = 0.7
-            alvo.updateStatus()
+            alvo.updateInstant()
             alvo.CounterAtk = 0
             DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 12)
             
@@ -467,7 +467,7 @@ class Card():
                 if alvo.vivo:
                     break
             alvo.MODdef = 0.7
-            alvo.updateStatus()
+            alvo.updateInstant()
             alvo.CounterDef = 0
             DefineTextoStatus("     DOWN", alvo, j.txt_grupo, "black", 13)
         
