@@ -608,7 +608,7 @@ carta31 = Card("Volta", 25, 20, "Volta a vez pro aliado anterior")
 carta32 = Card("Papisa", 40, 40, "Revive um aliado")
 carta33 = Card("Noite", 20, 15, "Diminui a sorte dos inimigos")
 carta34 = Card("Bucolismo", 45, 50, "Usa a skill do monstro da vez")
-carta35 = Card("Abstracao", 40, 35, "Efeito de carta aleatorio")
+carta35 = Card("Abstracao", 35, 35, "Efeito de carta aleatorio")
 
 # criacao dos aprimoramentos
 # aprimoramentos sao um tipo de carta que nao sao incluidas num deck e tem efeito permanente
