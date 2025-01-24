@@ -157,6 +157,11 @@ class Monstro:
             self.MODdef = 1
             self.CounterDef = 0
         
+        if self.MODatk > 2:
+            self.MODatk = 2
+        if self.MODdef > 2:
+            self.MODdef = 2
+        
         self.ataque = self.ataqueNormal * self.MODatk
         self.defesa = self.defesaNormal * self.MODdef
 
@@ -435,7 +440,7 @@ class Monstro:
 ico = Monstro       ("Ico"     , 100,  35, 25, 6,  explosao, 10, 5, 6, 6)
 linguico = Monstro  ("Linguico", 100,  25, 25, 6,  surra,    10, 4, 3, 6)
 amigo = Monstro     ("Amigo"   , 100,  20, 30, 8,  wekapipo, 15, 8, 0, 6)
-filho = Monstro     ("Filho",    120,  25, 40, 12, cura,     20, 8, 4, 6)
+filho = Monstro     ("Filho",    120,  25, 40, 12, cura,     20, 7, 4, 6)
 gelo = Monstro      ("Gelo",     130,  30, 40, 8,  congelar, 20, 6, 5, 6)
 horroroso = Monstro ("Xamilo",   145,  25, 45, 6,  cortar,   25, 3, 4, 6)
 bombinha = Monstro  ("Bombinha", 140,  30, 45, 8,  devolver, 30, 5, 7, 6)
@@ -462,31 +467,31 @@ inim5 = Monstro     ("Gelo",     130, 20, 25, 6, congelar,  25, 6, 4, 6)
 inim6 = Monstro     ("Xamilo",   130, 25, 30, 6, cortar,    25, 3, 5, 6)
 inim7 = Monstro     ("Adiburai", 130, 20, 35, 6, treinar,   25, 4, 4, 6)
 
-inim8 = Monstro     ("Demonio",  190, 50, 20, 6, wekapipo,  30, 8, 0, 6)
-inim9 = Monstro     ("Bombinha", 155, 30, 35, 6, devolver,  30, 5, 3, 6)
-inim10 = Monstro    ("Linguico", 150, 30, 40, 12,surra,     35, 4, 7, 6)
-inim11 = Monstro    ("Ico",      170, 30, 35, 6, explosao,  40, 5, 7, 6)
-inim12 = Monstro    ("Gelo",     150, 35, 30, 6, nevasca,   40, 6, 5, 6)
-inim13 = Monstro    ("Xamilo",   160, 35, 45, 10,cortar,    40, 3, 0, 6)
-inim14 = Monstro    ("Adiburai", 160, 30, 45, 10,treinar,   40, 4, 6, 6)
+inim8 = Monstro     ("Demonio",  190, 50, 30, 6, wekapipo,  30, 8, 0, 6)
+inim9 = Monstro     ("Bombinha", 155, 30, 40, 6, devolver,  30, 5, 3, 6)
+inim10 = Monstro    ("Linguico", 150, 30, 45, 12,surra,     35, 4, 7, 6)
+inim11 = Monstro    ("Ico",      170, 30, 40, 6, explosao,  40, 5, 7, 6)
+inim12 = Monstro    ("Gelo",     150, 35, 35, 6, nevasca,   40, 6, 5, 6)
+inim13 = Monstro    ("Xamilo",   160, 35, 50, 10,cortar,    40, 3, 0, 6)
+inim14 = Monstro    ("Adiburai", 160, 30, 50, 10,treinar,   40, 4, 6, 6)
 
-inim15 = Monstro    ("Demonio",  250, 55, 20, 12,nevasca,   45, 8, 0, 6)
-inim16 = Monstro    ("Bombinha", 220, 40, 45, 8, devolver,  45, 6, 6, 6)
-inim17 = Monstro    ("Kamirider",190, 30, 70, 10,surra,     45, 3, 3, 4)
-inim18 = Monstro    ("Odiburoi", 210, 30, 55, 8, corre,     55, 7, 6, 4)
-inim19 = Monstro    ("Monge",    200, 35, 45, 15,saraivada, 55, 6, 4, 1)
-inim20 = Monstro    ("Camboja",  230, 45, 35, 10,eletroterapia,55, 3, 5, 3)
-inim21 = Monstro    ("Adiburai", 230, 40, 65, 10,treinar,   55, 4, 7, 6)
+inim15 = Monstro    ("Demonio",  250, 55, 35, 12,nevasca,   45, 8, 0, 6)
+inim16 = Monstro    ("Bombinha", 220, 40, 50, 8, devolver,  45, 6, 6, 6)
+inim17 = Monstro    ("Kamirider",190, 30, 75, 10,surra,     45, 3, 3, 4)
+inim18 = Monstro    ("Odiburoi", 210, 30, 60, 8, corre,     55, 7, 6, 4)
+inim19 = Monstro    ("Monge",    200, 35, 50, 15,saraivada, 55, 6, 4, 1)
+inim20 = Monstro    ("Camboja",  230, 45, 40, 10,eletroterapia,55, 3, 5, 3)
+inim21 = Monstro    ("Adiburai", 230, 40, 70, 10,treinar,   55, 4, 7, 6)
 
 #BOSS --- ///
 
-pepeteco = Monstro  ("Pepeteco", 1200, 35, 40, 8, sabotar, 90, 3, 0, 6)
+pepeteco = Monstro  ("Pepeteco", 1200, 55, 45, 8, sabotar, 90, 3, 0, 6)
 pepeteco.bg = pygame.image.load("imagem/background/bg2.png").convert()
-mestre = Monstro    ("Mestre", 900, 40, 45, 10, focar, 90, 4, 0, 6)
+mestre = Monstro    ("Mestre", 900, 40, 65, 10, focar, 90, 4, 0, 6)
 mestre.bg = pygame.image.load("imagem/background/bg3.png").convert()
-mago = Monstro      ("Mago", 1000, 35, 35, 6, mudar, 90, 8, 0, 6)
+mago = Monstro      ("Mago", 1000, 40, 50, 6, mudar, 90, 8, 0, 6)
 mago.bg = pygame.image.load("imagem/background/bg0.png").convert()
-bobonauta = Monstro ("Bobonaut", 1100, 30, 45, 8, debilitar, 90, 6, 0, 6)
+bobonauta = Monstro ("Bobonaut", 1100, 35, 45, 8, debilitar, 90, 6, 0, 6)
 bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert()
 bobonauta.animation_cooldown = 200
 
@@ -684,6 +689,8 @@ def contarVivosInimigos(grupo):
                 if num == 4 and len(mao) < 4:
                     adicionaCarta(deck, mao)
                     DefineTextoStatus("     CARD", monstro, j.txt_grupo, "black", 17)
+            j.event_ganhouEnergia = True
+            med.valorE += 30
                     
         elif monstro.vivo:
             count += 1

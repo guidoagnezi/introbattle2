@@ -15,6 +15,8 @@ pygame.display.set_mode((1,1), pygame.NOFRAME)
 
 frame = pygame.image.load("imagem/card/cardframe.png").convert_alpha()
 
+sorteio = ['Raio', 'Estrela', 'Final', 'Milagre', 'Enamorados', 'Mago', 'Morte', 'Fraqueza', 'Briga', 'Diabo']
+
 class Card():
     def __init__(self, nome, custo, preco, descricao):
         self.image =  frame                             # imagem de quadro da carta
@@ -53,6 +55,12 @@ class Card():
     # ativarEfeito - localiza e ativa o efeito da carta a partir do nome
 
     def ativarEfeito(self, equipeInim, equipe, equipeAtivos, monsVez):
+
+        mudouNome = False
+        if self.nome == 'Abstracao':
+            self.nome = random.choice(sorteio)
+            mudouNome = True
+
         if self.nome == 'Avareza':
             j.event_ganhouRubi = True
             med.valor = 10
@@ -123,14 +131,14 @@ class Card():
 
         if self.nome == 'Fisico':
             alvo = monsVez
-            alvo.MODatk = 1.3
+            alvo.MODatk *= 1.2
             alvo.updateStatus()
             alvo.CounterAtk = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 10)
             
         if self.nome == 'Resistencia':
             alvo = monsVez
-            alvo.MODdef = 1.3
+            alvo.MODdef *= 1.2
             alvo.updateStatus()
             alvo.CounterDef = 0
             DefineTextoStatus("UP", alvo, j.txt_grupo, "black", 11)
@@ -541,6 +549,23 @@ class Card():
                 alvo.vivo = True
                 alvo.vida = int(alvo.vidamax / 2)
                 DefineAnimacaoAtaque(alvo, 9)
+        
+        if self.nome == 'Noite':
+
+            for monstro in equipeInim:
+                monstro.sorte = int(monstro.sorte / 4)
+                DefineTextoStatus("       DOWN", monstro, j.txt_grupo, "black", 13)
+        
+        if self.nome == 'Bucolismo':
+
+            if monsVez.skill.auto:
+                monsVez.ativarSkill(monsVez, equipeInim, equipe)
+            else:
+                j.event_usarSkill = True
+                j.event_bucolismo = True
+
+        if mudouNome:
+            self.nome = 'Abstracao'
                 
                     
 descricao_img = pygame.image.load("imagem/background/descricao.png").convert()
@@ -581,6 +606,9 @@ carta29 = Card("Lua", 25, 25, "Troca o inimigo por um de custo >=")
 carta30 = Card("Gambito", 25, 20, "Dano pela vida do aliado da vez")
 carta31 = Card("Volta", 25, 20, "Volta a vez pro aliado anterior")
 carta32 = Card("Papisa", 40, 40, "Revive um aliado")
+carta33 = Card("Noite", 20, 15, "Diminui a sorte dos inimigos")
+carta34 = Card("Bucolismo", 45, 50, "Usa a skill do monstro da vez")
+carta35 = Card("Abstracao", 40, 35, "Efeito de carta aleatorio")
 
 # criacao dos aprimoramentos
 # aprimoramentos sao um tipo de carta que nao sao incluidas num deck e tem efeito permanente

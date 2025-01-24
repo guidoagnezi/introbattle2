@@ -29,6 +29,7 @@ class Jogo():
         self.event_dropaCard = False
         self.event_oneMore = False
         self.event_weak = False
+        self.event_bucolismo = False
         self.event_mano = False # #
         self.mensagem = False #mensagem de aviso
         self.flag = 0 #

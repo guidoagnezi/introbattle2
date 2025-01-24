@@ -390,7 +390,7 @@ def menuPrincipal():
             if j.catalogoMonstro:
                 scrollBotoes(char_buttons, wheelUp, -730)
             else:
-                scrollBotoes(card_buttons, wheelUp, -2530)
+                scrollBotoes(card_buttons, wheelUp, -2830)
             scrollou = False
         
         if j.event_ganhouRubi:
@@ -660,15 +660,17 @@ def batalha():
                     else:
                         monsAlvo = cliqueMonstroBatalha(equipe, posMouse)
                     if monsAlvo != False:
-                        j.event_perdeuEnergia = True
-                        med.valorE = monsVez.skill.custo
+                        if not j.event_bucolismo:
+                            j.event_perdeuEnergia = True
+                            med.valorE = monsVez.skill.custo
+                            j.event_novoTurno = True
+                            j.event_realizouSkill = True
+                            j.textoAtualizou = True
+                            j.acoesEquipe -= 1
+                            monsVezGuia = monsVez
                         monsVez.ativarSkill(monsAlvo, equipeInim, equipe)
-                        j.event_novoTurno = True
                         j.event_usarSkill = False
-                        monsVezGuia = monsVez
-                        j.event_realizouSkill = True
-                        j.textoAtualizou = True
-                        j.acoesEquipe -= 1
+                        j.event_bucolismo = False
 
                 clicou = False                             #reset
         
