@@ -266,18 +266,28 @@ def desenhaMembros():
 # se nao houver ranking, nao desenha
 
 def desenhaRanking():
-    txtTentativas = fonte2.render(f"Tentativas: {data["tentativas"]}", True, "black")
-    txtDano = fonte.render(f"Dano acumulado global: {int(data["dano"])}", True, "black")
-    txtCura = fonte.render(f"Cura acumulada global: {int(data["cura"])}", True, "black")
-    txtCartasCompradas = fonte.render(f"Vezes que comprou cartas na loja: {data["cartascompradas"]}", True, "black")
-    txtMonstrosComprados = fonte.render(f"Vezes que comprou monstros na loja: {data["monstroscomprados"]}", True, "black")
-    txtGasto = fonte.render(f"Gasto total: {int(data["gastos"])} rubis", True, "black")
+    tentativasD = data["tentativas"]
+    danoD = int(data["dano"])
+    curaD = int(data["cura"])
+    cartasCompradasD = data["cartascompradas"]
+    monstrosCompradosD = data["monstroscomprados"]
+    gastosD = int(data["gastos"])
+    equipeD = data["equipe"]
+    roundsD = data["rounds"]
+    danoTD = int(data["danotentativa"])
+    curaTD = int(data["curatentativa"])
+    txtTentativas = fonte2.render(f"Tentativas: {tentativasD}", True, "black")
+    txtDano = fonte.render(f"Dano acumulado global: {danoD}", True, "black")
+    txtCura = fonte.render(f"Cura acumulada global: {curaD}", True, "black")
+    txtCartasCompradas = fonte.render(f"Vezes que comprou cartas na loja: {cartasCompradasD}", True, "black")
+    txtMonstrosComprados = fonte.render(f"Vezes que comprou monstros na loja: {monstrosCompradosD}", True, "black")
+    txtGasto = fonte.render(f"Gasto total: {gastosD} rubis", True, "black")
     if data["equipe"] != "":
         txtMelhorTentativa = fonte2.render("Melhor tentativa", True, "black")
-        txtEquipe = fonte.render(f"Equipe: {data["equipe"]}", True, "black")
-        txtRoundMaximo = fonte.render(f"Round maximo: {data["rounds"]}", True, "black")
-        txtDanoTentativa = fonte.render(f"Dano acumulado na tentativa: {int(data["danotentativa"])}", True, "black")
-        txtCuraTentativa = fonte.render(f"Cura acumulada na tentativa: {int(data["curatentativa"])}", True, "black")
+        txtEquipe = fonte.render(f"Equipe: {equipeD}", True, "black")
+        txtRoundMaximo = fonte.render(f"Round maximo: {roundsD}", True, "black")
+        txtDanoTentativa = fonte.render(f"Dano acumulado na tentativa: {danoTD}", True, "black")
+        txtCuraTentativa = fonte.render(f"Cura acumulada na tentativa: {curaTD}", True, "black")
     
     janela.blit(txtTentativas, (50, 50))
     janela.blit(txtDano, (50, 90))
