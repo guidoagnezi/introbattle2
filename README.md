@@ -17,7 +17,7 @@ python3 main.py
 
 Tudo pronto.
 ## Sobre o jogo
-O jogo acontece por uma série de 12 rounds. Neles você deve derrotar todos os inimigos antes que eles _derrotem você_. Se todos os seus aliados morrerem, você perde e volta no round 1.
+O jogo acontece em uma série de 12 rounds. Neles você deve derrotar todos os inimigos antes que eles _derrotem você_. Se todos os seus aliados morrerem, você perde e volta no round 1.
 
 Para te auxiliar durante as batalhas, você deve comprar os lutadores (ou monstros) no menu principal, analisando os status e skills e selecionando aqueles que mais combinam com a estratégia que você está formando.
 
