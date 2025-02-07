@@ -30,7 +30,7 @@ A cada 3 rounds, você batalhará contra um boss, então economize seus recursos
 O jogo adota o sistema **Press Turn** simplificado, ou seja, você deve administrar as ações da sua equipe estrategicamente para atingir seus objetivos. Atingir um crítico **pode** (atenção no **_pode_**) te garantir mais turnos, e errar um ataque te fará perder mais ações.
 
 Ferramentas importantes :
-**Modo informação** - durante a batalha, segurar o botão direto do mouse ativará o modo informação. Colocar o cursor do mouse sobre um monstro ou uma carta revelará suas status (como nome, vida, ataque, custo, etc.)
+**Modo informação** - durante a batalha, segurar o botão direto do mouse ativará o modo informação. Colocar o cursor do mouse nesse modo sobre um monstro ou uma carta revelará seus status (como nome, vida, ataque, custo, etc.)
 **Passar a vez** - nesse sistema, passar a vez só te faz perder "meio" turno, use essa opção para se reorganizar.
 
 ## Sobre o código
