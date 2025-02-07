@@ -578,7 +578,7 @@ def batalha():
                     if monsVez.vida <= 0: # mata o monstro se ele estiver morto
                         monsVez.vida = 0
                         DefineAnimacaoAtaque(monsVez, 9)
-                        j.event_novoTurno
+                        j.event_novoTurno = True
                 else:
                     j.cdStandby += 1 # incrementa o cooldown do standby
                     j.event_standby = True
@@ -711,7 +711,7 @@ def batalha():
                     if monsVez.vida <= 0: # morre perdeu vida por sangramento
                         monsVez.vida = 0
                         DefineAnimacaoAtaque(monsVez, 9)
-                        j.event_novoTurno
+                        j.event_novoTurno = True
                 else:
                     j.cdStandby += 1
                     j.event_standby = True
