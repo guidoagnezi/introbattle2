@@ -503,13 +503,13 @@ inim21 = Monstro    ("Adiburai", 230, 40, 70, 16,treinar,   55, 4, 7, 6)
 
 #BOSS --- ///
 
-pepeteco = Monstro  ("Pepeteco", 1200, 55, 45, 18, sabotar, 90, 3, 0, 6)
+pepeteco = Monstro  ("Pepeteco", 1000, 55, 45, 18, sabotar, 90, 3, 0, 6)
 pepeteco.bg = pygame.image.load("imagem/background/bg2.png").convert()
-mestre = Monstro    ("Mestre", 900, 40, 65, 20, focar, 90, 4, 0, 6)
+mestre = Monstro    ("Mestre", 800, 40, 65, 20, focar, 90, 4, 0, 6)
 mestre.bg = pygame.image.load("imagem/background/bg3.png").convert()
-mago = Monstro      ("Mago", 1000, 40, 50, 16, mudar, 90, 8, 0, 6)
+mago = Monstro      ("Mago", 900, 40, 50, 16, mudar, 90, 8, 0, 6)
 mago.bg = pygame.image.load("imagem/background/bg0.png").convert()
-bobonauta = Monstro ("Bobonaut", 1100, 35, 45, 18, debilitar, 90, 6, 0, 6)
+bobonauta = Monstro ("Bobonaut", 800, 35, 45, 18, debilitar, 90, 6, 0, 6)
 bobonauta.bg = pygame.image.load("imagem/background/bg4.png").convert()
 bobonauta.animation_cooldown = 200
 
