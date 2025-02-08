@@ -27,14 +27,11 @@ Derrotar inimigos te garantirá mais dinheiro para aprimorar os membros da sua e
 
 A cada 3 rounds, você batalhará contra um boss, então economize seus recursos para poder vencê-lo e progredir.
 
-O jogo adota o sistema **Press Turn** simplificado, ou seja, você deve administrar as ações da sua equipe estrategicamente para atingir seus objetivos. Atingir um crítico **pode** (atenção no **_pode_**) te garantir mais turnos, e errar um ataque te fará perder mais ações.
+O jogo adota o sistema **Press Turn** simplificado, ou seja, você deve administrar as ações da sua equipe estrategicamente para atingir seus objetivos. Atingir um crítico ou uma fraqueza pode te garantir mais turnos, e errar um ataque te fará perder mais ações.
 
 Ferramentas importantes :
 **Modo informação** - durante a batalha, segurar o botão direto do mouse ativará o modo informação. Colocar o cursor do mouse nesse modo sobre um monstro ou uma carta revelará seus status (como nome, vida, ataque, custo, etc.)
 **Passar a vez** - nesse sistema, passar a vez só te faz perder "meio" turno, use essa opção para se reorganizar.
-
-## Sobre o código
-O jogo foi desenvolvido em intervalos curtos de uma hora diária por um _iniciante_ em programação, então **por favor** não repare na bagunça.
 
 ## Ainda há muito a ser feito
 
