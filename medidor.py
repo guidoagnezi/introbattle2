@@ -2,6 +2,7 @@ import pygame
 from infotext import *
 
 pygame.init()
+pygame.mixer.init()
 pygame.display.set_mode((1,1), pygame.NOFRAME)
 rubyFrame = pygame.image.load("imagem/background/rubiFrame.png").convert_alpha()
 rubyFrameMP = pygame.image.load("imagem/background/rubiFrameMP.png").convert_alpha()

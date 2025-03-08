@@ -144,3 +144,27 @@ def DefineAnimacaoAtaque(posicao, tipo):
 def desenhaAtaque(ataque_grupo, janela):
     ataque_grupo.draw(janela)
     ataque_grupo.update()
+
+# somAtaque - toca o efeito sonoro correspondente ao tipo de ataque
+
+ma1 = pygame.mixer.Sound("sound/ataque/magic4.mp3")
+ma2 = pygame.mixer.Sound("sound/ataque/magic3.mp3")
+
+magic = [ma1, ma2]
+
+def somAtaque(tipo):
+
+    if tipo == 3:
+        pass
+    if tipo == 4:
+        pass
+    if tipo == 5:
+        pass
+    if tipo == 6:
+        pass
+    if tipo == 7:
+        pass
+    if tipo == 8:
+        random.choice(magic).play()
+    if tipo == 0:
+        pass

@@ -7,6 +7,7 @@ from ataque import *
 from eventos import j
 
 pygame.init()
+pygame.mixer.init()
 pygame.display.set_mode((1,1), pygame.NOFRAME)
 
 # Metodos que alteram a situacao das cartas do jogo
@@ -14,6 +15,29 @@ pygame.display.set_mode((1,1), pygame.NOFRAME)
 # define os efeitos das cartas em batalha
 
 frame = pygame.image.load("imagem/card/cardframe.png").convert_alpha()
+
+cf1 = pygame.mixer.Sound("sound/card/cardflip1.mp3")
+cf2 = pygame.mixer.Sound("sound/card/cardflip2.mp3")
+
+cu1 = pygame.mixer.Sound("sound/card/carduse1.mp3")
+cu2 = pygame.mixer.Sound("sound/card/carduse2.mp3")
+cu3 = pygame.mixer.Sound("sound/card/carduse3.mp3")
+
+cuvol = 0.3
+cu1.set_volume(cuvol)
+cu2.set_volume(cuvol)
+cu3.set_volume(cuvol)
+
+cardflip = []
+
+cardflip.append(cf1)
+cardflip.append(cf2)
+
+carduse = []
+
+carduse.append(cu1)
+carduse.append(cu2)
+carduse.append(cu3)
 
 sorteio = ['Raio', 'Estrela', 'Final', 'Milagre', 'Enamorados', 'Mago', 'Morte', 'Fraqueza', 'Briga', 'Diabo']
 
@@ -674,6 +698,7 @@ mao = []
 def adicionaCarta(deck, mao):
     nCartas = len(mao)
     if nCartas != 4:
+        random.choice(cardflip).play()
         numero = random.randint(0, len(deck) - 1)
         mao.append(deck.pop(numero))
 
@@ -687,6 +712,7 @@ def cliqueCarta(mao, deck, posicao, equipeInim, equipe, equipeAtivos, monsVez):
         if cartas.checkForInput(posicao):
             if cartas.custo <= med.energia: # verifica se há energia o suficiente para ativar a carta
                 med.valorE = cartas.custo
+                random.choice(carduse).play()
                 j.event_perdeuEnergia = True
                 cartas.ativarEfeito(equipeInim, equipe, equipeAtivos, monsVez) # ativa o efeito da carta
                 mao.remove(cartas)

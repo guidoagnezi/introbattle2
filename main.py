@@ -655,6 +655,7 @@ def batalha():
                                 if monsVez.vida > monsVez.vidamax:
                                     monsVez.vida = monsVez.vidamax
                                 j.cura += curaV
+                            somAtaque(monsVez.magia)
                         else:
                             DefineTextoStatus("       MISS", monsAlvo, j.txt_grupo, "black", 11) # indica que o atacante errou 
                         DefineAnimacaoAtaque(monsAlvo, monsVez.magia) # inicia a animacao de ataque
