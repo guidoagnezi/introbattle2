@@ -149,22 +149,37 @@ def desenhaAtaque(ataque_grupo, janela):
 
 ma1 = pygame.mixer.Sound("sound/ataque/magic4.mp3")
 ma2 = pygame.mixer.Sound("sound/ataque/magic3.mp3")
+bl1 = pygame.mixer.Sound("sound/ataque/blade1.mp3")
+bl2 = pygame.mixer.Sound("sound/ataque/blade2.mp3")
+ph1 = pygame.mixer.Sound("sound/ataque/punch1.mp3")
+ph2 = pygame.mixer.Sound("sound/ataque/punch2.mp3")
+el1 = pygame.mixer.Sound("sound/ataque/elec1.mp3")
+el2 = pygame.mixer.Sound("sound/ataque/elec2.mp3")
+fg1 = pygame.mixer.Sound("sound/ataque/fogo1.mp3")
+fg2 = pygame.mixer.Sound("sound/ataque/fogo2.mp3")
 
 magic = [ma1, ma2]
+
+blade = [bl1, bl2]
+
+punch = [ph1, ph2]
+
+elec = [el1, el2]
+
+fogo = [fg1, fg2]
 
 def somAtaque(tipo):
 
     if tipo == 3:
-        pass
+        random.choice(blade).play()
     if tipo == 4:
-        pass
+        random.choice(punch).play()
     if tipo == 5:
-        pass
+        random.choice(fogo).play()
     if tipo == 6:
         pass
     if tipo == 7:
-        pass
+        random.choice(elec).play()
     if tipo == 8:
         random.choice(magic).play()
-    if tipo == 0:
-        pass
+
